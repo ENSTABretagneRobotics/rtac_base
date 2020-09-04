@@ -30,10 +30,12 @@ int main()
     auto cube = rtac::types::Mesh<>::cube();
     cout << cube << endl;
 
+#ifdef RTAC_TOOLS_PLY_FILES
     cube.export_ply("cube.ply");
 
     auto cube1 = rtac::types::Mesh<>::from_ply("cube.ply");
     cout << cube1 << endl;
+#endif
 
     return 0;
 }

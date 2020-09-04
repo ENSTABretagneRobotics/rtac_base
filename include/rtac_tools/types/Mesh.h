@@ -3,7 +3,9 @@
 
 #include <iostream>
 
+#ifdef RTAC_TOOLS_PLY_FILES
 #include <happly/happly.h>
+#endif
 
 #include <rtac_tools/types/common.h>
 
@@ -35,13 +37,15 @@ class Mesh
     VecArray3ConstPtr<Tf>  faces_ptr()  const;
     size_t num_points() const;
     size_t num_faces()  const;
-    
-    // others
-    void export_ply(const std::string& path, bool ascii=false);
 
     // Some helpful builder functions
     static Mesh<Tp,Tf,3> cube(Tp scale = 1.0);
+
+    // .ply files
+#ifdef RTAC_TOOLS_PLY_FILES
     static Mesh<Tp,Tf,3> from_ply(const std::string& path);
+    void export_ply(const std::string& path, bool ascii=false);
+#endif
 
 };
 
@@ -118,41 +122,6 @@ size_t Mesh<Tp,Tf,D>::num_faces() const
 }
 
 template <typename Tp, typename Tf, size_t D>
-void Mesh<Tp,Tf,D>::export_ply(const std::string& path, bool ascii)
-{
-    happly::PLYData data;
-    
-    if(this->num_points() <= 0)
-        return;
-    data.addElement("vertex", this->num_points());
-    auto& vElement = data.getElement("vertex");
-    
-    auto points = this->points();
-    std::vector<Tp> x(points(all,0).begin(), points(all,0).end());
-    std::vector<Tp> y(points(all,1).begin(), points(all,1).end());
-    std::vector<Tp> z(points(all,2).begin(), points(all,2).end());
-    vElement.addProperty("x", x);
-    vElement.addProperty("y", y);
-    vElement.addProperty("z", z);
-    
-    if(this->num_faces() > 0) {
-        data.addElement("face", this->num_faces());
-        auto faces = this->faces();
-        // Have to do this. happly not accepting views.
-        std::vector<std::vector<Tf>> f(this->num_faces());
-        for(size_t i = 0; i < f.size(); i++) {
-            f[i].assign(faces(i,all).begin(), faces(i,all).end());
-        }
-        data.getElement("face").addListProperty("vertex_indices", f);
-    }
-    
-    if(ascii)
-        data.write(path, happly::DataFormat::ASCII);
-    else
-        data.write(path, happly::DataFormat::Binary);
-}
-
-template <typename Tp, typename Tf, size_t D>
 Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::cube(Tp scale)
 {
     VecArrayPtr<Tp,3> points(new VecArray<Tp,3>(8));
@@ -180,6 +149,7 @@ Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::cube(Tp scale)
     return Mesh<Tp,Tf,3>(points, faces);
 }
 
+#ifdef RTAC_TOOLS_PLY_FILES
 template <typename Tp, typename Tf, size_t D>
 Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::from_ply(const std::string& path)
 {
@@ -217,6 +187,42 @@ Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::from_ply(const std::string& path)
 
     return Mesh(points, faces);
 }
+
+template <typename Tp, typename Tf, size_t D>
+void Mesh<Tp,Tf,D>::export_ply(const std::string& path, bool ascii)
+{
+    happly::PLYData data;
+    
+    if(this->num_points() <= 0)
+        return;
+    data.addElement("vertex", this->num_points());
+    auto& vElement = data.getElement("vertex");
+    
+    auto points = this->points();
+    std::vector<Tp> x(points(all,0).begin(), points(all,0).end());
+    std::vector<Tp> y(points(all,1).begin(), points(all,1).end());
+    std::vector<Tp> z(points(all,2).begin(), points(all,2).end());
+    vElement.addProperty("x", x);
+    vElement.addProperty("y", y);
+    vElement.addProperty("z", z);
+    
+    if(this->num_faces() > 0) {
+        data.addElement("face", this->num_faces());
+        auto faces = this->faces();
+        // Have to do this. happly not accepting views.
+        std::vector<std::vector<Tf>> f(this->num_faces());
+        for(size_t i = 0; i < f.size(); i++) {
+            f[i].assign(faces(i,all).begin(), faces(i,all).end());
+        }
+        data.getElement("face").addListProperty("vertex_indices", f);
+    }
+    
+    if(ascii)
+        data.write(path, happly::DataFormat::ASCII);
+    else
+        data.write(path, happly::DataFormat::Binary);
+}
+#endif //RTAC_TOOLS_PLY_FILES
 
 
 }; //namespace types

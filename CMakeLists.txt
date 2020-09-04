@@ -21,10 +21,15 @@ set_target_properties(rtac_tools PROPERTIES
 target_link_libraries(rtac_tools
     PUBLIC
         Eigen3::Eigen
-        happly
     PRIVATE
         stdc++fs
 )
+if(TARGET happly)
+    target_link_libraries(rtac_tools PUBLIC happly)
+    target_compile_definitions(rtac_tools PUBLIC RTAC_TOOLS_PLY_FILES)
+else()
+    message(WARNING "The happly target was not found. You won't be able to read/write .ply file.")
+endif()
 target_include_directories(rtac_tools
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -36,6 +41,9 @@ add_subdirectory(tests)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/installation.cmake)
 install_target(rtac_tools
-    ADDITIONNAL_CONFIG_FILES cmake/installation.cmake)
+    ADDITIONNAL_CONFIG_FILES cmake/installation.cmake
+)
+
+
 
 
