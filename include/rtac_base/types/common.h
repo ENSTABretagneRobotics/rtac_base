@@ -42,21 +42,21 @@ using Vector3f = Vector3<float>;
 using Vector3d = Vector3<double>;
 
 template <typename T, size_t D>
-class VecArray : public Eigen::Matrix<T, Eigen::Dynamic, D>
+class Array : public Eigen::Matrix<T, Eigen::Dynamic, D>
 {
     public:
 
-    VecArray() {};
-    VecArray(size_t length) : Eigen::Matrix<T,Eigen::Dynamic,D>(length, D) {};
-    VecArray(const VecArray<T,D>& other) :
+    Array() {};
+    Array(size_t length) : Eigen::Matrix<T,Eigen::Dynamic,D>(length, D) {};
+    Array(const Array<T,D>& other) :
         Eigen::Matrix<T,Eigen::Dynamic,D>(other) {};
-    VecArray(const Eigen::Matrix<T,Eigen::Dynamic,D>& other) :
+    Array(const Eigen::Matrix<T,Eigen::Dynamic,D>& other) :
         Eigen::Matrix<T,Eigen::Dynamic,D>(other) {};
 };
 template <typename T>
-using VecArray3  = VecArray<T,3>;
-using VecArray3f = VecArray3<float>;
-using VecArray3d = VecArray3<double>;
+using Array3  = Array<T,3>;
+using Array3f = Array3<float>;
+using Array3d = Array3<double>;
 
 template <typename T>
 using Quaternion  = Eigen::Quaternion<T>;
@@ -86,17 +86,17 @@ using MatrixdConstPtr = std::shared_ptr<const Matrixd>;
 
 
 template <typename T, size_t D>
-using VecArrayPtr  = std::shared_ptr<VecArray<T,D>>;
+using ArrayPtr  = std::shared_ptr<Array<T,D>>;
 template <typename T>
-using VecArray3Ptr  = std::shared_ptr<VecArray3<T>>;
-using VecArray3fPtr = std::shared_ptr<VecArray3f>;
-using VecArray3dPtr = std::shared_ptr<VecArray3d>;
+using Array3Ptr  = std::shared_ptr<Array3<T>>;
+using Array3fPtr = std::shared_ptr<Array3f>;
+using Array3dPtr = std::shared_ptr<Array3d>;
 template <typename T, size_t D>
-using VecArrayConstPtr  = std::shared_ptr<const VecArray<T,D>>;
+using ArrayConstPtr  = std::shared_ptr<const Array<T,D>>;
 template <typename T>
-using VecArray3ConstPtr  = std::shared_ptr<const VecArray3<T>>;
-using VecArray3fConstPtr = std::shared_ptr<const VecArray3f>;
-using VecArray3dConstPtr = std::shared_ptr<const VecArray3d>;
+using Array3ConstPtr  = std::shared_ptr<const Array3<T>>;
+using Array3fConstPtr = std::shared_ptr<const Array3f>;
+using Array3dConstPtr = std::shared_ptr<const Array3d>;
 
 }; // namespace types
 }; // namespace rtac

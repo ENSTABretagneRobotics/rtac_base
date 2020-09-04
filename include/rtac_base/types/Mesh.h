@@ -20,21 +20,21 @@ class Mesh
 {
     protected:
 
-    VecArrayPtr<Tp,D> points_;
-    VecArray3Ptr<Tf>  faces_;
+    ArrayPtr<Tp,D> points_;
+    Array3Ptr<Tf>  faces_;
 
     public:
 
     Mesh();
     Mesh(size_t numPoints, size_t numFaces);
-    Mesh(const VecArrayPtr<Tp,D>& points, const VecArray3Ptr<Tf>& faces=NULL);
-    Mesh(const VecArray<Tp,D>& points, const VecArray3<Tf>& faces);
+    Mesh(const ArrayPtr<Tp,D>& points, const Array3Ptr<Tf>& faces=NULL);
+    Mesh(const Array<Tp,D>& points, const Array3<Tf>& faces);
     
     // getters
     Map<const Matrix<Tp>> points() const;
     Map<const Matrix<Tf>> faces()  const;
-    VecArrayConstPtr<Tp,D> points_ptr() const;
-    VecArray3ConstPtr<Tf>  faces_ptr()  const;
+    ArrayConstPtr<Tp,D> points_ptr() const;
+    Array3ConstPtr<Tf>  faces_ptr()  const;
     size_t num_points() const;
     size_t num_faces()  const;
 
@@ -59,21 +59,21 @@ Mesh<Tp,Tf,D>::Mesh() :
 
 template <typename Tp, typename Tf, size_t D>
 Mesh<Tp,Tf,D>::Mesh(size_t numPoints, size_t numFaces) :
-    points_(VecArrayPtr<Tp,D>(new VecArray<Tp,D>(numPoints))),
-    faces_ (VecArray3Ptr<Tf> (new VecArray3<Tf>(numFaces)))
+    points_(ArrayPtr<Tp,D>(new Array<Tp,D>(numPoints))),
+    faces_ (Array3Ptr<Tf> (new Array3<Tf>(numFaces)))
 {
 }
 
 template <typename Tp, typename Tf, size_t D>
-Mesh<Tp,Tf,D>::Mesh(const VecArrayPtr<Tp,D>& points, const VecArray3Ptr<Tf>& faces) :
+Mesh<Tp,Tf,D>::Mesh(const ArrayPtr<Tp,D>& points, const Array3Ptr<Tf>& faces) :
     points_(points), faces_(faces)
 {
 }
 
 template <typename Tp, typename Tf, size_t D>
-Mesh<Tp,Tf,D>::Mesh(const VecArray<Tp,D>& points, const VecArray3<Tf>& faces) :
-    points_(VecArrayPtr<Tp,D>(new VecArray<Tp,D>(points))),
-    faces_ (VecArray3Ptr<Tf> (new VecArray3<Tf>(faces)))
+Mesh<Tp,Tf,D>::Mesh(const Array<Tp,D>& points, const Array3<Tf>& faces) :
+    points_(ArrayPtr<Tp,D>(new Array<Tp,D>(points))),
+    faces_ (Array3Ptr<Tf> (new Array3<Tf>(faces)))
 {
 }
 
@@ -94,13 +94,13 @@ Map<const Matrix<Tf>> Mesh<Tp,Tf,D>::faces() const
 }
 
 template <typename Tp, typename Tf, size_t D>
-VecArrayConstPtr<Tp,D> Mesh<Tp,Tf,D>::points_ptr() const
+ArrayConstPtr<Tp,D> Mesh<Tp,Tf,D>::points_ptr() const
 {
     return points_;
 }
 
 template <typename Tp, typename Tf, size_t D>
-VecArray3ConstPtr<Tf> Mesh<Tp,Tf,D>::faces_ptr() const
+Array3ConstPtr<Tf> Mesh<Tp,Tf,D>::faces_ptr() const
 {
     return faces_;
 }
@@ -124,7 +124,7 @@ size_t Mesh<Tp,Tf,D>::num_faces() const
 template <typename Tp, typename Tf, size_t D>
 Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::cube(Tp scale)
 {
-    VecArrayPtr<Tp,3> points(new VecArray<Tp,3>(8));
+    ArrayPtr<Tp,3> points(new Array<Tp,3>(8));
     *points << -scale,-scale,-scale,
                 scale,-scale,-scale,
                 scale, scale,-scale,
@@ -133,7 +133,7 @@ Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::cube(Tp scale)
                 scale,-scale, scale,
                 scale, scale, scale,
                -scale, scale, scale;
-    VecArray3Ptr<Tf> faces (new VecArray3<Tf>(12));
+    Array3Ptr<Tf> faces (new Array3<Tf>(12));
     *faces << 0,2,1,
               0,3,2,
               4,5,6,
@@ -159,20 +159,20 @@ Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::from_ply(const std::string& path)
     std::vector<Tp> y = data.getElement("vertex").getProperty<Tp>("y");
     std::vector<Tp> z = data.getElement("vertex").getProperty<Tp>("z");
 
-    VecArrayPtr<Tp,3> points(new VecArray<Tp,3>(x.size()));
+    ArrayPtr<Tp,3> points(new Array<Tp,3>(x.size()));
     for(int i = 0; i < x.size(); i++) {
         (*points)(i,0) = x[i];
         (*points)(i,1) = y[i];
         (*points)(i,2) = z[i];
     }
     
-    VecArray3Ptr<Tf> faces(NULL);
+    Array3Ptr<Tf> faces(NULL);
     std::vector<std::string> names({"vertex_indices", "vertex_index"});
     for(auto& name : names) {
         try {
             std::vector<std::vector<Tf>> f = data.getElement("face")
                 .getListPropertyAnySign<Tf>(name);
-            faces = VecArray3Ptr<Tf>(new VecArray3<Tf>(f.size()));
+            faces = Array3Ptr<Tf>(new Array3<Tf>(f.size()));
             for(int i = 0; i < f.size(); i++) {
                 (*faces)(i,0) = f[i][0];
                 (*faces)(i,1) = f[i][1];

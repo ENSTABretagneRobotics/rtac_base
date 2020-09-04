@@ -24,7 +24,7 @@ int main()
     cout << A(0,all) << endl << endl;
     cout << A(seq(0,1), all) << endl << endl;
 
-    rtac::types::VecArray3f B(3);
+    rtac::types::Array3f B(3);
     cout << B << endl;
 
     auto cube = rtac::types::Mesh<>::cube();
