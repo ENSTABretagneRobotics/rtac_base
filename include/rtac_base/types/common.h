@@ -74,30 +74,6 @@ namespace indexing {
     using Eigen::all;
 }
 
-// Pointers definition (defined here to avoid cumbering the type definition).
-template <typename T>
-using MatrixPtr  = std::shared_ptr<Matrix<T>>;
-using MatrixfPtr = std::shared_ptr<Matrixf>;
-using MatrixdPtr = std::shared_ptr<Matrixd>;
-template <typename T>
-using MatrixConstPtr  = std::shared_ptr<const Matrix<T>>;
-using MatrixfConstPtr = std::shared_ptr<const Matrixf>;
-using MatrixdConstPtr = std::shared_ptr<const Matrixd>;
-
-
-template <typename T, size_t D>
-using ArrayPtr  = std::shared_ptr<Array<T,D>>;
-template <typename T>
-using Array3Ptr  = std::shared_ptr<Array3<T>>;
-using Array3fPtr = std::shared_ptr<Array3f>;
-using Array3dPtr = std::shared_ptr<Array3d>;
-template <typename T, size_t D>
-using ArrayConstPtr  = std::shared_ptr<const Array<T,D>>;
-template <typename T>
-using Array3ConstPtr  = std::shared_ptr<const Array3<T>>;
-using Array3fConstPtr = std::shared_ptr<const Array3f>;
-using Array3dConstPtr = std::shared_ptr<const Array3d>;
-
 }; // namespace types
 }; // namespace rtac
 
