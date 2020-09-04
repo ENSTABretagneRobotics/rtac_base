@@ -1,6 +1,6 @@
-#include <rtac_tools/types/common.h>
-#include <rtac_tools/types/Pose.h>
-#include <rtac_tools/types/Mesh.h>
+#include <rtac_base/types/common.h>
+#include <rtac_base/types/Pose.h>
+#include <rtac_base/types/Mesh.h>
 
 #include <iostream>
 using namespace std;
@@ -30,7 +30,7 @@ int main()
     auto cube = rtac::types::Mesh<>::cube();
     cout << cube << endl;
 
-#ifdef RTAC_TOOLS_PLY_FILES
+#ifdef RTAC_BASE_PLY_FILES
     cube.export_ply("cube.ply");
 
     auto cube1 = rtac::types::Mesh<>::from_ply("cube.ply");

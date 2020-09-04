@@ -1,9 +1,9 @@
-#ifndef _DEF_RTAC_TOOLS_TYPES_POSE_H_
-#define _DEF_RTAC_TOOLS_TYPES_POSE_H_
+#ifndef _DEF_RTAC_BASE_TYPES_POSE_H_
+#define _DEF_RTAC_BASE_TYPES_POSE_H_
 
 #include <iostream>
 
-#include <rtac_tools/types/common.h>
+#include <rtac_base/types/common.h>
 
 namespace rtac { namespace types {
 
@@ -78,5 +78,5 @@ std::ostream& operator<<(std::ostream& os, const rtac::types::Pose<T>& pose) {
     return os;
 }
 
-#endif //_DEF_RTAC_TOOLS_TYPES_POSE_H_
+#endif //_DEF_RTAC_BASE_TYPES_POSE_H_
 

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(rtac_tools_tests VERSION 0.1)
+project(rtac_base_tests VERSION 0.1)
 
 list(APPEND test_names
     types-test
@@ -8,7 +8,7 @@ list(APPEND test_names
 )
 
 list(APPEND test_deps
-    rtac_tools
+    rtac_base
 )
 
 foreach(name ${test_names})

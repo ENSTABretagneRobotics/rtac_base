@@ -1,13 +1,13 @@
-#ifndef _DEF_RTAC_TOOLS_TYPES_MESH_H_
-#define _DEF_RTAC_TOOLS_TYPES_MESH_H_
+#ifndef _DEF_RTAC_BASE_TYPES_MESH_H_
+#define _DEF_RTAC_BASE_TYPES_MESH_H_
 
 #include <iostream>
 
-#ifdef RTAC_TOOLS_PLY_FILES
+#ifdef RTAC_BASE_PLY_FILES
 #include <happly/happly.h>
 #endif
 
-#include <rtac_tools/types/common.h>
+#include <rtac_base/types/common.h>
 
 namespace rtac { namespace types {
 
@@ -42,7 +42,7 @@ class Mesh
     static Mesh<Tp,Tf,3> cube(Tp scale = 1.0);
 
     // .ply files
-#ifdef RTAC_TOOLS_PLY_FILES
+#ifdef RTAC_BASE_PLY_FILES
     static Mesh<Tp,Tf,3> from_ply(const std::string& path);
     void export_ply(const std::string& path, bool ascii=false);
 #endif
@@ -149,7 +149,7 @@ Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::cube(Tp scale)
     return Mesh<Tp,Tf,3>(points, faces);
 }
 
-#ifdef RTAC_TOOLS_PLY_FILES
+#ifdef RTAC_BASE_PLY_FILES
 template <typename Tp, typename Tf, size_t D>
 Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::from_ply(const std::string& path)
 {
@@ -222,7 +222,7 @@ void Mesh<Tp,Tf,D>::export_ply(const std::string& path, bool ascii)
     else
         data.write(path, happly::DataFormat::Binary);
 }
-#endif //RTAC_TOOLS_PLY_FILES
+#endif //RTAC_BASE_PLY_FILES
 
 
 }; //namespace types
@@ -241,7 +241,7 @@ std::ostream& operator<<(std::ostream& os, const rtac::types::Mesh<Tp,Tf,D>& mes
     return os;
 }
 
-#endif //_DEF_RTAC_TOOLS_TYPES_MESH_H_
+#endif //_DEF_RTAC_BASE_TYPES_MESH_H_
 
 
 

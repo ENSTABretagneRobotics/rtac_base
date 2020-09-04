@@ -1,5 +1,5 @@
-#ifndef _DEF_RTAC_TOOLS_TYPES_COMMON_H_
-#define _DEF_RTAC_TOOLS_TYPES_COMMON_H_
+#ifndef _DEF_RTAC_BASE_TYPES_COMMON_H_
+#define _DEF_RTAC_BASE_TYPES_COMMON_H_
 
 #include <iostream>
 #include <memory>
@@ -109,4 +109,4 @@ std::ostream& operator<<(std::ostream& os, const rtac::types::Quaternion<T>& q) 
 
 void dummy();
 
-#endif //_DEF_RTAC_TOOLS_TYPES_COMMON_H_
+#endif //_DEF_RTAC_BASE_TYPES_COMMON_H_

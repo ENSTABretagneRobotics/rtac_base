@@ -2,7 +2,7 @@
 #include <vector>
 #include <math.h>
 
-#include <rtac_tools/types/common.h>
+#include <rtac_base/types/common.h>
 #include <xtensor-blas/xlinalg.hpp>
 
 using namespace std;

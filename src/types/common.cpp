@@ -1,5 +1,5 @@
-#include <rtac_tools/types/common.h>
-#include <rtac_tools/types/Pose.h>
+#include <rtac_base/types/common.h>
+#include <rtac_base/types/Pose.h>
 
 #include <iostream>
 
