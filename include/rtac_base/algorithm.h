@@ -36,6 +36,20 @@ Eigen::Matrix<T,D,1> find_orthogonal(const Eigen::Matrix<T,D,1>& v, float tol = 
     return res;
 }
 
+template <typename T, int D>
+Eigen::Matrix<T,D,D> orthonormalized(const Eigen::Matrix<T,D,D>& m, T tol = 1e-6)
+{
+    // Produce a orthonormal matrix from m using SVD.
+    // https://eigen.tuxfamily.org/dox/classEigen_1_1JacobiSVD.html
+    // (closest orthonormal matrix in Frobenius norm ? (check it))
+    Eigen::JacobiSVD<Eigen::Matrix<T,D,D>> svd(m, Eigen::ComputeFullU | Eigen::ComputeFullV);
+    Eigen::Matrix<T,D,1> sv = svd.singularValues();
+    if(sv(Eigen::last) < tol*sv(0))
+        throw std::runtime_error("Orthonormalized : bad conditionned matrix. Cannot orthonormalize.");
+
+    return svd.matrixU()*svd.matrixV();
+}
+
 }; //namespace algorithm
 }; //namespace rtac
 #endif //_DEF_RTAC_BASE_ALGORITHM_H_

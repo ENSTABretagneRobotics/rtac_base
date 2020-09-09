@@ -22,5 +22,25 @@ int main()
     cout << "vo    : " << vo.transpose() << endl;
     cout << "dot   : " << v.dot(vo) << endl;
     cout << "cross : " << v.cross(vo).transpose() << endl;
+    cout << endl;
+
+    Matrix3<float> m  = Matrix3<float>::Identity() + 0.1*Matrix3<float>::Random();
+    Matrix3<float> mo = orthonormalized(m);
+    cout << "Random :\n" << m << endl;
+    cout << "Orthonormalized :\n" << mo << endl;
+    cout << "Check ortho :\n" << mo*mo.transpose() << endl;
+    cout << endl;
+
+    Matrix3<float> m2  = Matrix3<float>::Identity();
+    m2(0,0) = 1e-7;
+    try {
+        // must fail.
+        Matrix3<float> mo2 = orthonormalized(m2);
+    }
+    catch(const std::runtime_error& e) {
+        cout << "Conditioning test : Task failed successfully." << endl;
+    }
+
+
     return 0;
 }
