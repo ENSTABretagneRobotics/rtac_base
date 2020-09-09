@@ -64,7 +64,7 @@ void Pose<T>::set_orientation(const Quaternion<T>& q)
 template <typename T>
 void Pose<T>::set_orientation(const Matrix3<T>& r)
 {
-    orientation_ = rtac::algorithm::orthonormalized(orientation);
+    orientation_ = rtac::algorithm::orthonormalized(r);
 }
 
 template <typename T>
