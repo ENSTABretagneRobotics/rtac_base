@@ -47,7 +47,7 @@ Eigen::Matrix<T,D,D> orthonormalized(const Eigen::Matrix<T,D,D>& m, T tol = 1e-6
     if(sv(Eigen::last) < tol*sv(0))
         throw std::runtime_error("Orthonormalized : bad conditionned matrix. Cannot orthonormalize.");
 
-    return svd.matrixU()*svd.matrixV();
+    return svd.matrixU()*(svd.matrixV().transpose());
 }
 
 }; //namespace algorithm
