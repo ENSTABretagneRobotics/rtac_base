@@ -4,6 +4,7 @@ project(rtac_base_tests VERSION 0.1)
 list(APPEND test_names
     types-test
     files-test
+    algorithm_test
 )
 
 list(APPEND test_deps
