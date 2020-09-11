@@ -26,6 +26,8 @@ std::string find_one(const std::string& reString=".*", bool followSimlink=true);
 std::string find_one(const std::string& reString, const std::string& path,
                      bool followSimlink=true);
 
+std::string append_extension(const std::string& path, const std::string& ext);
+
 void write_pgm(const std::string& path, size_t width, size_t height, const char* data,
                const std::string& comment = "");
 void write_ppm(const std::string& path, size_t width, size_t height, const char* data,

@@ -48,6 +48,13 @@ std::string find_one(const std::string& reString, const std::string& path, bool 
     return *find(reString, path, followSimlink).begin();
 }
 
+std::string append_extension(const std::string& path, const std::string& ext)
+{
+    fs::path res(path);
+    res.replace_extension(ext);
+    return res.string();
+}
+
 void write_pgm(const std::string& path, size_t width, size_t height, const char* data,
                const std::string& comment)
 {
