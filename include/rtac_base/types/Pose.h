@@ -32,6 +32,9 @@ class Pose
 
     Matrix3<T> rotation_matrix()    const;
     Matrix4<T> homogeneous_matrix() const;
+
+    Pose<T>& operator*=(const Pose<T>& other);
+    Pose<T>  inverse() const;
 };
 
 // class definition
@@ -96,11 +99,33 @@ Matrix4<T> Pose<T>::homogeneous_matrix() const
     return H;
 }
 
+template <typename T>
+Pose<T>& Pose<T>::operator*=(const Pose<T>& other)
+{
+    translation_ = other.orientation_ * translation_ + other.translation_;
+    orientation_ = other.orientation_ * orientation_;
+}
+
+template <typename T>
+Pose<T> Pose<T>::inverse() const
+{
+    Quaternion<T> qinv = orientation_.inverse();
+    return Pose<T>(-(qinv*translation_), qinv);
+}
+
 using Posef = Pose<float>;
 using Posed = Pose<double>;
 
 }; // namespace types
 }; // namespace rtac
+
+template<typename T>
+rtac::types::Pose<T> operator*(const rtac::types::Pose<T>& lhs, const rtac::types::Pose<T>& rhs)
+{
+    rtac::types::Pose<T> res(rhs);
+    res *= lhs;
+    return res;
+}
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const rtac::types::Pose<T>& pose) {

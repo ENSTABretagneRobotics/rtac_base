@@ -15,11 +15,15 @@ int main()
     cout << pose.homogeneous_matrix() << endl << endl;
     cout << endl;
 
+
     rtac::types::Matrix3<float> m = rtac::types::Matrix3<float>::Random();
     rtac::types::Pose<float> pose2(rtac::types::Vector3<float>(), m);
     cout << "Random :\n" << m << endl;
     cout << "Pose :\n" << pose2 << endl;
     cout << "Check :\n" << pose2.rotation_matrix()*pose2.rotation_matrix().transpose() << endl;
+
+    cout << "Inverse : " << pose2.inverse() << endl;
+    cout << "Product : " << pose2*pose2.inverse() << endl;
 
     rtac::types::Matrixf A(3,3);
     cout << A << endl << endl;
