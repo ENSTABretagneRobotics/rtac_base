@@ -109,13 +109,6 @@ Matrix4<T> Pose<T>::homogeneous_matrix() const
 }
 
 template <typename T>
-Pose<T>& Pose<T>::operator*=(const Pose<T>& other)
-{
-    translation_ = other.orientation_ * translation_ + other.translation_;
-    orientation_ = other.orientation_ * orientation_;
-}
-
-template <typename T>
 Pose<T> Pose<T>::inverse() const
 {
     Quaternion<T> qinv = orientation_.inverse();
@@ -131,9 +124,20 @@ using Posed = Pose<double>;
 template<typename T>
 rtac::types::Pose<T> operator*(const rtac::types::Pose<T>& lhs, const rtac::types::Pose<T>& rhs)
 {
-    rtac::types::Pose<T> res(rhs);
-    res *= lhs;
-    return res;
+    return rtac::types::Pose<T>(lhs.translation() + lhs.orientation() * rhs.translation(),
+                                  lhs.orientation() * rhs.orientation());
+}
+
+template<typename T>
+rtac::types::Pose<T> operator*(const rtac::types::Pose<T>& lhs, const rtac::types::Quaternion<T>& q)
+{
+    return rtac::types::Pose<T>(lhs.translation(), lhs.orientation() * q);
+}
+
+template<typename T>
+rtac::types::Pose<T> operator*(const rtac::types::Quaternion<T>& q, const rtac::types::Pose<T>& rhs)
+{
+    return rtac::types::Pose<T>(q*rhs.translation(), q*rhs.orientation());
 }
 
 template <typename T>
