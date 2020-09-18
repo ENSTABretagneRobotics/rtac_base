@@ -18,10 +18,13 @@ class Pose
     Quaternion<T> orientation_;
 
     public:
+
+    static Pose<T> from_homogeneous_matrix(const Matrix4<T>& h);
+    static Pose<T> from_rotation_matrix(const Matrix3<T>& r,
+                                        const Vector3<T>& t = {0,0,0});
     
     Pose(const Vector3<T>&    translation = Vector3<T>(0,0,0),
          const Quaternion<T>& orientation = Quaternion<T>(1,0,0,0));
-    Pose(const Vector3<T>& translation, const Matrix3<T>& orientation);
 
     void set_translation(const Vector3<T>& t);
     void set_orientation(const Quaternion<T>& q);
@@ -45,11 +48,17 @@ Pose<T>::Pose(const Vector3<T>& translation, const Quaternion<T>& orientation) :
 {}
 
 template <typename T>
-Pose<T>::Pose(const Vector3<T>& translation, const Matrix3<T>& orientation) :
-    translation_(translation),
-    orientation_()
+Pose<T> Pose<T>::from_rotation_matrix(const Matrix3<T>& r,
+                                      const Vector3<T>& t)
 {
-    this->set_orientation(orientation);
+    return Pose<T>(t, Quaternion<T>(rtac::algorithm::orthonormalized(r)));
+}
+
+template <typename T>
+Pose<T> Pose<T>::from_homogeneous_matrix(const Matrix4<T>& h)
+{
+    return from_rotation_matrix(h.block(0,0,3,3),
+                                h(indexing::seqN(0,3), 3));
 }
 
 template <typename T>

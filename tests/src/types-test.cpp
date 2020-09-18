@@ -17,7 +17,8 @@ int main()
 
 
     rtac::types::Matrix3<float> m = rtac::types::Matrix3<float>::Random();
-    rtac::types::Pose<float> pose2(rtac::types::Vector3<float>(), m);
+    auto pose2 = rtac::types::Pose<float>::from_rotation_matrix(
+        m, rtac::types::Vector3<float>());
     cout << "Random :\n" << m << endl;
     cout << "Pose :\n" << pose2 << endl;
     cout << "Check :\n" << pose2.rotation_matrix()*pose2.rotation_matrix().transpose() << endl;
