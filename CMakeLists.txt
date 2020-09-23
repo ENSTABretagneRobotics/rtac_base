@@ -8,6 +8,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/common.h
     include/rtac_base/types/Pose.h
     include/rtac_base/types/Mesh.h
+    include/rtac_base/types/Rectangle.h
     include/rtac_base/algorithm.h
     include/rtac_base/files.h
 )

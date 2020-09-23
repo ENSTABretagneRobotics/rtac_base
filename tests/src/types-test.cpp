@@ -1,6 +1,7 @@
 #include <rtac_base/types/common.h>
 #include <rtac_base/types/Pose.h>
 #include <rtac_base/types/Mesh.h>
+#include <rtac_base/types/Rectangle.h>
 
 #include <iostream>
 using namespace std;
@@ -14,7 +15,9 @@ int main()
     cout << pose.rotation_matrix() << endl << endl;
     cout << pose.homogeneous_matrix() << endl << endl;
     cout << endl;
-
+    
+    rtac::types::Rectangle<float> rect({1.0,2.0,3.0,4.0});
+    cout << rect << endl << endl;
 
     rtac::types::Matrix3<float> m = rtac::types::Matrix3<float>::Random();
     auto pose2 = rtac::types::Pose<float>::from_rotation_matrix(
