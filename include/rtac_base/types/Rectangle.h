@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include <rtac_base/types/Shape.h>
+
 namespace rtac { namespace types {
 
 template <typename T>
@@ -17,6 +19,7 @@ class Rectangle
 
     T width() const;
     T height() const;
+    Shape<T> shape() const;
 };
 
 template <typename T>
@@ -29,6 +32,12 @@ template <typename T>
 T Rectangle<T>::height() const
 {
     return top - bottom;
+}
+
+template <typename T>
+Shape<T> Rectangle<T>::shape() const
+{
+    return Shape<T>({this->width(), this->height()});
 }
 
 }; //namespace types

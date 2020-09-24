@@ -17,7 +17,8 @@ int main()
     cout << endl;
     
     rtac::types::Rectangle<float> rect({1.0,2.0,3.0,4.0});
-    cout << rect << endl << endl;
+    cout << rect << endl;
+    cout << rect.shape() << endl << endl;
 
     rtac::types::Matrix3<float> m = rtac::types::Matrix3<float>::Random();
     auto pose2 = rtac::types::Pose<float>::from_rotation_matrix(
