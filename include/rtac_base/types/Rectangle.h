@@ -15,18 +15,18 @@ class Rectangle
     T bottom;
     T top;
 
-    T xspan() const;
-    T yspan() const;
+    T width() const;
+    T height() const;
 };
 
 template <typename T>
-T Rectangle<T>::xspan() const
+T Rectangle<T>::width() const
 {
     return right - left;
 }
 
 template <typename T>
-T Rectangle<T>::yspan() const
+T Rectangle<T>::height() const
 {
     return top - bottom;
 }
