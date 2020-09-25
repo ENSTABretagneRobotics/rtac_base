@@ -12,6 +12,12 @@ struct Shape
 
     T width;
     T height;
+
+    template <typename RatioType = T>
+    RatioType ratio()
+    {
+        return ((RatioType)width / height);
+    }
 };
 
 }; //namespace types
