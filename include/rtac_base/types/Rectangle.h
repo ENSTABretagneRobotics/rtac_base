@@ -46,8 +46,8 @@ Shape<T> Rectangle<T>::shape() const
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const rtac::types::Rectangle<T>& rect)
 {
-    os << "l-r : [" << rect.left << "-" << rect.right
-       << "], b-t : [" << rect.bottom << "-" << rect.top << "]";
+    os << "l,r : [" << rect.left << ", " << rect.right
+       << "], b,t : [" << rect.bottom << ", " << rect.top << "]";
     return os;
 }
 
