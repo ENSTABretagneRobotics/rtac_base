@@ -14,7 +14,7 @@ struct Shape
     T height;
 
     template <typename RatioType = T>
-    RatioType ratio()
+    RatioType ratio() const
     {
         return ((RatioType)width / height);
     }
