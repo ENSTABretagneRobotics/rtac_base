@@ -12,6 +12,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/Shape.h
     include/rtac_base/types/Rectangle.h
     include/rtac_base/algorithm.h
+    include/rtac_base/geometry.h
     include/rtac_base/files.h
 )
 
