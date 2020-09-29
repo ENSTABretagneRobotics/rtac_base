@@ -7,6 +7,12 @@ list(APPEND test_names
     algorithm_test
 )
 
+if(TARGET happly)
+    list(APPEND test_names
+        ply_test
+    )
+endif()
+
 list(APPEND test_deps
     rtac_base
 )
