@@ -1,5 +1,6 @@
 #include <rtac_base/types/common.h>
 #include <rtac_base/types/Pose.h>
+#include <rtac_base/types/PointCloud.h>
 #include <rtac_base/types/Mesh.h>
 #include <rtac_base/types/Rectangle.h>
 
@@ -21,6 +22,17 @@ int main()
     cout << rect.shape() << endl;
     cout << "Ratio 1 : " << rect.shape().ratio() << endl;
     cout << "Ratio 2 : " << rect.shape().ratio<float>() << endl << endl;
+
+    rtac::types::PointCloud<float, 3> pc0(8);
+    pc0.points() << 0,0,0,
+                    0,0,1,
+                    0,1,0,
+                    0,1,1,
+                    1,0,0,
+                    1,0,1,
+                    1,1,0,
+                    1,1,1;
+    cout << pc0 << endl;
 
     rtac::types::Matrix3<float> m = rtac::types::Matrix3<float>::Random();
     auto pose2 = rtac::types::Pose<float>::from_rotation_matrix(
