@@ -18,28 +18,18 @@ using Map = Eigen::Map<Types ...>;
 
 template <typename T>
 using Matrix  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
-using Matrixf = Matrix<float>;
-using Matrixd = Matrix<double>;
 
 template <typename T>
 using Matrix3  = Eigen::Matrix<T, 3, 3>;
-using Matrix3f = Matrix3<float>;
-using Matrix3d = Matrix3<double>;
 
 template <typename T>
 using Matrix4  = Eigen::Matrix<T, 4, 4>;
-using Matrix4f = Matrix4<float>;
-using Matrix4d = Matrix4<double>;
 
 template <typename T>
 using Vector  = Eigen::Matrix<T, Eigen::Dynamic, 1>;
-using Vectorf = Vector<float>;
-using Vectord = Vector<double>;
 
 template <typename T>
 using Vector3  = Eigen::Matrix<T, 3, 1>;
-using Vector3f = Vector3<float>;
-using Vector3d = Vector3<double>;
 
 template <typename T, size_t D>
 class Array : public Eigen::Matrix<T, Eigen::Dynamic, D>
@@ -55,13 +45,9 @@ class Array : public Eigen::Matrix<T, Eigen::Dynamic, D>
 };
 template <typename T>
 using Array3  = Array<T,3>;
-using Array3f = Array3<float>;
-using Array3d = Array3<double>;
 
 template <typename T>
 using Quaternion  = Eigen::Quaternion<T>;
-using Quaternionf = Quaternion<float>;
-using Quaterniond = Quaternion<double>;
 
 // Indexing and slicing aliases
 // The namespace is to be able to use a 'using namespace rtac::types::indexing'

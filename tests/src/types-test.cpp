@@ -44,7 +44,7 @@ int main()
     cout << "Inverse : " << pose2.inverse() << endl;
     cout << "Product : " << pose2*pose2.inverse() << endl;
 
-    rtac::types::Matrixf A(3,3);
+    rtac::types::Matrix<float> A(3,3);
     cout << A << endl << endl;
     A << 1,2,3,
          4,5,6,
@@ -54,7 +54,7 @@ int main()
     cout << A(0,all) << endl << endl;
     cout << A(seq(0,1), all) << endl << endl;
 
-    rtac::types::Array3f B(3);
+    rtac::types::Array3<float> B(3);
     cout << B << endl;
 
     auto cube = rtac::types::Mesh<>::cube();
