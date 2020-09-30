@@ -14,11 +14,13 @@ list(APPEND rtac_base_headers
     include/rtac_base/algorithm.h
     include/rtac_base/geometry.h
     include/rtac_base/files.h
+    include/rtac_base/misc.h
 )
 
 add_library(rtac_base SHARED
     src/types/common.cpp
     src/files.cpp
+    src/misc.cpp
 )
 set_target_properties(rtac_base PROPERTIES
     PUBLIC_HEADER "${rtac_base_headers}"

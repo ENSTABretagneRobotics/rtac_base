@@ -5,6 +5,7 @@ list(APPEND test_names
     types-test
     files-test
     algorithm_test
+    misc_test
 )
 
 if(TARGET happly)
