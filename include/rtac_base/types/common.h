@@ -18,18 +18,21 @@ using Map = Eigen::Map<Types ...>;
 
 template <typename T>
 using Matrix  = Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>;
-
+template <typename T>
+using Matrix2  = Eigen::Matrix<T, 2, 2>;
 template <typename T>
 using Matrix3  = Eigen::Matrix<T, 3, 3>;
-
 template <typename T>
 using Matrix4  = Eigen::Matrix<T, 4, 4>;
 
 template <typename T>
 using Vector  = Eigen::Matrix<T, Eigen::Dynamic, 1>;
-
+template <typename T>
+using Vector2  = Eigen::Matrix<T, 2, 1>;
 template <typename T>
 using Vector3  = Eigen::Matrix<T, 3, 1>;
+template <typename T>
+using Vector4  = Eigen::Matrix<T, 4, 1>;
 
 template <typename T, size_t D>
 class Array : public Eigen::Matrix<T, Eigen::Dynamic, D>
