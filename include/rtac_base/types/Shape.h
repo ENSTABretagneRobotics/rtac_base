@@ -18,6 +18,11 @@ struct Shape
     {
         return ((RatioType)width / height);
     }
+
+    T area() const
+    {
+        return width * height;
+    }
 };
 
 }; //namespace types
