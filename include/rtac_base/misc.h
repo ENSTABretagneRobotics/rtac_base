@@ -24,6 +24,17 @@ class Clock
         return std::chrono::duration<T>(
             std::chrono::high_resolution_clock::now() - t0_).count();
     } 
+
+    template<typename T = double>
+    T interval()
+    {
+        T res;
+        auto t = std::chrono::high_resolution_clock::now();
+        res = std::chrono::duration<T>(t - t0_).count();
+        t0_ = t;
+
+        return res;
+    } 
 };
 
 class FrameCounter
