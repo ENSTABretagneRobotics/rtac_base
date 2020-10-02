@@ -33,6 +33,9 @@ class Pose
     const Vector3<T>&    translation() const;
     const Quaternion<T>& orientation() const;
 
+    Vector3<T>&    translation();
+    Quaternion<T>& orientation();
+
     Matrix3<T> rotation_matrix()    const;
     Matrix4<T> homogeneous_matrix() const;
 
@@ -90,6 +93,19 @@ const Quaternion<T>& Pose<T>::orientation() const
 {
     return orientation_;
 }
+
+template <typename T>
+Vector3<T>& Pose<T>::translation()
+{
+    return translation_;
+}
+
+template <typename T>
+Quaternion<T>& Pose<T>::orientation()
+{
+    return orientation_;
+}
+
 
 template <typename T>
 Matrix3<T> Pose<T>::rotation_matrix() const
