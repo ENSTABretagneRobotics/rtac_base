@@ -2,6 +2,16 @@
 
 namespace rtac { namespace misc {
 
+Clock::Clock()
+{
+    this->reset();
+}
+
+void Clock::reset()
+{
+    t0_ = std::chrono::high_resolution_clock::now();
+}
+
 FrameCounter::FrameCounter(int resetCount) :
     resetCount_(resetCount),
     count_(0),
@@ -33,6 +43,12 @@ std::ostream& FrameCounter::print(std::ostream& os) const
 
 }; //namespace misc
 }; //namespace rtac
+
+std::ostream& operator<<(std::ostream& os, const rtac::misc::Clock& clock)
+{
+    os << "Clock : " << clock.now() << "s";
+    return os;
+}
 
 std::ostream& operator<<(std::ostream& os, const rtac::misc::FrameCounter& counter)
 {

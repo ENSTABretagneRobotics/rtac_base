@@ -6,6 +6,26 @@
 
 namespace rtac { namespace misc {
 
+class Clock
+{
+    protected:
+
+    std::chrono::time_point<std::chrono::high_resolution_clock> t0_;
+
+    public:
+
+    Clock();
+    
+    void reset();
+
+    template<typename T = double>
+    T now() const
+    {
+        return std::chrono::duration<T>(
+            std::chrono::high_resolution_clock::now() - t0_).count();
+    } 
+};
+
 class FrameCounter
 {
     protected:
@@ -25,6 +45,7 @@ class FrameCounter
 }; //namespace misc
 }; //namespace rtac
 
+std::ostream& operator<<(std::ostream& os, const rtac::misc::Clock& clock);
 std::ostream& operator<<(std::ostream& os, const rtac::misc::FrameCounter& counter);
 
 #endif //_DEF_RTAC_BASE_MISC_H_
