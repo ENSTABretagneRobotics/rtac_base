@@ -37,6 +37,8 @@ class PointCloudBase
     std::vector<PointT> points;
     uint32_t width;
     uint32_t height; // height is 1 if unorganized
+    Vector4<float>    sensor_origin_;
+    Quaternion<float> sensor_orientation_;
 
     public:
 
@@ -69,14 +71,18 @@ template <typename PointT>
 PointCloudBase<PointT>::PointCloudBase() :
     points(0),
     width(0),
-    height(1)
+    height(1),
+    sensor_origin_({0,0,0,0}),
+    sensor_orientation_({1,0,0,0})
 {}
 
 template <typename PointT>
 PointCloudBase<PointT>::PointCloudBase(uint32_t width, uint32_t height) :
     points(width*height),
     width(width),
-    height(height)
+    height(1),
+    sensor_origin_({0,0,0,0}),
+    sensor_orientation_({1,0,0,0})
 {}
 
 template <typename PointT>

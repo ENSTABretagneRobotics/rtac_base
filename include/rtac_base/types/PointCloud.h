@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <rtac_base/types/common.h>
+#include <rtac_base/types/Pose.h>
 #include <rtac_base/types/PointCloudBase.h>
 
 namespace rtac { namespace types {
@@ -23,6 +24,7 @@ class PointCloud
     using PointType      = typename PointCloudT::PointType;
     using iterator       = typename PointCloudT::VectorType::iterator;
     using const_iterator = typename PointCloudT::VectorType::const_iterator;
+    using Pose           = rtac::types::Pose<float>;
 
     protected:
     
@@ -33,6 +35,7 @@ class PointCloud
     PointCloud();
     PointCloud(const Ptr& pc);
     PointCloud(uint32_t width, uint32_t height = 1);
+    PointCloud<PointCloudT> copy() const;
 
     void resize(size_t n);
     void push_back(const PointType& p);
@@ -59,6 +62,9 @@ class PointCloud
     const_iterator end() const;
           iterator end();
     
+    Pose pose() const;
+    void set_pose(const Pose& pose);
+
     size_t size()   const;
     size_t width()  const;
     size_t height() const;
@@ -80,6 +86,12 @@ template <typename PointCloudT>
 PointCloud<PointCloudT>::PointCloud(uint32_t width, uint32_t height) :
     pointCloud_(new PointCloudT(width, height))
 {}
+
+template <typename PointCloudT>
+PointCloud<PointCloudT> PointCloud<PointCloudT>::copy() const
+{
+    return PointCloud<PointCloudT>(Ptr(new PointCloudT(*pointCloud_)));
+}
 
 template <typename PointCloudT>
 void PointCloud<PointCloudT>::resize(size_t n)
@@ -199,6 +211,21 @@ template <typename PointCloudT>
 typename PointCloud<PointCloudT>::iterator PointCloud<PointCloudT>::end()
 {
     return pointCloud_->end();
+}
+
+template <typename PointCloudT>
+typename PointCloud<PointCloudT>::Pose PointCloud<PointCloudT>::pose() const
+{
+    using namespace rtac::types::indexing;
+    return Pose(pointCloud_->sensor_origin_(seqN(0,3)),
+                pointCloud_->sensor_orientation_);
+}
+
+template <typename PointCloudT>
+void PointCloud<PointCloudT>::set_pose(const Pose& pose)
+{
+    pointCloud_->sensor_origin_ << pose.translation(), 1.0f;
+    pointCloud_->sensor_orientation_ = pose.orientation();
 }
 
 template <typename PointCloudT>
