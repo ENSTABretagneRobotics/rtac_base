@@ -6,6 +6,7 @@ list(APPEND test_names
     files-test
     algorithm_test
     misc_test
+    pointcloud_test
 )
 
 if(TARGET happly)
