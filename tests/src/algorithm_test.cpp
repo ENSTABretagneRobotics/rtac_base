@@ -40,7 +40,13 @@ int main()
     catch(const std::runtime_error& e) {
         cout << "Conditioning test : Task failed successfully." << endl;
     }
-
+    
+    cout << to_degrees(1.5) << endl;
+    cout << to_radians(180.0) << endl;
+    float radians = 1.5;
+    float degrees = 90.0;
+    cout << to_degrees(radians) << endl;
+    cout << to_radians(degrees) << endl;
 
     return 0;
 }

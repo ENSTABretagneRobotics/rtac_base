@@ -1,6 +1,7 @@
 #ifndef _DEF_RTAC_BASE_ALGORITHM_H_
 #define _DEF_RTAC_BASE_ALGORITHM_H_
 
+#include <cmath>
 #include <rtac_base/types/common.h>
 
 namespace rtac { namespace algorithm {
@@ -48,6 +49,18 @@ Eigen::Matrix<T,D,D> orthonormalized(const Eigen::Matrix<T,D,D>& m, T tol = 1e-6
         throw std::runtime_error("Orthonormalized : bad conditionned matrix. Cannot orthonormalize.");
 
     return svd.matrixU()*(svd.matrixV().transpose());
+}
+
+template <typename T>
+constexpr T to_degrees(T radians)
+{
+    return radians * 180.0 / M_PI;
+}
+
+template <typename T>
+constexpr T to_radians(T degrees)
+{
+    return degrees * M_PI / 180.0;
 }
 
 }; //namespace algorithm
