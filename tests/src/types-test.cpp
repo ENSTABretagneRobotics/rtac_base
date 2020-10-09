@@ -9,7 +9,6 @@ using namespace rtac::types::indexing;
 
 int main()
 {
-    dummy();
     rtac::types::Pose<float> pose;
     cout << pose << endl;
     cout << pose.rotation_matrix() << endl << endl;

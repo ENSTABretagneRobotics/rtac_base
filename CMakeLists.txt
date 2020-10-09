@@ -19,7 +19,6 @@ list(APPEND rtac_base_headers
 )
 
 add_library(rtac_base SHARED
-    src/types/common.cpp
     src/files.cpp
     src/misc.cpp
 )
