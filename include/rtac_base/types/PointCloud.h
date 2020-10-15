@@ -2,8 +2,13 @@
 #define _DEF_RTAC_BASE_TYPES_POINTCLOUD_H_
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <memory>
+
+#ifdef RTAC_BASE_PLY_FILES
+#include <happly/happly.h>
+#endif
 
 #include <rtac_base/types/common.h>
 #include <rtac_base/types/Pose.h>
@@ -69,6 +74,14 @@ class PointCloud
     size_t width()  const;
     size_t height() const;
     bool   empty()  const;
+
+    // .ply files
+#ifdef RTAC_BASE_PLY_FILES
+    static PointCloud<PointCloudT> from_ply(const std::string& path);
+    static PointCloud<PointCloudT> from_ply(std::istream& is);
+    void export_ply(const std::string& path, bool ascii=false);
+    void export_ply(std::ostream& os, bool ascii=false);
+#endif
 };
 
 //implementation
@@ -251,6 +264,99 @@ bool PointCloud<PointCloudT>::empty() const
 {
     return pointCloud_->empty();
 }
+
+// .ply files
+#ifdef RTAC_BASE_PLY_FILES
+template <typename PointCloudT>
+PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(const std::string& path)
+{
+    std::ifstream f(path, std::ios::binary | std::ios::in);
+    if(!f.is_open()) {
+        throw std::runtime_error(
+            "PointCloud::from_ply : could not open file for reading " + path);
+    }
+    return PointCloud<PointCloudT>::from_ply(f);
+}
+
+template <typename PointCloudT>
+PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(std::istream& is)
+{
+    return PointCloud<PointCloudT>();
+}
+
+template <typename PointCloudT>
+void PointCloud<PointCloudT>::export_ply(const std::string& path, bool ascii)
+{
+    std::ofstream f(path, std::ios::binary | std::ios::out);
+    if(!f.is_open()) {
+        throw std::runtime_error(
+            "PointCloud::from_ply : could not open file for writing " + path);
+    }
+    return PointCloud<PointCloudT>::export_ply(f, ascii);
+}
+
+template <typename PointCloudT>
+void PointCloud<PointCloudT>::export_ply(std::ostream& os, bool ascii)
+{
+    if(this->size() <= 0)
+        return;
+
+    happly::PLYData data;
+    
+    // vertices
+    data.addElement("vertex", this->size());
+    auto& vertices = data.getElement("vertex");
+    std::vector<float> x(this->size());
+    std::vector<float> y(this->size());
+    std::vector<float> z(this->size());
+    int i = 0;
+    for(auto p : *this) {
+        x[i] = p.x;
+        y[i] = p.y;
+        z[i] = p.z;
+        i++;
+    }
+    vertices.addProperty("x", x);
+    vertices.addProperty("y", y);
+    vertices.addProperty("z", z);
+
+    // shape
+    data.addElement("shape", 1);
+    auto& shape = data.getElement("shape");
+    // scalars must be vectors in happly interface (consider changing ply lib...)
+    std::vector<uint32_t> w({static_cast<uint32_t>(this->width())});
+    std::vector<uint32_t> h({static_cast<uint32_t>(this->height())});
+    shape.addProperty("w", w);
+    shape.addProperty("h", h);
+    
+    // pose
+    data.addElement("pose", 1);
+    auto& pose = data.getElement("pose");
+    // scalars must be vectors in happly interface (consider changing ply lib...)
+    auto p = this->pose();
+    std::vector<float> px({p.translation()(0)});
+    std::vector<float> py({p.translation()(1)});
+    std::vector<float> pz({p.translation()(2)});
+    std::vector<float> pqw({p.orientation().w()});
+    std::vector<float> pqx({p.orientation().x()});
+    std::vector<float> pqy({p.orientation().y()});
+    std::vector<float> pqz({p.orientation().z()});
+    pose.addProperty("x", px);
+    pose.addProperty("y", py);
+    pose.addProperty("z", pz);
+    pose.addProperty("qw", pqw);
+    pose.addProperty("qx", pqx);
+    pose.addProperty("qy", pqy);
+    pose.addProperty("qz", pqz);
+    
+    //writing to file
+    if(ascii)
+        data.write(os, happly::DataFormat::ASCII);
+    else
+        data.write(os, happly::DataFormat::Binary);
+}
+
+#endif
 
 }; //namespace types
 }; //namespace rtac

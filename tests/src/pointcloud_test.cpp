@@ -30,6 +30,7 @@ int main()
     pc0[7] = Point3D({1,1,1});
     
     cout << pc0;
+    pc0.export_ply("out.ply", true);
 
     print_ref(pc0);
     print_ptr(pc0);
@@ -49,6 +50,7 @@ int main()
     cout << pc0.pose() << endl;
     pc0.set_pose(Pose<float>({1,2,3}, {0,1,0,0}));
     cout << pc0.pose() << endl;
+
 
     return 0;
 }
