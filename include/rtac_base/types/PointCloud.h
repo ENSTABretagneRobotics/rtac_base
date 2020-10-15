@@ -43,6 +43,7 @@ class PointCloud
     PointCloud<PointCloudT> copy() const;
 
     void resize(size_t n);
+    void resize(uint32_t width, uint32_t height);
     void push_back(const PointType& p);
     
     // Implicit conversion to underlying type
@@ -79,8 +80,8 @@ class PointCloud
 #ifdef RTAC_BASE_PLY_FILES
     static PointCloud<PointCloudT> from_ply(const std::string& path);
     static PointCloud<PointCloudT> from_ply(std::istream& is);
-    void export_ply(const std::string& path, bool ascii=false);
-    void export_ply(std::ostream& os, bool ascii=false);
+    void export_ply(const std::string& path, bool ascii=false) const;
+    void export_ply(std::ostream& os, bool ascii=false) const;
 #endif
 };
 
@@ -109,7 +110,23 @@ PointCloud<PointCloudT> PointCloud<PointCloudT>::copy() const
 template <typename PointCloudT>
 void PointCloud<PointCloudT>::resize(size_t n)
 {
-    pointCloud_->resize(n);
+    if(!pointCloud_)
+        pointCloud_ = Ptr(new PointCloudT(n, 1));
+    else 
+        pointCloud_->resize(n);
+}
+
+template <typename PointCloudT>
+void PointCloud<PointCloudT>::resize(uint32_t width, uint32_t height)
+{
+    if(!pointCloud_) {
+        pointCloud_ = Ptr(new PointCloudT(width, height));
+    }
+    else {
+        this->resize(width * height);
+        pointCloud_->width  = width;
+        pointCloud_->height = height;
+    }
 }
 
 template <typename PointCloudT>
@@ -324,18 +341,18 @@ PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(std::istream& is)
 }
 
 template <typename PointCloudT>
-void PointCloud<PointCloudT>::export_ply(const std::string& path, bool ascii)
+void PointCloud<PointCloudT>::export_ply(const std::string& path, bool ascii) const
 {
     std::ofstream f(path, std::ios::binary | std::ios::out);
     if(!f.is_open()) {
         throw std::runtime_error(
             "PointCloud::from_ply : could not open file for writing " + path);
     }
-    return PointCloud<PointCloudT>::export_ply(f, ascii);
+    PointCloud<PointCloudT>::export_ply(f, ascii);
 }
 
 template <typename PointCloudT>
-void PointCloud<PointCloudT>::export_ply(std::ostream& os, bool ascii)
+void PointCloud<PointCloudT>::export_ply(std::ostream& os, bool ascii) const
 {
     if(this->size() <= 0)
         return;
