@@ -281,7 +281,46 @@ PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(const std::string& pat
 template <typename PointCloudT>
 PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(std::istream& is)
 {
-    return PointCloud<PointCloudT>();
+    PointCloud<PointCloudT> res;
+    
+    happly::PLYData data(is);
+
+    // getting point cloud shape.
+    uint32_t w = data.getElement("shape").getProperty<uint32_t>("w")[0];
+    uint32_t h = data.getElement("shape").getProperty<uint32_t>("h")[0];
+    
+    // getting pose
+    Pose pose;
+    pose.translation()(0)  = data.getElement("pose").getProperty<float>("x")[0];
+    pose.translation()(1)  = data.getElement("pose").getProperty<float>("y")[0];
+    pose.translation()(2)  = data.getElement("pose").getProperty<float>("z")[0];
+    pose.orientation().w() = data.getElement("pose").getProperty<float>("qw")[0];
+    pose.orientation().x() = data.getElement("pose").getProperty<float>("qx")[0];
+    pose.orientation().y() = data.getElement("pose").getProperty<float>("qy")[0];
+    pose.orientation().z() = data.getElement("pose").getProperty<float>("qz")[0];
+
+    res = PointCloud<PointCloudT>(w,h);
+    res.set_pose(pose);
+    
+    //loading data (fixed type for now, pcl seems to only use float32)
+    auto x = data.getElement("vertex").getProperty<float>("x");
+    auto y = data.getElement("vertex").getProperty<float>("y");
+    auto z = data.getElement("vertex").getProperty<float>("z");
+    
+    if(x.size() != res.size()) {
+        throw std::runtime_error(
+            "PointCloud::from_ply : inconsistent shape and number of vertices");
+    }
+    
+    int i = 0;
+    for(auto& p : res) {
+        p.x = x[i];
+        p.y = y[i];
+        p.z = z[i];
+        i++;
+    }
+
+    return res;
 }
 
 template <typename PointCloudT>
