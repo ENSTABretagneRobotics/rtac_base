@@ -8,6 +8,7 @@
 
 #ifdef RTAC_BASE_PLY_FILES
 #include <happly/happly.h>
+#include <rtac_base/ply_files.h>
 #endif
 
 #include <rtac_base/types/common.h>
@@ -30,6 +31,7 @@ class PointCloud
     using iterator       = typename PointCloudT::VectorType::iterator;
     using const_iterator = typename PointCloudT::VectorType::const_iterator;
     using Pose           = rtac::types::Pose<float>;
+    using Shape          = rtac::types::Shape<uint32_t>;
 
     protected:
     
@@ -40,6 +42,7 @@ class PointCloud
     PointCloud();
     PointCloud(const Ptr& pc);
     PointCloud(uint32_t width, uint32_t height = 1);
+    PointCloud(const Shape& shape);
     PointCloud<PointCloudT> copy() const;
 
     void resize(size_t n);
@@ -70,6 +73,7 @@ class PointCloud
     
     Pose pose() const;
     void set_pose(const Pose& pose);
+    Shape shape() const;
 
     size_t size()   const;
     size_t width()  const;
@@ -80,6 +84,7 @@ class PointCloud
 #ifdef RTAC_BASE_PLY_FILES
     static PointCloud<PointCloudT> from_ply(const std::string& path);
     static PointCloud<PointCloudT> from_ply(std::istream& is);
+    static PointCloud<PointCloudT> from_ply(happly::PLYData& data);
     void export_ply(const std::string& path, bool ascii=false) const;
     void export_ply(std::ostream& os, bool ascii=false) const;
     happly::PLYData export_ply() const;
@@ -100,6 +105,11 @@ PointCloud<PointCloudT>::PointCloud(const Ptr& pc) :
 template <typename PointCloudT>
 PointCloud<PointCloudT>::PointCloud(uint32_t width, uint32_t height) :
     pointCloud_(new PointCloudT(width, height))
+{}
+
+template <typename PointCloudT>
+PointCloud<PointCloudT>::PointCloud(const Shape& shape) :
+    PointCloud(shape.width, shape.height)
 {}
 
 template <typename PointCloudT>
@@ -260,6 +270,13 @@ void PointCloud<PointCloudT>::set_pose(const Pose& pose)
 }
 
 template <typename PointCloudT>
+typename PointCloud<PointCloudT>::Shape PointCloud<PointCloudT>::shape() const
+{
+    return Shape({static_cast<uint32_t>(this->width()),
+                  static_cast<uint32_t>(this->height())});
+}
+
+template <typename PointCloudT>
 size_t PointCloud<PointCloudT>::size()  const
 {
     return pointCloud_->size();
@@ -299,26 +316,20 @@ PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(const std::string& pat
 template <typename PointCloudT>
 PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(std::istream& is)
 {
+    happly::PLYData data(is);
+    return from_ply(data);
+}
+
+template <typename PointCloudT>
+PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(happly::PLYData& data)
+{
     PointCloud<PointCloudT> res;
     
-    happly::PLYData data(is);
-
     // getting point cloud shape.
-    uint32_t w = data.getElement("shape").getProperty<uint32_t>("w")[0];
-    uint32_t h = data.getElement("shape").getProperty<uint32_t>("h")[0];
-    
-    // getting pose
-    Pose pose;
-    pose.translation()(0)  = data.getElement("pose").getProperty<float>("x")[0];
-    pose.translation()(1)  = data.getElement("pose").getProperty<float>("y")[0];
-    pose.translation()(2)  = data.getElement("pose").getProperty<float>("z")[0];
-    pose.orientation().w() = data.getElement("pose").getProperty<float>("qw")[0];
-    pose.orientation().x() = data.getElement("pose").getProperty<float>("qx")[0];
-    pose.orientation().y() = data.getElement("pose").getProperty<float>("qy")[0];
-    pose.orientation().z() = data.getElement("pose").getProperty<float>("qz")[0];
+    auto shape = ply::get_shape<uint32_t>(data);
 
-    res = PointCloud<PointCloudT>(w,h);
-    res.set_pose(pose);
+    res = PointCloud<PointCloudT>(shape);
+    res.set_pose(ply::get_pose<float>(data));
     
     //loading data (fixed type for now, pcl seems to only use float32)
     auto x = data.getElement("vertex").getProperty<float>("x");
@@ -374,6 +385,9 @@ happly::PLYData PointCloud<PointCloudT>::export_ply() const
 
     if(this->size() <= 0)
         return data;
+
+    ply::add_shape(data, this->shape());
+    ply::add_pose(data, this->pose());
     
     // vertices
     data.addElement("vertex", this->size());
@@ -391,35 +405,6 @@ happly::PLYData PointCloud<PointCloudT>::export_ply() const
     vertices.addProperty("x", x);
     vertices.addProperty("y", y);
     vertices.addProperty("z", z);
-
-    // shape
-    data.addElement("shape", 1);
-    auto& shape = data.getElement("shape");
-    // scalars must be vectors in happly interface (consider changing ply lib...)
-    std::vector<uint32_t> w({static_cast<uint32_t>(this->width())});
-    std::vector<uint32_t> h({static_cast<uint32_t>(this->height())});
-    shape.addProperty("w", w);
-    shape.addProperty("h", h);
-    
-    // pose
-    data.addElement("pose", 1);
-    auto& pose = data.getElement("pose");
-    // scalars must be vectors in happly interface (consider changing ply lib...)
-    auto p = this->pose();
-    std::vector<float> px({p.translation()(0)});
-    std::vector<float> py({p.translation()(1)});
-    std::vector<float> pz({p.translation()(2)});
-    std::vector<float> pqw({p.orientation().w()});
-    std::vector<float> pqx({p.orientation().x()});
-    std::vector<float> pqy({p.orientation().y()});
-    std::vector<float> pqz({p.orientation().z()});
-    pose.addProperty("x", px);
-    pose.addProperty("y", py);
-    pose.addProperty("z", pz);
-    pose.addProperty("qw", pqw);
-    pose.addProperty("qx", pqx);
-    pose.addProperty("qy", pqy);
-    pose.addProperty("qz", pqz);
 
     return data;
 }

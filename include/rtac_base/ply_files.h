@@ -47,7 +47,6 @@ void add_rectangle(happly::PLYData& data, const types::Rectangle<T>& rectangle,
 std::ostream& operator<<(std::ostream& os, happly::PLYData& data);
 
 
-
 // implementation NO DECLARATIONS BEYOND THIS POINT ////////////////////////
 namespace rtac { namespace ply {
 
