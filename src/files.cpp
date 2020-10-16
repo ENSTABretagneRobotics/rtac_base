@@ -40,12 +40,22 @@ PathList find(const std::string& reString, const std::string& path, bool followS
 
 std::string find_one(const std::string& reString, bool followSimlink)
 {
-    return *find(reString, followSimlink).begin();
+    auto path = rtac_data_path();
+    return find_one(reString, path, followSimlink);
 }
 
 std::string find_one(const std::string& reString, const std::string& path, bool followSimlink)
 {
-    return *find(reString, path, followSimlink).begin();
+    fs::directory_options doptions = fs::directory_options::none;
+    if (followSimlink)
+        doptions = fs::directory_options::follow_directory_symlink;
+    
+    std::regex re(reString);
+    for(auto& path : fs::recursive_directory_iterator(path, doptions)) {
+        if(std::regex_match(path.path().string(), re))
+            return path.path().string();
+    }
+    return "Not found";
 }
 
 std::string append_extension(const std::string& path, const std::string& ext)

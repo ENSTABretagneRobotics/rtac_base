@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(rtac_base_tests VERSION 0.1)
 
 list(APPEND test_names
-    types-test
-    files-test
+    types_test
+    files_test
     algorithm_test
     misc_test
     pointcloud_test
