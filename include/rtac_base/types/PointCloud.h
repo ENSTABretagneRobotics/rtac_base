@@ -82,6 +82,7 @@ class PointCloud
     static PointCloud<PointCloudT> from_ply(std::istream& is);
     void export_ply(const std::string& path, bool ascii=false) const;
     void export_ply(std::ostream& os, bool ascii=false) const;
+    happly::PLYData export_ply() const;
 #endif
 };
 
@@ -356,8 +357,23 @@ void PointCloud<PointCloudT>::export_ply(std::ostream& os, bool ascii) const
 {
     if(this->size() <= 0)
         return;
+    
+    auto data = this->export_ply();
 
+    //writing to file
+    if(ascii)
+        data.write(os, happly::DataFormat::ASCII);
+    else
+        data.write(os, happly::DataFormat::Binary);
+}
+
+template <typename PointCloudT>
+happly::PLYData PointCloud<PointCloudT>::export_ply() const
+{
     happly::PLYData data;
+
+    if(this->size() <= 0)
+        return data;
     
     // vertices
     data.addElement("vertex", this->size());
@@ -404,12 +420,8 @@ void PointCloud<PointCloudT>::export_ply(std::ostream& os, bool ascii) const
     pose.addProperty("qx", pqx);
     pose.addProperty("qy", pqy);
     pose.addProperty("qz", pqz);
-    
-    //writing to file
-    if(ascii)
-        data.write(os, happly::DataFormat::ASCII);
-    else
-        data.write(os, happly::DataFormat::Binary);
+
+    return data;
 }
 
 #endif
