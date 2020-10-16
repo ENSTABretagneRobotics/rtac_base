@@ -15,6 +15,7 @@ int main()
     cout << data << endl;
 
     ply::add_pose(data, Pose<float>({1,2,3},{1,2,3,4}));
+    ply::add_shape(data, Shape<uint32_t>({256,480}));
     std::ostringstream oss;
     oss << data;
 
@@ -22,6 +23,7 @@ int main()
     auto reloaded = ply::read(iss);
     cout << reloaded << endl;
     cout << ply::get_pose<float>(reloaded) << endl;
+    cout << ply::get_shape<uint32_t>(reloaded) << endl;
 
     return 0;
 }

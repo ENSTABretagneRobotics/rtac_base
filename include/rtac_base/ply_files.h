@@ -28,6 +28,11 @@ template <typename T>
 void add_pose(happly::PLYData& data, const types::Pose<T>& pose, 
               const std::string& name = "pose", bool overwrite = false);
 
+template <typename T>
+types::Shape<T> get_shape(happly::PLYData& data, const::std::string& name = "shape");
+template <typename T>
+void add_shape(happly::PLYData& data, const types::Shape<T>& shape, 
+               const std::string& name = "shape", bool overwrite = false);
 
 }; //namespace ply
 }; //namespace rtac
@@ -77,6 +82,25 @@ void add_pose(happly::PLYData& data, const types::Pose<T>& pose,
     element.addProperty("qz", pqz);
 }
 
+template <typename T>
+types::Shape<T> get_shape(happly::PLYData& data, const::std::string& name)
+{
+    auto& element = data.getElement(name);
+    return types::Shape<T>({element.getProperty<T>("w")[0],
+                            element.getProperty<T>("h")[0]});
+}
+
+template <typename T>
+void add_shape(happly::PLYData& data, const types::Shape<T>& shape, 
+               const std::string& name, bool overwrite)
+{
+    auto& element = new_element(data, name, overwrite);
+
+    std::vector<T> w({shape.width});
+    std::vector<T> h({shape.height});
+    element.addProperty("w", w);
+    element.addProperty("h", h);
+}
 
 }; //namespace ply
 }; //namespace rtac
