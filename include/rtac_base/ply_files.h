@@ -34,6 +34,13 @@ template <typename T>
 void add_shape(happly::PLYData& data, const types::Shape<T>& shape, 
                const std::string& name = "shape", bool overwrite = false);
 
+template <typename T>
+types::Rectangle<T> get_rectangle(happly::PLYData& data,
+                                  const::std::string& name = "rectangle");
+template <typename T>
+void add_rectangle(happly::PLYData& data, const types::Rectangle<T>& rectangle, 
+                   const std::string& name = "rectangle", bool overwrite = false);
+
 }; //namespace ply
 }; //namespace rtac
 
@@ -100,6 +107,32 @@ void add_shape(happly::PLYData& data, const types::Shape<T>& shape,
     std::vector<T> h({shape.height});
     element.addProperty("w", w);
     element.addProperty("h", h);
+}
+
+template <typename T>
+types::Rectangle<T> get_rectangle(happly::PLYData& data, const::std::string& name)
+{
+    auto& element = data.getElement(name);
+    return types::Rectangle<T>({element.getProperty<T>("left")[0],
+                                element.getProperty<T>("right")[0],
+                                element.getProperty<T>("bottom")[0],
+                                element.getProperty<T>("top")[0]});
+}
+
+template <typename T>
+void add_rectangle(happly::PLYData& data, const types::Rectangle<T>& rectangle, 
+                   const std::string& name, bool overwrite)
+{
+    auto& element = new_element(data, name, overwrite);
+
+    std::vector<T> left(  {rectangle.left});
+    std::vector<T> right( {rectangle.right});
+    std::vector<T> bottom({rectangle.bottom});
+    std::vector<T> top(   {rectangle.top});
+    element.addProperty("left",   left);
+    element.addProperty("right",  right);
+    element.addProperty("bottom", bottom);
+    element.addProperty("top",    top);
 }
 
 }; //namespace ply
