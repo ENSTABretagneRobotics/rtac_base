@@ -80,7 +80,7 @@ template <typename PointT>
 PointCloudBase<PointT>::PointCloudBase(uint32_t width, uint32_t height) :
     points(width*height),
     width(width),
-    height(1),
+    height(height),
     sensor_origin_({0,0,0,0}),
     sensor_orientation_({1,0,0,0})
 {}
