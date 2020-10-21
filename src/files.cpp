@@ -55,7 +55,7 @@ std::string find_one(const std::string& reString, const std::string& path, bool 
         if(std::regex_match(path.path().string(), re))
             return path.path().string();
     }
-    return "Not found";
+    return NotFound;
 }
 
 std::string append_extension(const std::string& path, const std::string& ext)

@@ -36,7 +36,7 @@ std::ostream& FrameCounter::print(std::ostream& os) const
 {
     float res = this->get();
     if(count_ == 1) {
-        os << "Frame rate : " << res << "\r";
+        os << "Frame rate : " << res << "\r" << std::flush;
     }
     return os;
 }

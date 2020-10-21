@@ -12,6 +12,7 @@
 
 namespace rtac { namespace files {
 
+const char* NotFound = "Not Found";
 
 std::string rtac_data_path();
 
