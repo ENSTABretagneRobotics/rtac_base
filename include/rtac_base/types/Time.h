@@ -15,13 +15,9 @@ struct Time
     Time(uint64_t ns) : ns_(ns) {}
 
     public:
-    
-    //template <class Rep, class Period>
-    //static Time from_duration(const std::chrono::duration<Rep,Period>& d) 
-    //{ 
-    //    return Time(std::chrono::duration_cast<std::chrono::nanoseconds>(d).count());
-    //}
 
+    Time() : ns_(0) {}
+    
     template <typename T>
     static Time from_nanoseconds(const T& ns) { return Time(static_cast<uint64_t>(ns)); }
     template <typename T>
@@ -42,20 +38,37 @@ struct Time
 
     Time& operator+=(const Time& other) { ns_ += other.ns_; return *this; }
     Time& operator-=(const Time& other) { ns_ -= other.ns_; return *this; }
+
+    bool operator==(const Time& other) { return ns_ == other.ns_; }
+    bool operator< (const Time& other) { return ns_ <  other.ns_; }
+    bool operator<=(const Time& other) { return ns_ <= other.ns_; }
+    bool operator> (const Time& other) { return !(*this <= other); }
+    bool operator>=(const Time& other) { return !(*this <  other); }
 };
 
-class SteadyClock
+template <typename ClockT = std::chrono::steady_clock>
+class StandardClock
 {
     public:
 
-    using clock_type = std::chrono::steady_clock;
+    using ClockType = ClockT;
     
     static Time now()
     {
         return Time::from_nanoseconds(
             std::chrono::duration_cast<std::chrono::nanoseconds>(
-                clock_type::now().time_since_epoch()).count());
+                ClockType::now().time_since_epoch()).count());
     }
+};
+
+template <typename ClockT = StandardClock<>>
+class Clock
+{
+    public:
+
+    using ClockType = ClockT;
+    
+    static Time now() { return ClockType::now(); }
 };
 
 }; //namespace types
