@@ -12,11 +12,13 @@ struct Time
 
     uint64_t ns_;
 
-    Time(uint64_t ns) : ns_(ns) {}
+    //Time(uint64_t ns) : ns_(ns) {}
+    Time(uint64_t ns);
 
     public:
 
-    Time() : ns_(0) {}
+    //Time() : ns_(0) {}
+    Time();
     
     template <typename T>
     static Time from_nanoseconds(const T& ns) { return Time(static_cast<uint64_t>(ns)); }
@@ -36,14 +38,14 @@ struct Time
     template <typename T = double>
     T seconds() const { return ns_ / static_cast<T>(1000000000); }
 
-    Time& operator+=(const Time& other) { ns_ += other.ns_; return *this; }
-    Time& operator-=(const Time& other) { ns_ -= other.ns_; return *this; }
+    Time& operator+=(const Time& other);
+    Time& operator-=(const Time& other);
 
-    bool operator==(const Time& other) { return ns_ == other.ns_; }
-    bool operator< (const Time& other) { return ns_ <  other.ns_; }
-    bool operator<=(const Time& other) { return ns_ <= other.ns_; }
-    bool operator> (const Time& other) { return !(*this <= other); }
-    bool operator>=(const Time& other) { return !(*this <  other); }
+    bool operator==(const Time& other);
+    bool operator< (const Time& other);
+    bool operator<=(const Time& other);
+    bool operator> (const Time& other);
+    bool operator>=(const Time& other);
 };
 
 template <typename ClockT = std::chrono::steady_clock>
@@ -74,25 +76,9 @@ class Clock
 }; //namespace types
 }; //namespace rtac
 
-rtac::types::Time operator+(const rtac::types::Time& lhs, const rtac::types::Time& rhs)
-{
-    rtac::types::Time t = lhs;
-    t += rhs;
-    return t;
-}
-
-rtac::types::Time operator-(const rtac::types::Time& lhs, const rtac::types::Time& rhs)
-{
-    rtac::types::Time t = lhs;
-    t -= rhs;
-    return t;
-}
-
-std::ostream& operator<<(std::ostream& os, const rtac::types::Time& t)
-{
-    os << t.nanoseconds();
-    return os;
-}
+rtac::types::Time operator+(const rtac::types::Time& lhs, const rtac::types::Time& rhs);
+rtac::types::Time operator-(const rtac::types::Time& lhs, const rtac::types::Time& rhs);
+std::ostream& operator<<(std::ostream& os, const rtac::types::Time& t);
 
 #endif //_DEF_RTAC_BASE_TYPES_TIME_H_
 

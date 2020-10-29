@@ -24,6 +24,7 @@ add_library(rtac_base SHARED
     src/files.cpp
     src/misc.cpp
     src/ply_files.cpp
+    src/types/Time.cpp
 )
 set_target_properties(rtac_base PROPERTIES
     PUBLIC_HEADER "${rtac_base_headers}"
