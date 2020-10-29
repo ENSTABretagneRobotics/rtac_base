@@ -24,6 +24,8 @@ template <typename T>
 using Matrix3  = Eigen::Matrix<T, 3, 3>;
 template <typename T>
 using Matrix4  = Eigen::Matrix<T, 4, 4>;
+template <typename T>
+using Matrix6  = Eigen::Matrix<T, 6, 6>;
 
 template <typename T>
 using Vector  = Eigen::Matrix<T, Eigen::Dynamic, 1>;
