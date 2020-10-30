@@ -5,6 +5,7 @@ find_package(Eigen3 REQUIRED)
 find_package(happly REQUIRED)
 
 list(APPEND rtac_base_headers
+    include/rtac_base/types/Handle.h
     include/rtac_base/types/common.h
     include/rtac_base/types/Pose.h
     include/rtac_base/types/PointCloudBase.h
