@@ -12,109 +12,116 @@ namespace rtac { namespace types {
 template <typename T>
 class Pose
 {
+    public:
+
+    using Vec3       = rtac::types::Vector3<T>;
+    using Quaternion = rtac::types::Quaternion<T>;
+    using Mat3       = rtac::types::Matrix3<T>;
+    using Mat4       = rtac::types::Matrix4<T>;
+
     protected:
     
-    Vector3<T>    translation_;
-    Quaternion<T> orientation_;
+    Vec3 translation_;
+    Quaternion orientation_;
 
     public:
 
-    static Pose<T> from_homogeneous_matrix(const Matrix4<T>& h);
-    static Pose<T> from_rotation_matrix(const Matrix3<T>& r,
-                                        const Vector3<T>& t = {0,0,0});
+    static Pose<T> from_homogeneous_matrix(const Mat4& h);
+    static Pose<T> from_rotation_matrix(const Mat3& r,
+                                        const Vec3& t = {0,0,0});
     
-    Pose(const Vector3<T>&    translation = Vector3<T>(0,0,0),
-         const Quaternion<T>& orientation = Quaternion<T>(1,0,0,0));
+    Pose(const Vec3& translation = Vec3(0,0,0),
+         const Quaternion& orientation = Quaternion(1,0,0,0));
 
-    void set_translation(const Vector3<T>& t);
-    void set_orientation(const Quaternion<T>& q);
-    void set_orientation(const Matrix3<T>& r);
+    void set_translation(const Vec3& t);
+    void set_orientation(const Quaternion& q);
+    void set_orientation(const Mat3& r);
 
-    const Vector3<T>&    translation() const;
-    const Quaternion<T>& orientation() const;
+    const Vec3&       translation() const;
+    const Quaternion& orientation() const;
 
-    Vector3<T>&    translation();
-    Quaternion<T>& orientation();
+    Vec3&       translation();
+    Quaternion& orientation();
 
     Matrix3<T> rotation_matrix()    const;
     Matrix4<T> homogeneous_matrix() const;
 
-    Pose<T>& operator*=(const Pose<T>& other);
+    Pose<T>& operator*=(const Pose<T>& rhs);
     Pose<T>  inverse() const;
 };
 
 // class definition
 template <typename T>
-Pose<T>::Pose(const Vector3<T>& translation, const Quaternion<T>& orientation) :
+Pose<T>::Pose(const Vec3& translation, const Quaternion& orientation) :
     translation_(translation),
     orientation_(orientation)
 {}
 
 template <typename T>
-Pose<T> Pose<T>::from_rotation_matrix(const Matrix3<T>& r,
-                                      const Vector3<T>& t)
+Pose<T> Pose<T>::from_rotation_matrix(const Mat3& r,
+                                      const Vec3& t)
 {
-    return Pose<T>(t, Quaternion<T>(rtac::algorithm::orthonormalized(r)));
+    return Pose<T>(t, Quaternion(rtac::algorithm::orthonormalized(r)));
 }
 
 template <typename T>
-Pose<T> Pose<T>::from_homogeneous_matrix(const Matrix4<T>& h)
+Pose<T> Pose<T>::from_homogeneous_matrix(const Mat4& h)
 {
     return from_rotation_matrix(h.block(0,0,3,3),
                                 h(indexing::seqN(0,3), 3));
 }
 
 template <typename T>
-void Pose<T>::set_translation(const Vector3<T>& t)
+void Pose<T>::set_translation(const Vec3& t)
 {
     translation_ = t;
 }
 
 template <typename T>
-void Pose<T>::set_orientation(const Quaternion<T>& q)
+void Pose<T>::set_orientation(const Quaternion& q)
 {
     orientation_ = q.normalized();
 }
 
 template <typename T>
-void Pose<T>::set_orientation(const Matrix3<T>& r)
+void Pose<T>::set_orientation(const Mat3& r)
 {
     orientation_ = rtac::algorithm::orthonormalized(r);
 }
 
 template <typename T>
-const Vector3<T>& Pose<T>::translation() const
+const typename Pose<T>::Vec3& Pose<T>::translation() const
 {
     return translation_;
 }
 
 template <typename T>
-const Quaternion<T>& Pose<T>::orientation() const
+const typename Pose<T>::Quaternion& Pose<T>::orientation() const
 {
     return orientation_;
 }
 
 template <typename T>
-Vector3<T>& Pose<T>::translation()
+typename Pose<T>::Vec3& Pose<T>::translation()
 {
     return translation_;
 }
 
 template <typename T>
-Quaternion<T>& Pose<T>::orientation()
+typename Pose<T>::Quaternion& Pose<T>::orientation()
 {
     return orientation_;
 }
 
 
 template <typename T>
-Matrix3<T> Pose<T>::rotation_matrix() const
+typename Pose<T>::Mat3 Pose<T>::rotation_matrix() const
 {
     return orientation_.toRotationMatrix();
 }
 
 template <typename T>
-Matrix4<T> Pose<T>::homogeneous_matrix() const
+typename Pose<T>::Mat4 Pose<T>::homogeneous_matrix() const
 {
     using namespace rtac::types::indexing;
     Matrix4<T> H;
@@ -125,9 +132,17 @@ Matrix4<T> Pose<T>::homogeneous_matrix() const
 }
 
 template <typename T>
+Pose<T>& Pose<T>::operator*=(const Pose<T>& rhs)
+{
+    this->set_translation(this->orientation()*rhs.translation() + this->translation());
+    this->set_orientation(this->orientation()*rhs.orientation());
+    return *this;
+}
+
+template <typename T>
 Pose<T> Pose<T>::inverse() const
 {
-    Quaternion<T> qinv = orientation_.inverse();
+    Quaternion qinv = orientation_.inverse();
     return Pose<T>(-(qinv*translation_), qinv);
 }
 
@@ -138,28 +153,30 @@ using Posed = Pose<double>;
 }; // namespace rtac
 
 template<typename T>
-rtac::types::Pose<T> operator*(const rtac::types::Pose<T>& lhs, const rtac::types::Pose<T>& rhs)
+rtac::types::Pose<T> operator*(const rtac::types::Pose<T>& lhs, 
+                                 const rtac::types::Pose<T>& rhs)
 {
     return rtac::types::Pose<T>(lhs.translation() + lhs.orientation() * rhs.translation(),
                                   lhs.orientation() * rhs.orientation());
 }
 
 template<typename T>
-rtac::types::Pose<T> operator*(const rtac::types::Pose<T>& lhs, const rtac::types::Quaternion<T>& q)
+rtac::types::Pose<T> operator*(const rtac::types::Pose<T>& lhs,
+                                 const typename rtac::types::Pose<T>::Quaternion& q)
 {
     return rtac::types::Pose<T>(lhs.translation(), lhs.orientation() * q);
 }
 
 template<typename T>
-rtac::types::Pose<T> operator*(const rtac::types::Quaternion<T>& q, const rtac::types::Pose<T>& rhs)
+rtac::types::Pose<T> operator*(const typename rtac::types::Pose<T>::Quaternion& q,
+                                 const rtac::types::Pose<T>& rhs)
 {
     return rtac::types::Pose<T>(q*rhs.translation(), q*rhs.orientation());
 }
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const rtac::types::Pose<T>& pose) {
-    os << "Pose"
-       << ", t : (" << pose.translation().transpose() << ")"
+    os <<   "t : (" << pose.translation().transpose() << ")"
        << ", r : " << pose.orientation();
     return os;
 }
