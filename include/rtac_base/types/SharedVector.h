@@ -125,7 +125,7 @@ SharedVectorBase<VectorT>& SharedVectorBase<VectorT>::operator=(const SharedVect
 template <typename VectorT> template <typename VectorT2>
 SharedVectorBase<VectorT>& SharedVectorBase<VectorT>::operator=(const SharedVectorBase<VectorT2>& other)
 {
-    data_ = VectorPtr(new VectorType(*(other.ptr())));
+    *data_ = *(other.ptr());
     return *this;
 }
 
