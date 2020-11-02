@@ -43,9 +43,9 @@ class DeviceVectorAdapter : public thrust::device_vector<T>
 };
 
 template <typename T>
-using DeviceVector = rtac::types::SharedVector<DeviceVectorAdapter<T>>;
+using DeviceVector = rtac::types::SharedVectorBase<DeviceVectorAdapter<T>>;
 template <typename T>
-using HostVector = rtac::types::SharedVector<thrust::host_vector<T>>;
+using HostVector = rtac::types::SharedVectorBase<thrust::host_vector<T>>;
 
 }; //namespace cuda
 }; //namespace rtac

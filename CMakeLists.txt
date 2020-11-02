@@ -20,6 +20,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/files.h
     include/rtac_base/misc.h
     include/rtac_base/ply_files.h
+    include/rtac_base/cuda/SharedVectors.h
 )
 
 add_library(rtac_base SHARED

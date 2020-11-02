@@ -4,7 +4,7 @@ using namespace std;
 
 #include <rtac_base/types/SharedVector.h>
 using namespace rtac::types;
-using Vector = SharedVector<std::vector<float>>;
+using Vector = SharedVector<float>;
 
 int main()
 {

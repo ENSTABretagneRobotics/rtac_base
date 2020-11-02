@@ -2,13 +2,14 @@
 #define _DEF_RTAC_BASE_TYPES_SHARED_VECTOR_H_
 
 #include <iostream>
+#include <vector>
 
 #include <rtac_base/types/Handle.h>
 
 namespace rtac { namespace types {
 
 template <typename VectorT>
-class SharedVector
+class SharedVectorBase
 {
     public:
 
@@ -25,20 +26,20 @@ class SharedVector
 
     public:
 
-    SharedVector();
-    SharedVector(size_t size);
-    SharedVector(const VectorPtr& ptr);
-    SharedVector(const ConstVectorPtr& ptr);
-    SharedVector(const SharedVector& other); // parameter should not be const ?
+    SharedVectorBase();
+    SharedVectorBase(size_t size);
+    SharedVectorBase(const VectorPtr& ptr);
+    SharedVectorBase(const ConstVectorPtr& ptr);
+    SharedVectorBase(const SharedVectorBase& other); // parameter should not be const ?
     template <typename VectorT2>
-    SharedVector(const SharedVector<VectorT2>& other); // parameter should not be const ?
+    SharedVectorBase(const SharedVectorBase<VectorT2>& other); // parameter should not be const ?
 
-    SharedVector copy() const;
+    SharedVectorBase copy() const;
 
-    SharedVector& operator=(const VectorPtr& ptr);
-    SharedVector& operator=(const SharedVector& other);
+    SharedVectorBase& operator=(const VectorPtr& ptr);
+    SharedVectorBase& operator=(const SharedVectorBase& other);
     template <typename VectorT2>
-    SharedVector& operator=(const SharedVector<VectorT2>& other);
+    SharedVectorBase& operator=(const SharedVectorBase<VectorT2>& other);
     
     void resize(size_t size);
     size_t size() const;
@@ -57,126 +58,129 @@ class SharedVector
     const_iterator end() const;
 };
 
+template <typename T>
+using SharedVector = SharedVectorBase<std::vector<T>>;
 
+// implementation
 template <typename VectorT>
-SharedVector<VectorT>::SharedVector() :
+SharedVectorBase<VectorT>::SharedVectorBase() :
     data_(NULL)
 {}
 
 template <typename VectorT>
-SharedVector<VectorT>::SharedVector(size_t size) :
+SharedVectorBase<VectorT>::SharedVectorBase(size_t size) :
     data_(new VectorType(size))
 {}
 
 template <typename VectorT>
-SharedVector<VectorT>::SharedVector(const VectorPtr& ptr) :
+SharedVectorBase<VectorT>::SharedVectorBase(const VectorPtr& ptr) :
     data_(ptr)
 {}
 
 template <typename VectorT>
-SharedVector<VectorT>::SharedVector(const ConstVectorPtr& ptr) :
+SharedVectorBase<VectorT>::SharedVectorBase(const ConstVectorPtr& ptr) :
     data_(new VectorType(*ptr))
 {}
 
 template <typename VectorT>
-SharedVector<VectorT>::SharedVector(const SharedVector& other) :
+SharedVectorBase<VectorT>::SharedVectorBase(const SharedVectorBase& other) :
     data_(other.data_)
 {}
 
 template <typename VectorT> template <typename VectorT2>
-SharedVector<VectorT>::SharedVector(const SharedVector<VectorT2>& other) :
+SharedVectorBase<VectorT>::SharedVectorBase(const SharedVectorBase<VectorT2>& other) :
     data_(new VectorType(*(other.ptr())))
 {}
 
 template <typename VectorT>
-SharedVector<VectorT> SharedVector<VectorT>::copy() const
+SharedVectorBase<VectorT> SharedVectorBase<VectorT>::copy() const
 {
-    return SharedVector(static_cast<const SharedVector*>(this)->ptr());
+    return SharedVectorBase(static_cast<const SharedVectorBase*>(this)->ptr());
 }
 
 template <typename VectorT>
-SharedVector<VectorT>& SharedVector<VectorT>::operator=(const VectorPtr& ptr)
+SharedVectorBase<VectorT>& SharedVectorBase<VectorT>::operator=(const VectorPtr& ptr)
 {
     data_ = ptr;
     return *this;
 }
 
 template <typename VectorT>
-SharedVector<VectorT>& SharedVector<VectorT>::operator=(const SharedVector& other)
+SharedVectorBase<VectorT>& SharedVectorBase<VectorT>::operator=(const SharedVectorBase& other)
 {
     data_ = other.data_;
     return *this;
 }
 
 template <typename VectorT> template <typename VectorT2>
-SharedVector<VectorT>& SharedVector<VectorT>::operator=(const SharedVector<VectorT2>& other)
+SharedVectorBase<VectorT>& SharedVectorBase<VectorT>::operator=(const SharedVectorBase<VectorT2>& other)
 {
     data_ = VectorPtr(new VectorType(*(other.ptr())));
     return *this;
 }
 
 template <typename VectorT>
-void SharedVector<VectorT>::resize(size_t size)
+void SharedVectorBase<VectorT>::resize(size_t size)
 {
     data_->resize(size);
 }
 
 template <typename VectorT>
-size_t SharedVector<VectorT>::size() const
+size_t SharedVectorBase<VectorT>::size() const
 {
     return data_->size();
 }
 
 template <typename VectorT>
-typename SharedVector<VectorT>::value_type* SharedVector<VectorT>::data()
+typename SharedVectorBase<VectorT>::value_type* SharedVectorBase<VectorT>::data()
 {
     return data_->data();
 }
 
 template <typename VectorT>
-const typename SharedVector<VectorT>::value_type* SharedVector<VectorT>::data() const
+const typename SharedVectorBase<VectorT>::value_type* SharedVectorBase<VectorT>::data() const
 {
     return data_->data();
 }
 
 template <typename VectorT>
-typename SharedVector<VectorT>::VectorPtr SharedVector<VectorT>::ptr()
+typename SharedVectorBase<VectorT>::VectorPtr SharedVectorBase<VectorT>::ptr()
 {
     return data_;
 }
 
 template <typename VectorT>
-typename SharedVector<VectorT>::ConstVectorPtr SharedVector<VectorT>::ptr() const
+typename SharedVectorBase<VectorT>::ConstVectorPtr SharedVectorBase<VectorT>::ptr() const
 {
     return data_;
 }
 
 template <typename VectorT>
-SharedVector<VectorT>::operator bool() const
+SharedVectorBase<VectorT>::operator bool() const
 {
     return data_;
 }
 
 template <typename VectorT>
-typename SharedVector<VectorT>::iterator SharedVector<VectorT>::begin()
+typename SharedVectorBase<VectorT>::iterator SharedVectorBase<VectorT>::begin()
 {
     return this->data();
 }
 
 template <typename VectorT>
-typename SharedVector<VectorT>::iterator SharedVector<VectorT>::end()
+typename SharedVectorBase<VectorT>::iterator SharedVectorBase<VectorT>::end()
 {
     return this->data() + this->size();
 }
 
 template <typename VectorT>
-typename SharedVector<VectorT>::const_iterator SharedVector<VectorT>::begin() const
+typename SharedVectorBase<VectorT>::const_iterator SharedVectorBase<VectorT>::begin() const
 {
     return this->data();
 }
 
 template <typename VectorT>
-typename SharedVector<VectorT>::const_iterator SharedVector<VectorT>::end() const
+typename SharedVectorBase<VectorT>::const_iterator SharedVectorBase<VectorT>::end() const
 {
     return this->data() + this->size();
 }
@@ -185,7 +189,7 @@ typename SharedVector<VectorT>::const_iterator SharedVector<VectorT>::end() cons
 }; //namespace rtac
 
 template <typename VectorT>
-std::ostream& operator<<(std::ostream& os, const rtac::types::SharedVector<VectorT>& v)
+std::ostream& operator<<(std::ostream& os, const rtac::types::SharedVectorBase<VectorT>& v)
 {
     auto data = v.data();
     os << "(";
