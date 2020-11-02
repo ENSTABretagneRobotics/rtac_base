@@ -9,6 +9,7 @@ list(APPEND test_names
     pointcloud_test
     ply_files_test
     time_test
+    sharedvector_test
 )
 
 if(TARGET happly)
