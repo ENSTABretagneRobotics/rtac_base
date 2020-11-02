@@ -61,6 +61,16 @@ class SharedVectorBase
 template <typename T>
 using SharedVector = SharedVectorBase<std::vector<T>>;
 
+// Allows to check if type is a template instanciation of SharedVector
+template <typename OtherT>
+struct shared_vector_test { constexpr static const bool value = false; };
+template <typename T>
+struct shared_vector_test<SharedVectorBase<T>> { constexpr static const bool value = true; };
+
+template <typename T>
+struct ensure_shared_vector { static_assert(shared_vector_test<T>::value,
+                                            "Type is not a SharedVector-derived type"); };
+
 // implementation
 template <typename VectorT>
 SharedVectorBase<VectorT>::SharedVectorBase() :

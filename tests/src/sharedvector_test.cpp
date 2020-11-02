@@ -6,6 +6,10 @@ using namespace std;
 using namespace rtac::types;
 using Vector = SharedVector<float>;
 
+constexpr const auto t0 = ensure_shared_vector<Vector>();
+// next line will successfully fail at compile time
+// constexpr const auto t1 = ensure_shared_vector<std::vector<float>>();
+
 int main()
 {
     Vector v0(10);
