@@ -32,7 +32,5 @@ int main()
     cout << "v0 : " << v0 << endl;
     cout << "v2 : " << v2 << endl;
 
-
-
     return 0;
 }

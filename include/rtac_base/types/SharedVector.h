@@ -30,17 +30,21 @@ class SharedVector
     SharedVector(const VectorPtr& ptr);
     SharedVector(const ConstVectorPtr& ptr);
     SharedVector(const SharedVector& other); // parameter should not be const ?
+    template <typename VectorT2>
+    SharedVector(const SharedVector<VectorT2>& other); // parameter should not be const ?
 
     SharedVector copy() const;
 
     SharedVector& operator=(const VectorPtr& ptr);
     SharedVector& operator=(const SharedVector& other);
+    template <typename VectorT2>
+    SharedVector& operator=(const SharedVector<VectorT2>& other);
     
     void resize(size_t size);
     size_t size() const;
 
-    value_type* data();
-    const value_type* data() const;
+    virtual value_type* data();
+    virtual const value_type* data() const;
 
     VectorPtr      ptr();
     ConstVectorPtr ptr() const;
@@ -79,6 +83,11 @@ SharedVector<VectorT>::SharedVector(const SharedVector& other) :
     data_(other.data_)
 {}
 
+template <typename VectorT> template <typename VectorT2>
+SharedVector<VectorT>::SharedVector(const SharedVector<VectorT2>& other) :
+    data_(new VectorType(*(other.ptr())))
+{}
+
 template <typename VectorT>
 SharedVector<VectorT> SharedVector<VectorT>::copy() const
 {
@@ -96,6 +105,13 @@ template <typename VectorT>
 SharedVector<VectorT>& SharedVector<VectorT>::operator=(const SharedVector& other)
 {
     data_ = other.data_;
+    return *this;
+}
+
+template <typename VectorT> template <typename VectorT2>
+SharedVector<VectorT>& SharedVector<VectorT>::operator=(const SharedVector<VectorT2>& other)
+{
+    data_ = VectorPtr(new VectorType(*(other.ptr())));
     return *this;
 }
 
