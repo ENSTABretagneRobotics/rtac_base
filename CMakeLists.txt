@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
 project(rtac_base VERSION 0.1)
 
+option(WITH_CUDA "Compile and install cuda-dependent code." ON)
+
 find_package(Eigen3 REQUIRED)
 find_package(happly REQUIRED)
+
 
 list(APPEND rtac_base_headers
     include/rtac_base/types/Handle.h
@@ -50,6 +53,11 @@ target_include_directories(rtac_base
         $<INSTALL_INTERFACE:include>
 )
 target_compile_features(rtac_base PRIVATE cxx_std_17)
+
+if(${WITH_CUDA})
+    add_subdirectory(cuda)
+    target_link_libraries(rtac_base PUBLIC rtac_cuda)
+endif()
 
 add_subdirectory(tests)
 
