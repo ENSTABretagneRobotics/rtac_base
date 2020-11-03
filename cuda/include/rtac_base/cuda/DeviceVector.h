@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 
+#include <rtac_base/types/SharedVector.h>
+
 #include <rtac_base/cuda/utils.h>
 
 namespace rtac { namespace cuda {
@@ -59,7 +61,10 @@ class DeviceVector
     const_iterator begin() const;
     const_iterator end() const;
 };
+template <typename T>
+using SharedDeviceVector = rtac::types::SharedVectorBase<DeviceVector<T>>;
 
+// implementation
 template <typename T>
 DeviceVector<T>::DeviceVector() :
     data_(NULL),

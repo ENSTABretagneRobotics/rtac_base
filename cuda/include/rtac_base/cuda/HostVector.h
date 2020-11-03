@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 
+#include <rtac_base/types/SharedVector.h>
+
 #include <rtac_base/cuda/utils.h>
 
 namespace rtac { namespace cuda {
@@ -59,7 +61,10 @@ class HostVector
     const_iterator begin() const;
     const_iterator end() const;
 };
+template <typename T>
+using SharedHostVector = rtac::types::SharedVectorBase<HostVector<T>>;
 
+// implementation
 template <typename T>
 HostVector<T>::HostVector() :
     data_(NULL),

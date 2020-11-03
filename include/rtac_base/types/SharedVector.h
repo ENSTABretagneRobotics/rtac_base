@@ -32,7 +32,7 @@ class SharedVectorBase
     SharedVectorBase(const ConstVectorPtr& ptr);
     SharedVectorBase(const SharedVectorBase& other); // parameter should not be const ?
     template <typename VectorT2>
-    SharedVectorBase(const SharedVectorBase<VectorT2>& other); // parameter should not be const ?
+    SharedVectorBase(const SharedVectorBase<VectorT2>& other);
 
     SharedVectorBase copy() const;
 
@@ -168,7 +168,7 @@ typename SharedVectorBase<VectorT>::ConstVectorPtr SharedVectorBase<VectorT>::pt
 template <typename VectorT>
 SharedVectorBase<VectorT>::operator bool() const
 {
-    return data_;
+    return data_.get() != NULL;
 }
 
 template <typename VectorT>
@@ -201,24 +201,7 @@ typename SharedVectorBase<VectorT>::const_iterator SharedVectorBase<VectorT>::en
 template <typename VectorT>
 std::ostream& operator<<(std::ostream& os, const rtac::types::SharedVectorBase<VectorT>& v)
 {
-    auto data = v.data();
-    os << "(";
-    if(v.size() <= 10) {
-        os << data[0];
-        for(int i = 1; i < v.size(); i++) {
-            os << " " << data[i];
-        }
-    }
-    else {
-        for(int i = 1; i < 3; i++) {
-            os << data[i] << " ";
-        }
-        os << "...";
-        for(int i = v.size() - 3; i < v.size(); i++) {
-            os << " " << data[i];
-        }
-    }
-    os << ")";
+    os << *v.ptr();
     return os;
 }
 

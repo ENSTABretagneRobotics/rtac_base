@@ -16,6 +16,7 @@ endforeach(name)
 
 list(APPEND cuda_test_names
     cuda_devicevector_test
+    cuda_sharedvector_test
 )
 
 foreach(name ${cuda_test_names})

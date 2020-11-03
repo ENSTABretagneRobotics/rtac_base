@@ -5,7 +5,8 @@ option(WITH_CUDA "Compile and install cuda-dependent code." ON)
 
 find_package(Eigen3 REQUIRED)
 find_package(happly REQUIRED)
-
+# Loading installation script (just loading function, not calling)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/installation.cmake)
 
 list(APPEND rtac_base_headers
     include/rtac_base/types/Handle.h
@@ -55,12 +56,10 @@ target_compile_features(rtac_base PRIVATE cxx_std_17)
 
 if(${WITH_CUDA})
     add_subdirectory(cuda)
-    target_link_libraries(rtac_base PUBLIC rtac_cuda)
 endif()
 
 add_subdirectory(tests)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/installation.cmake)
 install_target(rtac_base
     ADDITIONNAL_CONFIG_FILES cmake/installation.cmake
 )

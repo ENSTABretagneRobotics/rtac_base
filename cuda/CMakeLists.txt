@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 project(rtac_cuda VERSION 0.1 LANGUAGES CUDA CXX)
 
+if(NOT TARGET rtac_base)
+    find_package(rtac_base REQUIRED)
+endif()
+
 list(APPEND rtac_cuda_headers
     include/rtac_base/cuda/utils.h
     include/rtac_base/cuda/DeviceVector.h
@@ -20,9 +24,9 @@ target_include_directories(rtac_cuda PUBLIC
 target_compile_options(rtac_cuda PUBLIC
     $<$<COMPILE_LANGUAGE:CUDA>:-gencode arch=compute_61,code=sm_61>
 )
+target_link_libraries(rtac_cuda PUBLIC rtac_base)
 
 add_subdirectory(tests)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/installation.cmake)
 install_target(rtac_cuda)
 
