@@ -8,7 +8,9 @@ namespace rtac { namespace types {
 // This is defined here to be able to change it depending on target system (or
 // falling back on boost library if needed).
 template <typename T>
-using Handle = std::shared_ptr<T>;
+using Handle     = std::shared_ptr<T>;
+template <typename T>
+using WeakHandle = std::weak_ptr<T>;
 
 }; //namespace types
 }; //namespace rtac

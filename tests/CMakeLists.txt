@@ -10,6 +10,7 @@ list(APPEND test_names
     ply_files_test
     time_test
     sharedvector_test
+    vectormap_test
 )
 
 if(TARGET happly)
