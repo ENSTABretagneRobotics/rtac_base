@@ -28,5 +28,5 @@ target_link_libraries(rtac_cuda PUBLIC rtac_base)
 
 add_subdirectory(tests)
 
-install_target(rtac_cuda)
+rtac_install_target(rtac_cuda)
 

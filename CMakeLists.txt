@@ -44,7 +44,9 @@ target_link_libraries(rtac_base
 if(TARGET happly)
     target_link_libraries(rtac_base PUBLIC happly)
     target_compile_definitions(rtac_base PUBLIC RTAC_BASE_PLY_FILES)
-    set(happly_EXPORT_CONFIG "find_package(happly REQUIRED)")
+    list(APPEND ADDITIONAL_CONFIG_COMMANDS
+        "find_package(happly REQUIRED)"
+    )
 else()
     message(WARNING "The happly target was not found. You won't be able to read/write .ply file.")
 endif()
@@ -61,9 +63,9 @@ endif()
 
 add_subdirectory(tests)
 
-install_target(rtac_base
-    OPTIONAL_CONFIG_BODY "${happly_EXPORT_CONFIG}"
-    ADDITIONNAL_CONFIG_FILES cmake/rtac_installation.cmake
+rtac_install_target(rtac_base
+    ADDITIONAL_CONFIG_COMMANDS ${ADDITIONAL_CONFIG_COMMANDS}
+    ADDITIONAL_CONFIG_FILES cmake/rtac_installation.cmake
 )
 
 

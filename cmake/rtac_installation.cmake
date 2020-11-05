@@ -1,9 +1,18 @@
-function(install_target TARGET_NAME)
+function(rtac_install_target TARGET_NAME)
 
-	set(oneValueArgs OPTIONAL_CONFIG_BODY)
-	set(multiValueArgs ADDITIONNAL_CONFIG_FILES)
-	cmake_parse_arguments(INSTALLATION "${options}" "${oneValueArgs}"
+	set(multiValueArgs
+        ADDITIONAL_CONFIG_FILES
+        ADDITIONAL_CONFIG_COMMANDS)
+	cmake_parse_arguments(RTAC_INSTALLATION "${options}" "${oneValueArgs}"
 	                      "${multiValueArgs}" ${ARGN} )
+    
+    # message(STATUS "=== ${RTAC_INSTALLATION_ADDITIONAL_CONFIG_COMMANDS}")
+    set(RTAC_INSTALLATION_ADDITIONAL_CONFIG_BODY "")
+    foreach(command ${RTAC_INSTALLATION_ADDITIONAL_CONFIG_COMMANDS})
+        # message(STATUS "  === ${command}")
+        set(RTAC_INSTALLATION_ADDITIONAL_CONFIG_BODY 
+            "${RTAC_INSTALLATION_ADDITIONAL_CONFIG_BODY}${command}\n")
+    endforeach()
 
 	include(GNUInstallDirs)
 	# Configuration
@@ -39,7 +48,7 @@ function(install_target TARGET_NAME)
     list(APPEND CONFIG_FILES_TO_INSTALL
         ${PROJECT_CONFIG}
         ${VERSION_CONFIG}
-        ${INSTALLATION_ADDITIONNAL_CONFIG_FILES}
+        ${RTAC_INSTALLATION_ADDITIONAL_CONFIG_FILES}
     )
 	install(
 	    FILES ${CONFIG_FILES_TO_INSTALL}
