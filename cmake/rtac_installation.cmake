@@ -1,5 +1,6 @@
 function(install_target TARGET_NAME)
 
+	set(oneValueArgs OPTIONAL_CONFIG_BODY)
 	set(multiValueArgs ADDITIONNAL_CONFIG_FILES)
 	cmake_parse_arguments(INSTALLATION "${options}" "${oneValueArgs}"
 	                      "${multiValueArgs}" ${ARGN} )

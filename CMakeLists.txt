@@ -6,7 +6,7 @@ option(WITH_CUDA "Compile and install cuda-dependent code." ON)
 find_package(Eigen3 REQUIRED)
 find_package(happly REQUIRED)
 # Loading installation script (just loading function, not calling)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/installation.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_installation.cmake)
 
 list(APPEND rtac_base_headers
     include/rtac_base/types/Handle.h
@@ -44,6 +44,7 @@ target_link_libraries(rtac_base
 if(TARGET happly)
     target_link_libraries(rtac_base PUBLIC happly)
     target_compile_definitions(rtac_base PUBLIC RTAC_BASE_PLY_FILES)
+    set(happly_EXPORT_CONFIG "find_package(happly REQUIRED)")
 else()
     message(WARNING "The happly target was not found. You won't be able to read/write .ply file.")
 endif()
@@ -61,7 +62,8 @@ endif()
 add_subdirectory(tests)
 
 install_target(rtac_base
-    ADDITIONNAL_CONFIG_FILES cmake/installation.cmake
+    OPTIONAL_CONFIG_BODY "${happly_EXPORT_CONFIG}"
+    ADDITIONNAL_CONFIG_FILES cmake/rtac_installation.cmake
 )
 
 
