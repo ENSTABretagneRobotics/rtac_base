@@ -14,6 +14,20 @@ function(rtac_install_target TARGET_NAME)
             "${RTAC_INSTALLATION_ADDITIONAL_CONFIG_BODY}${command}\n")
     endforeach()
 
+    # RPATH related configuration (see https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/RPATH-handling for details)
+    set_target_properties(${TARGET_NAME} PROPERTIES
+        SKIP_BUILD_RPATH FALSE
+        BUILD_WITH_INSTALL_RPATH FALSE
+        INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib"
+        INSTALL_RPATH_USE_LINK_PATH TRUE
+    )
+    list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+    if("${isSystemDir}" STREQUAL "-1")
+        set_target_properties(${TARGET_NAME} PROPERTIES
+            INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib" # redundant with above ??
+        )
+    endif()
+
 	include(GNUInstallDirs)
 	# Configuration
 	set(VERSION_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/generated/${TARGET_NAME}ConfigVersion.cmake")
