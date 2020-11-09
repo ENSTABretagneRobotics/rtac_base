@@ -13,6 +13,11 @@ void check_error(unsigned int code)
     }
 }
 
+void set_device(int deviceOrdinal)
+{
+    check_error(cudaSetDevice(deviceOrdinal));
+}
+
 //inline
 unsigned int do_malloc(void** devPtr, size_t size)
 {

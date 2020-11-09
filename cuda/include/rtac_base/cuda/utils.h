@@ -9,6 +9,8 @@ namespace rtac { namespace cuda {
 // inline won't link properly
 void check_error(unsigned int code);
 
+void set_device(int deviceOrdinal);
+
 // inline won't link properly
 unsigned int do_malloc(void** devPtr, size_t size);
 // inline won't link properly
