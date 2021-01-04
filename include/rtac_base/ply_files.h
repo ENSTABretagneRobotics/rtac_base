@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-#include <happly/happly.h>
+#include <happly.h>
 
 #include <rtac_base/types/Pose.h>
 #include <rtac_base/types/Shape.h>

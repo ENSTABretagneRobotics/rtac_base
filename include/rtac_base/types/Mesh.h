@@ -4,7 +4,7 @@
 #include <iostream>
 
 #ifdef RTAC_BASE_PLY_FILES
-#include <happly/happly.h>
+#include <happly.h>
 #endif
 
 #include <rtac_base/types/common.h>

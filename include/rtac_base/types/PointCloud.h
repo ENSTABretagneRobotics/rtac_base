@@ -7,7 +7,7 @@
 #include <memory>
 
 #ifdef RTAC_BASE_PLY_FILES
-#include <happly/happly.h>
+#include <happly.h>
 #include <rtac_base/ply_files.h>
 #endif
 
