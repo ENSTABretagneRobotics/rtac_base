@@ -1,21 +1,19 @@
-cmake_minimum_required(VERSION 3.10)
-project(rtac_base_tests VERSION 0.1)
 
 list(APPEND test_names
-    types_test
-    files_test
-    algorithm_test
-    misc_test
-    pointcloud_test
-    ply_files_test
-    time_test
-    sharedvector_test
-    vectormap_test
+    types_test.cpp
+    files_test.cpp
+    algorithm_test.cpp
+    misc_test.cpp
+    pointcloud_test.cpp
+    ply_files_test.cpp
+    time_test.cpp
+    sharedvector_test.cpp
+    vectormap_test.cpp
 )
 
 if(TARGET happly)
     list(APPEND test_names
-        ply_test
+        ply_test.cpp
     )
 endif()
 
@@ -24,8 +22,16 @@ list(APPEND test_deps
 )
 
 foreach(name ${test_names})
-    add_executable(${name} src/${name}.cpp)
-    target_link_libraries(${name} ${test_deps})
+
+    # Generating a unique target name to avoid name colision with other rtac
+    # packages.
+    get_filename_component(executable_name ${name} NAME_WE)
+    set(test_target_name ${PROJECT_NAME}_test_${executable_name})
+
+    add_executable(${test_target_name} src/${name})
+    target_link_libraries(${test_target_name} ${test_deps})
+    set_target_properties(${test_target_name} PROPERTIES OUTPUT_NAME ${executable_name})
+
 endforeach(name)
 
 
