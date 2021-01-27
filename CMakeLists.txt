@@ -32,7 +32,7 @@ add_library(rtac_base SHARED
     src/ply_files.cpp
 )
 set_target_properties(rtac_base PROPERTIES
-    PUBLIC_HEADER "${rtac_base_headers}"
+    RTAC_PUBLIC_HEADERS "${rtac_base_headers}"
 )
 target_link_libraries(rtac_base
     PUBLIC
