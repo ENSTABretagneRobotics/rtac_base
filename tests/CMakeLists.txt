@@ -8,8 +8,7 @@ list(APPEND test_names
     mesh.cpp
     ply_test.cpp
     pointcloud_test.cpp
-    # sharedvector_test.cpp
-    # vectormap_test.cpp
+    sharedvector_test.cpp
 )
 
 list(APPEND test_deps
