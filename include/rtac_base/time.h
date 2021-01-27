@@ -4,7 +4,7 @@
 #include <iostream>
 #include <chrono>
 
-namespace rtac { namespace misc {
+namespace rtac { namespace time {
 
 class Clock
 {
@@ -53,10 +53,10 @@ class FrameCounter
     std::ostream& print(std::ostream& os) const;
 };
 
-}; //namespace misc
+}; //namespace time
 }; //namespace rtac
 
-std::ostream& operator<<(std::ostream& os, const rtac::misc::Clock& clock);
-std::ostream& operator<<(std::ostream& os, const rtac::misc::FrameCounter& counter);
+std::ostream& operator<<(std::ostream& os, const rtac::time::Clock& clock);
+std::ostream& operator<<(std::ostream& os, const rtac::time::FrameCounter& counter);
 
 #endif //_DEF_RTAC_BASE_MISC_H_

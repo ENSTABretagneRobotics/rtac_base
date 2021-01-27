@@ -1,14 +1,13 @@
 
 list(APPEND test_names
-    types_test.cpp
-    files_test.cpp
-    algorithm_test.cpp
     misc_test.cpp
-    pointcloud_test.cpp
-    ply_files_test.cpp
-    time_test.cpp
-    sharedvector_test.cpp
-    vectormap_test.cpp
+    files_test.cpp
+    mathtypes_test.cpp
+    # algorithm_test.cpp
+    # pointcloud_test.cpp
+    # ply_files_test.cpp
+    # sharedvector_test.cpp
+    # vectormap_test.cpp
 )
 
 if(TARGET happly)

@@ -17,20 +17,18 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/Mesh.h
     include/rtac_base/types/Shape.h
     include/rtac_base/types/Rectangle.h
-    include/rtac_base/types/Time.h
     include/rtac_base/types/SharedVector.h
     include/rtac_base/algorithm.h
     include/rtac_base/geometry.h
     include/rtac_base/files.h
-    include/rtac_base/misc.h
+    include/rtac_base/time.h
     include/rtac_base/ply_files.h
 )
 
 add_library(rtac_base SHARED
     src/files.cpp
-    src/misc.cpp
+    src/time.cpp
     src/ply_files.cpp
-    src/types/Time.cpp
 )
 set_target_properties(rtac_base PROPERTIES
     PUBLIC_HEADER "${rtac_base_headers}"

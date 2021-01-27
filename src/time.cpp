@@ -1,6 +1,6 @@
-#include <rtac_base/misc.h>
+#include <rtac_base/time.h>
 
-namespace rtac { namespace misc {
+namespace rtac { namespace time {
 
 Clock::Clock()
 {
@@ -41,16 +41,16 @@ std::ostream& FrameCounter::print(std::ostream& os) const
     return os;
 }
 
-}; //namespace misc
+}; //namespace time
 }; //namespace rtac
 
-std::ostream& operator<<(std::ostream& os, const rtac::misc::Clock& clock)
+std::ostream& operator<<(std::ostream& os, const rtac::time::Clock& clock)
 {
     os << "Clock : " << clock.now() << "s";
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const rtac::misc::FrameCounter& counter)
+std::ostream& operator<<(std::ostream& os, const rtac::time::FrameCounter& counter)
 {
     return counter.print(os);
 }

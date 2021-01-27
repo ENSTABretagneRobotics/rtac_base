@@ -1,8 +1,8 @@
 #include <iostream>
 
 #include <rtac_base/files.h>
-#include <rtac_base/misc.h>
-using namespace rtac::misc;
+#include <rtac_base/time.h>
+using namespace rtac::time;
 
 using namespace std;
 namespace nf = rtac::files;
