@@ -36,21 +36,6 @@ using Vector3  = Eigen::Matrix<T, 3, 1>;
 template <typename T>
 using Vector4  = Eigen::Matrix<T, 4, 1>;
 
-template <typename T, size_t D>
-class Array : public Eigen::Matrix<T, Eigen::Dynamic, D>
-{
-    public:
-
-    Array() {};
-    Array(size_t length) : Eigen::Matrix<T,Eigen::Dynamic,D>(length, D) {};
-    Array(const Array<T,D>& other) :
-        Eigen::Matrix<T,Eigen::Dynamic,D>(other) {};
-    Array(const Eigen::Matrix<T,Eigen::Dynamic,D>& other) :
-        Eigen::Matrix<T,Eigen::Dynamic,D>(other) {};
-};
-template <typename T>
-using Array3  = Array<T,3>;
-
 template <typename T>
 using Quaternion  = Eigen::Quaternion<T>;
 

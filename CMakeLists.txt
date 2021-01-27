@@ -13,6 +13,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/Rectangle.h
     include/rtac_base/types/common.h
     include/rtac_base/types/Pose.h
+    include/rtac_base/types/Point.h
     include/rtac_base/types/PointCloudBase.h
     include/rtac_base/types/PointCloud.h
     include/rtac_base/types/Mesh.h
@@ -44,7 +45,7 @@ target_include_directories(rtac_base
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
-target_compile_features(rtac_base PRIVATE cxx_std_17)
+target_compile_features(rtac_base PUBLIC cxx_std_17)
 
 # if(${WITH_CUDA})
 #     add_subdirectory(cuda)

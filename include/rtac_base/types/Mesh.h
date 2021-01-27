@@ -2,151 +2,169 @@
 #define _DEF_RTAC_BASE_TYPES_MESH_H_
 
 #include <iostream>
+#include <vector>
 
-#include <rtac_base/types/common.h>
+#include <rtac_base/types/Point.h>
 #include <rtac_base/happly.h>
 
 namespace rtac { namespace types {
 
-using namespace rtac::types::indexing;
-
-// Tp stands for pointType (usually float)
-// Tf stands for faceType (usually uint32_t)
-template <typename Tp = float, typename Tf = uint32_t, size_t D = 3>
+template <typename PointT = Point3<float>,
+          typename FaceT  = Point3<uint32_t>,
+          template <typename> class VectorT = std::vector>
 class Mesh
 {
+    public:
+
+    using Point       = PointT;
+    using Face        = FaceT;
+    using PointVector = VectorT<Point>;
+    using FaceVector  = VectorT<Face>;
+    template <typename T>
+    using Vector      = VectorT<T>;
+
     protected:
 
-    Array<Tp,D> points_;
-    Array3<Tf>  faces_;
+    PointVector points_;
+    FaceVector  faces_;
 
     public:
 
     Mesh();
     Mesh(size_t numPoints, size_t numFaces);
-    Mesh(const Array<Tp,D>& points, const Array3<Tf>& faces);
     
-    Map<Matrix<Tp>> points();
-    Map<Matrix<Tf>> faces();
-
-    // getters
-    Map<const Matrix<Tp>> points() const;
-    Map<const Matrix<Tf>> faces()  const;
     size_t num_points() const;
     size_t num_faces()  const;
 
-    // Some helpful builder functions
-    static Mesh<Tp,Tf,3> cube(Tp scale = 1.0);
+    const PointVector& points() const;
+    const FaceVector&  faces()  const;
 
-    // .ply files
-    static Mesh<Tp,Tf,3> from_ply(const std::string& path);
-    void export_ply(const std::string& path, bool ascii=false);
+    const Point& point(size_t idx) const;
+    const Face&  face(size_t idx)  const;
+
+    Point& point(size_t idx);
+    Face&  face(size_t idx);
+
+    // Some helpful builder functions
+    static Mesh<PointT,FaceT,VectorT> cube(float scale = 1.0);
+
+    //// .ply files
+    template <typename PointScalarT = float, typename FaceIndexT = uint32_t>
+    static Mesh<PointT,FaceT,VectorT> from_ply(const std::string& path);
+    
+    template <typename PointScalarT = float, typename FaceIndexT = uint32_t>
+    void export_ply(const std::string& path, bool ascii=false) const;
 };
 
 // Implementation
-template <typename Tp, typename Tf, size_t D>
-Mesh<Tp,Tf,D>::Mesh() :
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+Mesh<PointT,FaceT,VectorT>::Mesh() :
     points_(0),
     faces_ (0)
 {}
 
-template <typename Tp, typename Tf, size_t D>
-Mesh<Tp,Tf,D>::Mesh(size_t numPoints, size_t numFaces) :
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+Mesh<PointT,FaceT,VectorT>::Mesh(size_t numPoints, size_t numFaces) :
     points_(numPoints),
     faces_ (numFaces)
 {}
 
-template <typename Tp, typename Tf, size_t D>
-Mesh<Tp,Tf,D>::Mesh(const Array<Tp,D>& points, const Array3<Tf>& faces) :
-    points_(points),
-    faces_ (faces)
-{}
-
-template <typename Tp, typename Tf, size_t D>
-Map<Matrix<Tp>> Mesh<Tp,Tf,D>::points()
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+size_t Mesh<PointT,FaceT,VectorT>::num_points() const
 {
-    if (this->num_points() <= 0)
-        return Map<Matrix<Tp>>(NULL, 0, D);
-    return Map<Matrix<Tp>>(points_.data(), this->num_points(), D);
+    return points_.size();
 }
 
-template <typename Tp, typename Tf, size_t D>
-Map<Matrix<Tf>> Mesh<Tp,Tf,D>::faces()
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+size_t Mesh<PointT,FaceT,VectorT>::num_faces() const
 {
-    if (this->num_faces() <= 0)
-        return Map<Matrix<Tf>>(NULL, 0, 3);
-    return Map<Matrix<Tf>>(faces_.data(), this->num_faces(), 3);
+    return faces_.size();
 }
 
-template <typename Tp, typename Tf, size_t D>
-Map<const Matrix<Tp>> Mesh<Tp,Tf,D>::points() const
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+const typename Mesh<PointT,FaceT,VectorT>::PointVector&
+    Mesh<PointT,FaceT,VectorT>::points() const
 {
-    if (this->num_points() <= 0)
-        return Map<const Matrix<Tp>>(NULL, 0, D);
-    return Map<const Matrix<Tp>>(points_.data(), this->num_points(), D);
+    return points_;
 }
 
-template <typename Tp, typename Tf, size_t D>
-Map<const Matrix<Tf>> Mesh<Tp,Tf,D>::faces() const
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+const typename Mesh<PointT,FaceT,VectorT>::FaceVector&
+    Mesh<PointT,FaceT,VectorT>::faces() const
 {
-    if (this->num_faces() <= 0)
-        return Map<const Matrix<Tf>>(NULL, 0, 3);
-    return Map<const Matrix<Tf>>(faces_.data(), this->num_faces(), 3);
+    return faces_;
 }
 
-template <typename Tp, typename Tf, size_t D>
-size_t Mesh<Tp,Tf,D>::num_points() const
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+const typename Mesh<PointT,FaceT,VectorT>::Point& 
+    Mesh<PointT,FaceT,VectorT>::point(size_t idx) const
 {
-    return points_.rows();
+    return points_[idx];
 }
 
-template <typename Tp, typename Tf, size_t D>
-size_t Mesh<Tp,Tf,D>::num_faces() const
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+const typename Mesh<PointT,FaceT,VectorT>::Face& 
+    Mesh<PointT,FaceT,VectorT>::face(size_t idx) const
 {
-    return faces_.rows();
+    return faces_[idx];
 }
 
-template <typename Tp, typename Tf, size_t D>
-Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::cube(Tp scale)
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+typename Mesh<PointT,FaceT,VectorT>::Point&
+    Mesh<PointT,FaceT,VectorT>::point(size_t idx)
 {
-    Mesh<Tp,Tf,3> res(8, 12);
-    res.points() << -scale,-scale,-scale,
-                     scale,-scale,-scale,
-                     scale, scale,-scale,
-                    -scale, scale,-scale,
-                    -scale,-scale, scale,
-                     scale,-scale, scale,
-                     scale, scale, scale,
-                    -scale, scale, scale;
-    res.faces() << 0,2,1,
-                   0,3,2,
-                   4,5,6,
-                   4,6,7,
-                   0,1,5,
-                   0,5,4,
-                   1,2,6,
-                   1,6,5,
-                   2,3,7,
-                   2,7,6,
-                   3,0,4,
-                   3,4,7;
+    return points_[idx];
+}
+
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+typename Mesh<PointT,FaceT,VectorT>::Face&
+    Mesh<PointT,FaceT,VectorT>::face(size_t idx)
+{
+    return faces_[idx];
+}
+
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+Mesh<PointT,FaceT,VectorT> Mesh<PointT,FaceT,VectorT>::cube(float scale)
+{
+    Mesh<PointT,FaceT,VectorT> res(8, 12);
+    res.point(0) = PointT({-scale,-scale,-scale});
+    res.point(1) = PointT({ scale,-scale,-scale});
+    res.point(2) = PointT({ scale, scale,-scale});
+    res.point(3) = PointT({-scale, scale,-scale});
+    res.point(4) = PointT({-scale,-scale, scale});
+    res.point(5) = PointT({ scale,-scale, scale});
+    res.point(6) = PointT({ scale, scale, scale});
+    res.point(7) = PointT({-scale, scale, scale});
+    res.face( 0) = FaceT({0,2,1});
+    res.face( 1) = FaceT({0,3,2});
+    res.face( 2) = FaceT({4,5,6});
+    res.face( 3) = FaceT({4,6,7});
+    res.face( 4) = FaceT({0,1,5});
+    res.face( 5) = FaceT({0,5,4});
+    res.face( 6) = FaceT({1,2,6});
+    res.face( 7) = FaceT({1,6,5});
+    res.face( 8) = FaceT({2,3,7});
+    res.face( 9) = FaceT({2,7,6});
+    res.face(10) = FaceT({3,0,4});
+    res.face(11) = FaceT({3,4,7});
     return res;
 }
 
-template <typename Tp, typename Tf, size_t D>
-Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::from_ply(const std::string& path)
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+template <typename PointScalarT, typename FaceIndexT>
+Mesh<PointT,FaceT,VectorT> Mesh<PointT,FaceT,VectorT>::from_ply(const std::string& path)
 {
     happly::PLYData data(path);
 
-    std::vector<Tp> px = data.getElement("vertex").getProperty<Tp>("x");
-    std::vector<Tp> py = data.getElement("vertex").getProperty<Tp>("y");
-    std::vector<Tp> pz = data.getElement("vertex").getProperty<Tp>("z");
+    std::vector<PointScalarT> px = data.getElement("vertex").getProperty<PointScalarT>("x");
+    std::vector<PointScalarT> py = data.getElement("vertex").getProperty<PointScalarT>("y");
+    std::vector<PointScalarT> pz = data.getElement("vertex").getProperty<PointScalarT>("z");
 
     std::vector<std::string> names({"vertex_indices", "vertex_index"});
-    std::vector<std::vector<Tf>> f;
+    std::vector<std::vector<FaceIndexT>> f;
     for(auto& name : names) {
         try {
-            f = data.getElement("face").getListPropertyAnySign<Tf>(name);
+            f = data.getElement("face").getListPropertyAnySign<FaceIndexT>(name);
             break;
         }
         catch(const std::runtime_error& e) {
@@ -154,26 +172,24 @@ Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::from_ply(const std::string& path)
         }
     }
     
-    Mesh res(px.size(), f.size());
-    auto points = res.points();
+    Mesh<PointT,FaceT,VectorT> res(px.size(), f.size());
     for(int i = 0; i < px.size(); i++) {
-        points(i,0) = px[i];
-        points(i,1) = py[i];
-        points(i,2) = pz[i];
+        res.point(i).x = px[i];
+        res.point(i).y = py[i];
+        res.point(i).z = pz[i];
     }
-    auto faces = res.faces();
     for(int i = 0; i < f.size(); i++) {
-        faces(i,0) = f[i][0];
-        faces(i,1) = f[i][1];
-        faces(i,2) = f[i][2];
+        res.face(i).x = f[i][0];
+        res.face(i).y = f[i][1];
+        res.face(i).z = f[i][2];
     }
     
-
     return res;
 }
 
-template <typename Tp, typename Tf, size_t D>
-void Mesh<Tp,Tf,D>::export_ply(const std::string& path, bool ascii)
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+template <typename PointScalarT, typename FaceIndexT>
+void Mesh<PointT,FaceT,VectorT>::export_ply(const std::string& path, bool ascii) const
 {
     happly::PLYData data;
     
@@ -182,23 +198,30 @@ void Mesh<Tp,Tf,D>::export_ply(const std::string& path, bool ascii)
     data.addElement("vertex", this->num_points());
     auto& vElement = data.getElement("vertex");
     
-    auto points = this->points();
-    std::vector<Tp> x(points(all,0).begin(), points(all,0).end());
-    std::vector<Tp> y(points(all,1).begin(), points(all,1).end());
-    std::vector<Tp> z(points(all,2).begin(), points(all,2).end());
+    // have to do a copy because of the way happly is implemented
+    std::vector<PointScalarT> x(this->num_points());
+    std::vector<PointScalarT> y(this->num_points());
+    std::vector<PointScalarT> z(this->num_points());
+    for(int i = 0; i < this->num_points(); i++) {
+        x[i] = this->point(i).x;
+        y[i] = this->point(i).y;
+        z[i] = this->point(i).z;
+    }
     vElement.addProperty("x", x);
     vElement.addProperty("y", y);
     vElement.addProperty("z", z);
     
     if(this->num_faces() > 0) {
         data.addElement("face", this->num_faces());
-        auto faces = this->faces();
-        // Have to do this. happly not accepting views.
-        std::vector<std::vector<Tf>> f(this->num_faces());
-        for(size_t i = 0; i < f.size(); i++) {
-            f[i].assign(faces(i,all).begin(), faces(i,all).end());
+        // ugly. See alternatives to happly.
+        std::vector<std::vector<FaceIndexT>> faces(this->num_faces());
+        for(size_t i = 0; i < faces.size(); i++) {
+            faces[i].resize(3);
+            faces[i][0] = this->face(i).x;
+            faces[i][1] = this->face(i).y;
+            faces[i][2] = this->face(i).z;
         }
-        data.getElement("face").addListProperty("vertex_indices", f);
+        data.getElement("face").addListProperty("vertex_indices", faces);
     }
     
     if(ascii)
@@ -211,16 +234,50 @@ void Mesh<Tp,Tf,D>::export_ply(const std::string& path, bool ascii)
 }; //namespace types
 }; //namespace rtac
 
-template <typename Tp, typename Tf, size_t D>
-std::ostream& operator<<(std::ostream& os, const rtac::types::Mesh<Tp,Tf,D>& mesh)
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+std::ostream& operator<<(std::ostream& os,
+                         const rtac::types::Mesh<PointT,FaceT,VectorT>& mesh)
 {
+    const char* prefix = "\n    ";
+
     os << "Mesh : (" << mesh.num_points() << " points, "
        << mesh.num_faces() << " faces)\n";
-    
-    if (mesh.num_points() < 20 && mesh.num_faces() < 20) {
-       os << "Points :\n" << mesh.points() << "\n"
-          << "Faces  :\n" << mesh.faces()  << "\n";
+
+    os << "- Points :";
+    if(mesh.num_points() < 16) {
+        for(auto& p : mesh.points()) {
+            os << prefix << p;
+        }
     }
+    else {
+        auto it = mesh.points().begin();
+        for(auto end = mesh.points().begin() + 3; it != end; it++) {
+            os << prefix << *it;
+        }
+        os << prefix << "...";
+        it = mesh.points().end() - 3;
+        for(auto end = mesh.points().end(); it != end; it++) {
+            os << prefix << *it;
+        }
+    }
+    os << "\n- Faces :";
+    if(mesh.num_faces() < 16) {
+        for(auto& p : mesh.faces()) {
+            os << prefix << p;
+        }
+    }
+    else {
+        auto it = mesh.faces().begin();
+        for(auto end = mesh.faces().begin() + 3; it != end; it++) {
+            os << prefix << *it;
+        }
+        os << prefix << "...";
+        it = mesh.faces().end() - 3;
+        for(auto end = mesh.faces().end(); it != end; it++) {
+            os << prefix << *it;
+        }
+    }
+    
     return os;
 }
 

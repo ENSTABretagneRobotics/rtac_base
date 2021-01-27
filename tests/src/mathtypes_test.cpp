@@ -33,8 +33,5 @@ int main()
     cout << A(0,all) << endl << endl;
     cout << A(seq(0,1), all) << endl << endl;
 
-    rtac::types::Array3<float> B(3);
-    cout << B << endl;
-
     return 0;
 }

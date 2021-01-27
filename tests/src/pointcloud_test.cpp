@@ -20,14 +20,14 @@ int main()
 {
     PointCloud<> pc0(8);
 
-    pc0[0] = Point3D({0,0,0});
-    pc0[1] = Point3D({0,0,1});
-    pc0[2] = Point3D({0,1,0});
-    pc0[3] = Point3D({0,1,1});
-    pc0[4] = Point3D({1,0,0});
-    pc0[5] = Point3D({1,0,1});
-    pc0[6] = Point3D({1,1,0});
-    pc0[7] = Point3D({1,1,1});
+    pc0[0] = Point3<float>({0,0,0});
+    pc0[1] = Point3<float>({0,0,1});
+    pc0[2] = Point3<float>({0,1,0});
+    pc0[3] = Point3<float>({0,1,1});
+    pc0[4] = Point3<float>({1,0,0});
+    pc0[5] = Point3<float>({1,0,1});
+    pc0[6] = Point3<float>({1,1,0});
+    pc0[7] = Point3<float>({1,1,1});
     
     cout << pc0;
     pc0.export_ply("out.ply", false);

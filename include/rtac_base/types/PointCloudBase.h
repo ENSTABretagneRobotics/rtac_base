@@ -5,22 +5,15 @@
 #include <vector>
 #include <memory>
 
+#include <rtac_base/types/Point.h>
 #include <rtac_base/types/common.h>
 
 namespace rtac { namespace types {
 
-// All points used as PointCloud::PointT
-struct Point3D
-{
-    float x;
-    float y;
-    float z;
-};
-
 // Definition of a default PointCloud type. This stands for the minimum
 // interface a PointCloud must define in order to be usable in rtac
 // framework.  (This is a subset of the interface of a pcl::PointCloud).
-template <typename PointT = Point3D>
+template <typename PointT = Point3<float>>
 class PointCloudBase
 {
     public:
@@ -193,12 +186,6 @@ bool PointCloudBase<PointT>::empty() const
 
 }; //namespace types
 }; //namespace rtac
-
-std::ostream& operator<<(std::ostream& os, const rtac::types::Point3D& p)
-{
-    os << p.x << " " << p.y << " " << p.z;
-    return os;
-}
 
 template <typename PointT>
 std::ostream& operator<<(std::ostream& os, const rtac::types::PointCloudBase<PointT>& pc)

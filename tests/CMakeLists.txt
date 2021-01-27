@@ -6,7 +6,7 @@ list(APPEND test_names
     algorithm_test.cpp
     ply_files_test.cpp
     mesh.cpp
-    ply_test.cpp
+    # ply_test.cpp
     pointcloud_test.cpp
     sharedvector_test.cpp
 )

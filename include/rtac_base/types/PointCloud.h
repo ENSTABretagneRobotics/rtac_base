@@ -8,6 +8,7 @@
 
 #include <rtac_base/ply_files.h>
 
+#include <rtac_base/types/Point.h>
 #include <rtac_base/types/common.h>
 #include <rtac_base/types/Pose.h>
 #include <rtac_base/types/PointCloudBase.h>
@@ -16,7 +17,7 @@ namespace rtac { namespace types {
 
 // Rtac interface for point cloud type.  Was made to contain a
 // pcl::PointCloud but with a soft dependency to pcl.
-template <typename PointCloudT = PointCloudBase<Point3D>>
+template <typename PointCloudT = PointCloudBase<Point3<float>>>
 class PointCloud
 {
     public:
