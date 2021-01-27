@@ -3,11 +3,8 @@
 
 #include <iostream>
 
-#ifdef RTAC_BASE_PLY_FILES
-#include <happly.h>
-#endif
-
 #include <rtac_base/types/common.h>
+#include <rtac_base/happly.h>
 
 namespace rtac { namespace types {
 
@@ -42,11 +39,8 @@ class Mesh
     static Mesh<Tp,Tf,3> cube(Tp scale = 1.0);
 
     // .ply files
-#ifdef RTAC_BASE_PLY_FILES
     static Mesh<Tp,Tf,3> from_ply(const std::string& path);
     void export_ply(const std::string& path, bool ascii=false);
-#endif
-
 };
 
 // Implementation
@@ -139,7 +133,6 @@ Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::cube(Tp scale)
     return res;
 }
 
-#ifdef RTAC_BASE_PLY_FILES
 template <typename Tp, typename Tf, size_t D>
 Mesh<Tp,Tf,3> Mesh<Tp,Tf,D>::from_ply(const std::string& path)
 {
@@ -213,7 +206,6 @@ void Mesh<Tp,Tf,D>::export_ply(const std::string& path, bool ascii)
     else
         data.write(path, happly::DataFormat::Binary);
 }
-#endif //RTAC_BASE_PLY_FILES
 
 
 }; //namespace types

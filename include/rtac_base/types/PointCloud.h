@@ -6,10 +6,7 @@
 #include <vector>
 #include <memory>
 
-#ifdef RTAC_BASE_PLY_FILES
-#include <happly.h>
 #include <rtac_base/ply_files.h>
-#endif
 
 #include <rtac_base/types/common.h>
 #include <rtac_base/types/Pose.h>
@@ -81,14 +78,12 @@ class PointCloud
     bool   empty()  const;
 
     // .ply files
-#ifdef RTAC_BASE_PLY_FILES
     static PointCloud<PointCloudT> from_ply(const std::string& path);
     static PointCloud<PointCloudT> from_ply(std::istream& is);
     static PointCloud<PointCloudT> from_ply(happly::PLYData& data);
     void export_ply(const std::string& path, bool ascii=false) const;
     void export_ply(std::ostream& os, bool ascii=false) const;
     happly::PLYData export_ply() const;
-#endif
 };
 
 //implementation
@@ -301,7 +296,6 @@ bool PointCloud<PointCloudT>::empty() const
 }
 
 // .ply files
-#ifdef RTAC_BASE_PLY_FILES
 template <typename PointCloudT>
 PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(const std::string& path)
 {
@@ -408,8 +402,6 @@ happly::PLYData PointCloud<PointCloudT>::export_ply() const
 
     return data;
 }
-
-#endif
 
 }; //namespace types
 }; //namespace rtac

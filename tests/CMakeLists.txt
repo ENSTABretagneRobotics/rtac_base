@@ -3,18 +3,14 @@ list(APPEND test_names
     misc_test.cpp
     files_test.cpp
     mathtypes_test.cpp
-    # algorithm_test.cpp
-    # pointcloud_test.cpp
-    # ply_files_test.cpp
+    algorithm_test.cpp
+    ply_files_test.cpp
+    mesh.cpp
+    ply_test.cpp
+    pointcloud_test.cpp
     # sharedvector_test.cpp
     # vectormap_test.cpp
 )
-
-if(TARGET happly)
-    list(APPEND test_names
-        ply_test.cpp
-    )
-endif()
 
 list(APPEND test_deps
     rtac_base
