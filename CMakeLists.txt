@@ -47,9 +47,9 @@ target_include_directories(rtac_base
 )
 target_compile_features(rtac_base PUBLIC cxx_std_17)
 
-# if(${WITH_CUDA})
-#     add_subdirectory(cuda)
-# endif()
+if(${WITH_CUDA})
+    add_subdirectory(cuda)
+endif()
 
 add_subdirectory(tests)
 

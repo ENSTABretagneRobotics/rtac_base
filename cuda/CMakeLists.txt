@@ -15,7 +15,7 @@ add_library(rtac_cuda SHARED
     src/utils.cu
 )
 set_target_properties(rtac_cuda PROPERTIES
-    PUBLIC_HEADER "${rtac_cuda_headers}"
+    RTAC_PUBLIC_HEADERS "${rtac_cuda_headers}"
 )
 target_include_directories(rtac_cuda PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
