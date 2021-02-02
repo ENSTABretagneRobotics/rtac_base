@@ -137,7 +137,7 @@ template <typename T>
 void DeviceVector<T>::allocate(size_t size)
 {
     this->free();
-    data_ = cuda::alloc<float>(size);
+    data_ = cuda::alloc<T>(size);
     capacity_ = size;
 }
 
