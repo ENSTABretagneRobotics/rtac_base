@@ -28,6 +28,9 @@ class DeviceMesh : public rtac::types::Mesh<PointT, FaceT, DeviceVector>
     template< template<typename> class VectorT>
     DeviceMesh(const rtac::types::Mesh<PointT,FaceT,VectorT>& other);
 
+    template< template<typename> class VectorT>
+    DeviceMesh& operator=(const rtac::types::Mesh<PointT,FaceT,VectorT>& other);
+
     // Some helpful builder functions
     static DeviceMesh<PointT,FaceT> cube(float scale = 1.0);
 
@@ -56,6 +59,16 @@ DeviceMesh<PointT,FaceT>::DeviceMesh(const rtac::types::Mesh<PointT,FaceT,Vector
 {
     this->points_ = other.points();
     this->faces_  = other.faces();
+}
+
+template <typename PointT, typename FaceT>
+template <template<typename> class VectorT>
+DeviceMesh<PointT,FaceT>&
+DeviceMesh<PointT,FaceT>::operator=(const rtac::types::Mesh<PointT,FaceT,VectorT>& other)
+{
+    this->points_ = other.points();
+    this->faces_  = other.faces();
+    return *this;
 }
 
 template <typename PointT, typename FaceT>

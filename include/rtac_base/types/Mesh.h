@@ -34,6 +34,9 @@ class Mesh
     Mesh(size_t numPoints, size_t numFaces);
     template <template<typename> class VectorT2>
     Mesh(const Mesh<PointT,FaceT,VectorT2>& other);
+
+    template <template<typename> class VectorT2>
+    Mesh& operator=(const Mesh<PointT,FaceT,VectorT2>& other);
     
     size_t num_points() const;
     size_t num_faces()  const;
@@ -78,6 +81,16 @@ Mesh<PointT,FaceT,VectorT>::Mesh(const Mesh<PointT,FaceT,VectorT2>& other) :
 {
     points_ = other.points();
     faces_  = other.faces();
+}
+
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+template <template<typename> class VectorT2>
+Mesh<PointT,FaceT,VectorT>& 
+Mesh<PointT,FaceT,VectorT>::operator=(const Mesh<PointT,FaceT,VectorT2>& other)
+{
+    this->points_ = other.points();
+    this->faces_  = other.faces();
+    return *this;
 }
 
 template <typename PointT, typename FaceT, template <typename> class VectorT>

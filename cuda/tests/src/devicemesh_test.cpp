@@ -16,6 +16,16 @@ int main()
 
     auto loaded = DeviceMesh<>::from_ply("device_cube.ply");
     cout << "Loaded " << loaded << endl;
+    
+    auto cube0 = Mesh<DeviceMesh<>::Point, DeviceMesh<>::Face, HostVector>::cube();
+
+    DeviceMesh<> copied;
+    copied = cube0;
+    cout << "Device copied " << copied << endl;
+
+    auto hostCopied = Mesh<DeviceMesh<>::Point, DeviceMesh<>::Face, HostVector>();
+    hostCopied = cube0;
+    cout << "Host copied " << hostCopied << endl;
 
     return 0;
 }
