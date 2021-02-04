@@ -60,6 +60,9 @@ class HostVector
     iterator end();
     const_iterator begin() const;
     const_iterator end() const;
+
+    value_type& operator[](size_t idx);
+    const value_type& operator[](size_t idx) const;
 };
 template <typename T>
 using SharedHostVector = rtac::types::SharedVectorBase<HostVector<T>>;
@@ -205,6 +208,18 @@ template <typename T> typename HostVector<T>::
 const_iterator HostVector<T>::end() const
 {
     return data_ + size_;
+}
+
+template <typename T> typename HostVector<T>::
+value_type& HostVector<T>::operator[](size_t idx)
+{
+    return data_[idx];
+}
+
+template <typename T> const typename HostVector<T>::
+value_type& HostVector<T>::operator[](size_t idx) const
+{
+    return data_[idx];
 }
 
 }; //namespace cuda
