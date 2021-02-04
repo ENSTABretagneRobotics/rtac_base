@@ -1,8 +1,7 @@
-cmake_minimum_required(VERSION 3.10)
-project(perex_cuda_tests VERSION 0.1 LANGUAGES CUDA CXX)
 
 list(APPEND test_names
     devicevector_test
+    devicemesh_test
 )
 
 list(APPEND test_deps
@@ -20,8 +19,16 @@ list(APPEND cuda_test_names
 )
 
 foreach(name ${cuda_test_names})
-    add_executable(${name} src/${name}.cu)
-    target_link_libraries(${name} ${test_deps})
+
+    # Generating a unique target name to avoid name colision with other rtac
+    # packages.
+    get_filename_component(executable_name ${name} NAME_WE)
+    set(test_target_name ${PROJECT_NAME}_test_${executable_name})
+
+    add_executable(${test_target_name} src/${name})
+    target_link_libraries(${test_target_name} ${test_deps})
+    set_target_properties(${test_target_name} PROPERTIES OUTPUT_NAME ${executable_name})
+
 endforeach(name)
 
 

@@ -9,6 +9,7 @@ list(APPEND rtac_cuda_headers
     include/rtac_base/cuda/utils.h
     include/rtac_base/cuda/DeviceVector.h
     include/rtac_base/cuda/HostVector.h
+    include/rtac_base/cuda/DeviceMesh.h
 )
 
 add_library(rtac_cuda SHARED
