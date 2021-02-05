@@ -4,6 +4,18 @@
 #include <iostream>
 #include <sstream>
 
+
+#if defined(__CUDACC__) || defined(__CUDABE__)
+#   define RTAC_CUDACC
+#   define RTAC_HOSTDEVICE __host__ __device__
+#   define RTAC_INLINE     __forceinline__
+#else
+#   define RTAC_HOSTDEVICE
+#   define RTAC_INLINE     inline
+#endif
+
+
+
 namespace rtac { namespace cuda {
 
 // inline won't link properly
@@ -71,10 +83,17 @@ struct memcpy
                                       reinterpret_cast<const void*>(src),
                                       sizeof(T)*count));
     }
+
+    template <typename T>
+    static T* host_to_device(const T& src)
+    {
+        T* dst = alloc<T>(1);
+        host_to_device(dst, &src, 1);
+        return dst;
+    }
 };
 
 }; //namespace cuda
 }; //namespace rtac
-
 
 #endif //_DEF_RTAC_BASE_CUDA_UTILS_H_
