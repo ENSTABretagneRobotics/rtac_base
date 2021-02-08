@@ -91,6 +91,16 @@ struct memcpy
         host_to_device(dst, &src, 1);
         return dst;
     }
+
+    template <typename T, typename T2>
+    static T device_to_host(const T2* src)
+    {
+        T dst;
+        copy_device_to_host(reinterpret_cast<void*>(&dst),
+                            reinterpret_cast<const void*>(src),
+                            sizeof(T));
+        return dst;
+    }
 };
 
 }; //namespace cuda
