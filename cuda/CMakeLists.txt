@@ -12,6 +12,8 @@ list(APPEND rtac_cuda_headers
     include/rtac_base/cuda/DeviceMesh.h
 )
 
+find_package(CUDA REQUIRED)
+
 add_library(rtac_cuda SHARED
     src/utils.cu
 )
@@ -21,11 +23,15 @@ set_target_properties(rtac_cuda PROPERTIES
 target_include_directories(rtac_cuda PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
+    ${CUDA_TOOLKIT_INCLUDE}
 )
 target_compile_options(rtac_cuda PUBLIC
     $<$<COMPILE_LANGUAGE:CUDA>:-gencode arch=compute_61,code=sm_61>
 )
-target_link_libraries(rtac_cuda PUBLIC rtac_base)
+target_link_libraries(rtac_cuda PUBLIC
+    ${CUDA_LIBRARIES}
+    rtac_base
+)
 
 add_subdirectory(tests)
 

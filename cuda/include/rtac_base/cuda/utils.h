@@ -4,6 +4,8 @@
 #include <iostream>
 #include <sstream>
 
+#include <cuda_runtime.h>
+
 
 #if defined(__CUDACC__) || defined(__CUDABE__)
 #   define RTAC_CUDACC
@@ -14,74 +16,76 @@
 #   define RTAC_INLINE     inline
 #endif
 
+#define CUDA_CHECK( call )                                                 \
+    do {                                                                   \
+        cudaError_t code = call;                                           \
+        if(code != cudaSuccess) {                                          \
+            std::ostringstream oss;                                        \
+            oss << "CUDA call '" << #call << "' failed '"                  \
+                << cudaGetErrorString(code) << "' (code:" << code << ")\n" \
+                << __FILE__ << ":" << __LINE__ << "\n";                    \
+            throw std::runtime_error(oss.str());                           \
+        }                                                                  \
+    } while(0)                                                             \
 
 
 namespace rtac { namespace cuda {
 
-// inline won't link properly
-void check_error(unsigned int code);
-
-void set_device(int deviceOrdinal);
-
-// inline won't link properly
-unsigned int do_malloc(void** devPtr, size_t size);
-// inline won't link properly
-unsigned int do_free(void* devPtr);
+inline void set_device(int deviceOrdinal)
+{
+    CUDA_CHECK( cudaSetDevice(deviceOrdinal) );
+}
 
 template <typename T>
 inline T* alloc(size_t size)
 {
     T* res;
-    check_error(do_malloc(reinterpret_cast<void**>(&res), size*sizeof(T)));
+    CUDA_CHECK( cudaMalloc(reinterpret_cast<void**>(&res), sizeof(T)*size) );
     return res;
 }
 
 template <typename T>
 inline void free(T* devPtr)
 {
-    check_error(do_free(reinterpret_cast<void*>(devPtr)));
+    CUDA_CHECK( cudaFree(reinterpret_cast<void*>(devPtr)) );
 }
 
 struct memcpy
 {
-    static unsigned int copy_device_to_host(void* dst, const void* src, size_t count);
-    static unsigned int copy_host_to_device(void* dst, const void* src, size_t count);
-    static unsigned int copy_device_to_device(void* dst, const void* src, size_t count);
-    static unsigned int copy_host_to_host    (void* dst, const void* src, size_t count);
-
-    enum Kind { HostToHost, HostToDevice, DeviceToHost, DeviceToDevice };
-    static unsigned int do_copy(void* dst, const void* src, size_t count, Kind kind);
-
     template <typename T>
     static void device_to_host(T* dst, const T* src, size_t count)
     {
-        check_error(copy_device_to_host(reinterpret_cast<void*>(dst),
-                                        reinterpret_cast<const void*>(src),
-                                        sizeof(T)*count));
+        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
+                               reinterpret_cast<const void*>(src),
+                               sizeof(T)*count,
+                               cudaMemcpyDeviceToHost) );
     }
 
     template <typename T>
     static void host_to_device(T* dst, const T* src, size_t count)
     {
-        check_error(copy_host_to_device(reinterpret_cast<void*>(dst),
-                                        reinterpret_cast<const void*>(src),
-                                        sizeof(T)*count));
+        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
+                               reinterpret_cast<const void*>(src),
+                               sizeof(T)*count,
+                               cudaMemcpyHostToDevice) );
     }
 
     template <typename T>
     static void device_to_device(T* dst, const T* src, size_t count)
     {
-        check_error(copy_device_to_device(reinterpret_cast<void*>(dst),
-                                          reinterpret_cast<const void*>(src),
-                                          sizeof(T)*count));
+        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
+                               reinterpret_cast<const void*>(src),
+                               sizeof(T)*count,
+                               cudaMemcpyDeviceToDevice) );
     }
 
     template <typename T>
     static void host_to_host(T* dst, const T* src, size_t count)
     {
-        check_error(copy_host_to_host(reinterpret_cast<void*>(dst),
-                                      reinterpret_cast<const void*>(src),
-                                      sizeof(T)*count));
+        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
+                               reinterpret_cast<const void*>(src),
+                               sizeof(T)*count,
+                               cudaMemcpyHostToHost) );
     }
 
     template <typename T>
@@ -96,9 +100,9 @@ struct memcpy
     static T device_to_host(const T2* src)
     {
         T dst;
-        copy_device_to_host(reinterpret_cast<void*>(&dst),
-                            reinterpret_cast<const void*>(src),
-                            sizeof(T));
+        device_to_host(reinterpret_cast<void*>(&dst),
+                       reinterpret_cast<const void*>(src),
+                       sizeof(T));
         return dst;
     }
 };

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 
+#include <cuda_runtime.h>
+
 #include <rtac_base/types/SharedVector.h>
 
 #include <rtac_base/cuda/utils.h>
@@ -83,7 +85,6 @@ template <typename T>
 DeviceVector<T>::DeviceVector(const DeviceVector<T>& other) :
     DeviceVector(other.size())
 {
-    //cuda::memcpy::device_to_device(data_, other.data(), size_);
     *this = other;
 }
 
@@ -91,7 +92,6 @@ template <typename T>
 DeviceVector<T>::DeviceVector(const HostVector<T>& other) :
     DeviceVector(other.size())
 {
-    //cuda::memcpy::host_to_device(data_, other.data(), size_);
     *this = other;
 }
 
@@ -99,7 +99,6 @@ template <typename T>
 DeviceVector<T>::DeviceVector(const std::vector<T>& other) :
     DeviceVector(other.size())
 {
-    //cuda::memcpy::host_to_device(data_, other.data(), size_);
     *this = other;
 }
 
@@ -113,7 +112,10 @@ template <typename T>
 DeviceVector<T>& DeviceVector<T>::operator=(const DeviceVector<T>& other)
 {
     this->resize(other.size());
-    cuda::memcpy::device_to_device(data_, other.data(), size_);
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
+                           reinterpret_cast<const void*>(other.data_),
+                           sizeof(T)*size_,
+                           cudaMemcpyDeviceToDevice) );
     return *this;
 }
 
@@ -121,7 +123,10 @@ template <typename T>
 DeviceVector<T>& DeviceVector<T>::operator=(const HostVector<T>& other)
 {
     this->resize(other.size());
-    cuda::memcpy::host_to_device(data_, other.data(), size_);
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
+                           reinterpret_cast<const void*>(other.data()),
+                           sizeof(T)*size_,
+                           cudaMemcpyHostToDevice) );
     return *this;
 }
 
@@ -129,7 +134,10 @@ template <typename T>
 DeviceVector<T>& DeviceVector<T>::operator=(const std::vector<T>& other)
 {
     this->resize(other.size());
-    cuda::memcpy::host_to_device(data_, other.data(), size_);
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
+                           reinterpret_cast<const void*>(other.data()),
+                           sizeof(T)*size_,
+                           cudaMemcpyHostToDevice) );
     return *this;
 }
 
@@ -137,14 +145,14 @@ template <typename T>
 void DeviceVector<T>::allocate(size_t size)
 {
     this->free();
-    data_ = cuda::alloc<T>(size);
+    CUDA_CHECK( cudaMalloc(&data_, sizeof(T)*size) );
     capacity_ = size;
 }
 
 template <typename T>
 void DeviceVector<T>::free()
 {
-    cuda::free(data_);
+    CUDA_CHECK( cudaFree(data_) );
     capacity_ = 0;
     size_     = 0;
 }

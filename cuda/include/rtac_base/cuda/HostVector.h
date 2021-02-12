@@ -4,6 +4,8 @@
 #include <iostream>
 #include <vector>
 
+#include <cuda_runtime.h>
+
 #include <rtac_base/types/SharedVector.h>
 
 #include <rtac_base/cuda/utils.h>
@@ -86,7 +88,6 @@ template <typename T>
 HostVector<T>::HostVector(const HostVector<T>& other) :
     HostVector(other.size())
 {
-    //cuda::memcpy::host_to_host(data_, other.data(), size_);
     *this = other;
 }
 
@@ -94,7 +95,6 @@ template <typename T>
 HostVector<T>::HostVector(const DeviceVector<T>& other) :
     HostVector(other.size())
 {
-    //cuda::memcpy::device_to_host(data_, other.data(), size_);
     *this = other;
 }
 
@@ -102,7 +102,6 @@ template <typename T>
 HostVector<T>::HostVector(const std::vector<T>& other) :
     HostVector(other.size())
 {
-    //cuda::memcpy::host_to_host(data_, other.data(), size_);
     *this = other;
 }
 
@@ -116,8 +115,10 @@ template <typename T>
 HostVector<T>& HostVector<T>::operator=(const HostVector<T>& other)
 {
     this->resize(other.size());
-    // use std::memcpy instead ?
-    cuda::memcpy::host_to_host(data_, other.data(), size_);
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
+                           reinterpret_cast<const void*>(other.data_),
+                           sizeof(T)*size_,
+                           cudaMemcpyHostToHost) );
     return *this;
 }
 
@@ -125,7 +126,10 @@ template <typename T>
 HostVector<T>& HostVector<T>::operator=(const DeviceVector<T>& other)
 {
     this->resize(other.size());
-    cuda::memcpy::device_to_host(data_, other.data(), size_);
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
+                           reinterpret_cast<const void*>(other.data()),
+                           sizeof(T)*size_,
+                           cudaMemcpyDeviceToHost) );
     return *this;
 }
 
@@ -133,8 +137,10 @@ template <typename T>
 HostVector<T>& HostVector<T>::operator=(const std::vector<T>& other)
 {
     this->resize(other.size());
-    // use std::memcpy instead ?
-    cuda::memcpy::host_to_host(data_, other.data(), size_);
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
+                           reinterpret_cast<const void*>(other.data()),
+                           sizeof(T)*size_,
+                           cudaMemcpyHostToHost) );
     return *this;
 }
 
