@@ -31,4 +31,8 @@ foreach(name ${cuda_test_names})
 
 endforeach(name)
 
+add_subdirectory(texture)
+
+
+
 

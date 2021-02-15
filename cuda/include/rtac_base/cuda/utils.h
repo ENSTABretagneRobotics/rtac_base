@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 #include <cuda_runtime.h>
 
@@ -30,6 +31,23 @@
 
 
 namespace rtac { namespace cuda {
+
+inline void init_cuda()
+{
+    // CUDA will init on the first API call.
+    // This below is a no-op is CUDA already initialized.
+    // (This was found in NVIDIA OptiX-SDK and it seemed that CUDA must be
+    // initialized before initializing OptiX, although it is not clear why).
+    CUDA_CHECK( cudaFree(0) ); 
+}
+
+template <typename T>
+T zero()
+{
+    T res;
+    std::memset(&res,0,sizeof(T));
+    return res;
+}
 
 inline void set_device(int deviceOrdinal)
 {
