@@ -26,7 +26,7 @@ class Texture2D
     // These are aliases to CUDA texture enumerations
     using FilterMode = cudaTextureFilterMode;
     static const cudaTextureFilterMode FilterNearest = cudaFilterModePoint;
-    static const cudaTextureFilterMode Filterlinear  = cudaFilterModeLinear;
+    static const cudaTextureFilterMode FilterLinear  = cudaFilterModeLinear;
 
     using WrapMode = cudaTextureAddressMode;
     static const cudaTextureAddressMode WrapRepeat = cudaAddressModeWrap;
@@ -38,9 +38,10 @@ class Texture2D
     static const cudaTextureReadMode ReadElementType     = cudaReadModeElementType;
     static const cudaTextureReadMode ReadNormalizedFloat = cudaReadModeNormalizedFloat;
 
-    // Helpers to generate helful textures such as checkerboard.
+    // Helpers to generate helful textures such as a checkerboard.
     static Texture2D<T> checkerboard(size_t width, size_t height,
-                                     const T& black, const T& white);
+                                     const T& black, const T& white,
+                                     unsigned int oversampling = 1);
 
     protected:
     
@@ -116,15 +117,19 @@ cudaChannelFormatDesc Texture2D<T>::channel_description()
 
 template <typename T>
 Texture2D<T> Texture2D<T>::checkerboard(size_t width, size_t height,
-                                        const T& black, const T& white)
+                                        const T& black, const T& white,
+                                        unsigned int oversampling)
 {
     Texture2D<T> res;
-    
+
+    width  *= oversampling;
+    height *= oversampling;
+
     // Generating the checkerboard.
     std::vector<T> data(width*height);
     for(int h = 0; h < height; h++) {
         for(int w = 0; w < width; w++) {
-            if((h+w) & 0x1) // parity check
+            if((h / oversampling + w / oversampling) & 0x1)
                 data[width*h + w] = white;
             else
                 data[width*h + w] = black;
