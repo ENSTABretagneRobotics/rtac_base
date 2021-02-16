@@ -29,6 +29,17 @@
         }                                                                  \
     } while(0)                                                             \
 
+#define CUDA_CHECK_LAST( call )                                            \
+    do {                                                                   \
+        cudaError_t code = cudaGetLastError();                             \
+        if(code != cudaSuccess) {                                          \
+            std::ostringstream oss;                                        \
+            oss << "CUDA call '" << #call << "' failed '"                  \
+                << cudaGetErrorString(code) << "' (code:" << code << ")\n" \
+                << __FILE__ << ":" << __LINE__ << "\n";                    \
+            throw std::runtime_error(oss.str());                           \
+        }                                                                  \
+    } while(0)                                                             \
 
 namespace rtac { namespace cuda {
 
