@@ -9,6 +9,7 @@ list(APPEND test_names
     # ply_test.cpp
     pointcloud_test.cpp
     sharedvector_test.cpp
+    mappedpointer_test.cpp
 )
 
 list(APPEND test_deps
