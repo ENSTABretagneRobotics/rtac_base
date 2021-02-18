@@ -8,14 +8,24 @@ class Resource
 {
     public:
 
-    using MappedPointer = rtac::types::MappedPointer<Resource, float*>;
+    using value_type = float;
+
+    using MappedPointer      = rtac::types::MappedPointer<Resource>;
+    using ConstMappedPointer = rtac::types::MappedPointer<const Resource>;
 
     friend MappedPointer;
 
     std::vector<float> data_;
 
+    size_t size() const { return data_.size(); }
+
     float* do_map() {
         cout << "Mapping action" << endl;
+        return data_.data();
+    }
+
+    const float* do_map() const {
+        cout << "Const mapping action" << endl;
         return data_.data();
     }
 
@@ -23,13 +33,19 @@ class Resource
         for(int i = 0; i < size; i++) data_[i] = i;
     }
 
-    void unmap() { cout << "Unmapping action" << endl; }
+    void unmap() const { cout << "Unmapping action" << endl; }
 
     MappedPointer map() {
         return MappedPointer(this, &Resource::do_map, &Resource::unmap);
     }
+
+    ConstMappedPointer map() const {
+        return ConstMappedPointer(this, &Resource::do_map, &Resource::unmap);
+    }
 };
 std::ostream& operator<<(std::ostream& os, const Resource& res);
+
+
 
 int main()
 {
@@ -51,7 +67,8 @@ int main()
 
 std::ostream& operator<<(std::ostream& os, const Resource& res)
 {
-    for(auto v : res.data_)
-        os << " " << v;
+    auto data = res.map();
+    for(int i = 0; i < res.size(); i++)
+        os << " " << data[i];
     return os;
 }

@@ -8,25 +8,32 @@ namespace rtac { namespace types {
 // This type will automatically grab a resource when created and release the
 // resource when going out of scope.
 
-template <typename MappedT, typename PointerT>
+template <typename MappedT,
+          typename PointerT = typename std::conditional<std::is_const<MappedT>::value,
+                                const typename MappedT::value_type*,
+                                typename MappedT::value_type*>::type>
 class MappedPointer
 {
     public:
 
-    using MappedType  = MappedT;
-    using PointerType = PointerT;
+    using MappedType    = MappedT;
+    using PointerType   = PointerT;
+    using MapMethodType = typename std::conditional<std::is_const<MappedType>::value,
+                                                    PointerType(MappedT::*)(void) const,
+                                                    PointerType(MappedT::*)(void)>::type;
+    using UnmapMethodType = void(MappedT::*)(void) const;
 
     protected:
 
     MappedType* mappedObject_;
     PointerType ptr_;
-    void(MappedT::*unmapping_method_)(void);
+    UnmapMethodType unmapping_method_;
     
     public:
 
     MappedPointer(MappedType* object,
-                  PointerT(MappedT::*mapping_method)(void),
-                  void(MappedT::*unmapping_method)(void)) :
+                  MapMethodType   mapping_method,
+                  UnmapMethodType unmapping_method) :
         mappedObject_(object),
         ptr_((object->*mapping_method)()),
         unmapping_method_(unmapping_method)
