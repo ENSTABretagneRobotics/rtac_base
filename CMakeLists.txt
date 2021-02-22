@@ -23,7 +23,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/time.h
     include/rtac_base/ply_files.h
     include/rtac_base/happly.h
-    include/rtac_base/algorithm.h
+    include/rtac_base/type_utils.h
     include/rtac_base/geometry.h
 )
 

@@ -1,10 +1,10 @@
-#ifndef _DEF_RTAC_BASE_ALGORITHM_H_
-#define _DEF_RTAC_BASE_ALGORITHM_H_
+#ifndef _DEF_RTAC_BASE_TYPE_UTILS_H_
+#define _DEF_RTAC_BASE_TYPE_UTILS_H_
 
 #include <type_traits>
 #include <tuple>
 
-namespace rtac { namespace algorithm {
+namespace rtac { namespace types {
 
 // TupleTypeIndex ///////////////////////////////////////////////////////////
 // The following structs will calculate at compile time the first index of the
@@ -53,6 +53,7 @@ struct TypeInTuple : std::conditional<
     std::false_type, std::true_type>::type
 {};
 
-}; //namespace algorithm
+}; //namespace types
 }; //namespace rtac
-#endif //_DEF_RTAC_BASE_ALGORITHM_H_
+
+#endif //_DEF_RTAC_BASE_TYPE_UTILS_H_
