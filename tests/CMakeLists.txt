@@ -4,6 +4,7 @@ list(APPEND test_names
     files_test.cpp
     mathtypes_test.cpp
     geometry_test.cpp
+    algorithm_test.cpp
     ply_files_test.cpp
     mesh.cpp
     # ply_test.cpp
