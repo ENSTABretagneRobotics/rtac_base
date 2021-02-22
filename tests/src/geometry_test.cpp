@@ -1,10 +1,10 @@
 #include <rtac_base/types/common.h>
-#include <rtac_base/algorithm.h>
+#include <rtac_base/geometry.h>
 
 #include <iostream>
 using namespace std;
 using namespace rtac::types;
-using namespace rtac::algorithm;
+using namespace rtac::geometry;
 using namespace rtac::types::indexing;
 
 int main()

@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include <rtac_base/types/common.h>
-#include <rtac_base/algorithm.h>
+#include <rtac_base/geometry.h>
 
 namespace rtac { namespace types {
 
@@ -48,6 +48,10 @@ class Pose
 
     Pose<T>& operator*=(const Pose<T>& rhs);
     Pose<T>  inverse() const;
+
+    Pose<T>& look_at(const Vector3<T>& target,
+                     const Vector3<T>& position,
+                     const Vector3<T>& up = Vector3<T>({0,0,1}));
 };
 
 // class definition
@@ -61,7 +65,7 @@ template <typename T>
 Pose<T> Pose<T>::from_rotation_matrix(const Mat3& r,
                                       const Vec3& t)
 {
-    return Pose<T>(t, Quaternion(rtac::algorithm::orthonormalized(r)));
+    return Pose<T>(t, Quaternion(rtac::geometry::orthonormalized(r)));
 }
 
 template <typename T>
@@ -86,7 +90,7 @@ void Pose<T>::set_orientation(const Quaternion& q)
 template <typename T>
 void Pose<T>::set_orientation(const Mat3& r)
 {
-    orientation_ = rtac::algorithm::orthonormalized(r);
+    orientation_ = rtac::geometry::orthonormalized(r);
 }
 
 template <typename T>
@@ -144,6 +148,16 @@ Pose<T> Pose<T>::inverse() const
 {
     Quaternion qinv = orientation_.inverse();
     return Pose<T>(-(qinv*translation_), qinv);
+}
+
+template <typename T>
+Pose<T>& Pose<T>::look_at(const Vector3<T>& target,
+                          const Vector3<T>& position,
+                          const Vector3<T>& up)
+{
+    *this = Pose<T>::from_rotation_matrix(geometry::look_at(target, position, up),
+                                          position);
+    return *this;
 }
 
 using Posef = Pose<float>;
