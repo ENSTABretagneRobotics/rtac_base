@@ -11,6 +11,7 @@ list(APPEND test_names
     pointcloud_test.cpp
     sharedvector_test.cpp
     mappedpointer_test.cpp
+    buildables_test.cpp
 )
 
 list(APPEND test_deps
