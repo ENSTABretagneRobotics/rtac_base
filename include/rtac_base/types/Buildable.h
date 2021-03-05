@@ -53,12 +53,15 @@ class BuildableHandle
     // time.
     template <typename OtherBuildableT>
     operator BuildableHandle<OtherBuildableT, PointerT>() const;
-
+    
+    // Minimal pointer behavior
     BuildableT& operator*();
     const BuildableT& operator*() const;
 
     BuildableT* operator->();
     const BuildableT* operator->() const;
+
+    operator bool() const;
 };
 
 template <typename BuildableT, template <typename T> class PointerT>
@@ -118,6 +121,12 @@ template <typename BuildableT, template <typename T> class PointerT>
 const BuildableT* BuildableHandle<BuildableT,PointerT>::operator->() const
 {
     return buildable_.get();
+}
+
+template <typename BuildableT, template <typename T> class PointerT>
+BuildableHandle<BuildableT,PointerT>::operator bool() const
+{
+    return !(!(buildable_));
 }
 
 
