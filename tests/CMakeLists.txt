@@ -12,6 +12,7 @@ list(APPEND test_names
     sharedvector_test.cpp
     mappedpointer_test.cpp
     buildables_test.cpp
+    buildtarget_test.cpp
 )
 
 list(APPEND test_deps

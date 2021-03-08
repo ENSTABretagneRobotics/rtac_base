@@ -20,6 +20,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/SharedVector.h
     include/rtac_base/types/MappedPointer.h
     include/rtac_base/types/Buildable.h
+    include/rtac_base/types/BuildTarget.h
     include/rtac_base/files.h
     include/rtac_base/time.h
     include/rtac_base/ply_files.h
@@ -29,6 +30,7 @@ list(APPEND rtac_base_headers
 )
 
 add_library(rtac_base SHARED
+    src/types/BuildTarget.cpp
     src/files.cpp
     src/time.cpp
     src/ply_files.cpp
