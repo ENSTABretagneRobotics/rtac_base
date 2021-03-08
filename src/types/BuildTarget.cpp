@@ -11,16 +11,13 @@ BuildTarget::BuildTarget(const Dependencies& deps) :
 
 bool BuildTarget::needs_build() const
 {
-    if(needsBuild_)
-        return true;
     for(auto& dep : dependencies_) {
         if(dep.has_changed()) {
             this->bump_version(true);
             dep.acknowledge(); // Keeping track of changes
-            return true;
         }
     }
-    return false;
+    return needsBuild_;
 }
 
 bool BuildTarget::version() const
