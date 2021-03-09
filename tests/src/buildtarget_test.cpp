@@ -75,6 +75,23 @@ int main()
     auto target2 = TargetChild0::Create(2);
     target2->add_dependency(target0);
     target2->add_dependency(target1);
+
+    cout << "target0    : " << target0.get() << endl;
+    cout << "target1    : " << target1.get() << endl;
+    cout << "target2    : " << target2.get() << endl;
+
+    BuildTarget::ConstPtr targetPtr0 = target0;
+    BuildTarget::ConstPtr targetPtr1 = target1;
+    BuildTarget::ConstPtr targetPtr2 = target2;
+
+    cout << "targetPtr0 : " << targetPtr0.get() << endl;
+    cout << "targetPtr1 : " << targetPtr1.get() << endl;
+    cout << "targetPtr2 : " << targetPtr2.get() << endl;
+
+    for(auto dep : target2->dependencies()) {
+        cout << "dep     : " << dep.get() << endl;
+    }
+    cout << endl;
     
     cout << "Full build" << endl;
     target2->check_dependencies();

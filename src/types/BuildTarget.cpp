@@ -11,16 +11,23 @@ BuildTarget::BuildTarget(const Dependencies& deps) :
 
 bool BuildTarget::needs_build() const
 {
+    if(needsBuild_)
+        return true;
     for(auto& dep : dependencies_) {
+        if(!dep) {
+            std::cout << "Dep is null !" << std::endl << std::flush;
+        }
         if(dep.has_changed()) {
             this->bump_version(true);
-            dep.acknowledge(); // Keeping track of changes
+            return true;
+            //dep.acknowledge(); // Keeping track of changes
         }
     }
-    return needsBuild_;
+    return false;
+    //return needsBuild_;
 }
 
-bool BuildTarget::version() const
+unsigned int BuildTarget::version() const
 {
     return version_;
 }
@@ -64,7 +71,7 @@ void BuildTarget::build() const
 {
     if(!this->needs_build())
         return;
-    
+
     // cleanup before build this can be a no-op
     this->clean();
 
@@ -73,8 +80,9 @@ void BuildTarget::build() const
         if(dep->needs_build()) {
             dep->build();
         }
+        dep.acknowledge();
     }
-
+    
     this->do_build();
     this->needsBuild_ = false;
 }
