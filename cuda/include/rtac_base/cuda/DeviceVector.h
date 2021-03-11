@@ -46,6 +46,8 @@ class DeviceVector
     DeviceVector(const HostVector<T>& other);
     DeviceVector(const std::vector<T>& other);
     ~DeviceVector();
+
+    void copy_from_host(size_t size, const T* data);
     
     DeviceVector& operator=(const DeviceVector<T>& other);
     DeviceVector& operator=(const HostVector<T>& other);
@@ -106,6 +108,16 @@ template <typename T>
 DeviceVector<T>::~DeviceVector()
 {
     this->free();
+}
+
+template <typename T>
+void DeviceVector<T>::copy_from_host(size_t size, const T* data)
+{
+    this->resize(size);
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
+                           reinterpret_cast<const void*>(data),
+                           sizeof(T)*size_,
+                           cudaMemcpyHostToDevice) );
 }
 
 template <typename T>
