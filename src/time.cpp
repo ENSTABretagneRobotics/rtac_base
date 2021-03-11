@@ -15,13 +15,22 @@ void Clock::reset()
 FrameCounter::FrameCounter(int resetCount) :
     resetCount_(resetCount),
     count_(0),
-    t0_(std::chrono::high_resolution_clock::now())
+    t0_(std::chrono::high_resolution_clock::now()),
+    period_(Duration::zero())
 {}
 
 float FrameCounter::get() const
 {
     auto t = std::chrono::high_resolution_clock::now();
-    float res = count_ / std::chrono::duration<double>(t - t0_).count();
+    Duration ellapsed(t - t0_);
+    float res = count_ / ellapsed.count();
+
+    if(period_ != Duration::zero()) {
+        while(ellapsed < period_) {
+            std::this_thread::sleep_for(period_ - ellapsed);
+            ellapsed = (std::chrono::high_resolution_clock::now() - t0_);
+        }
+    }
 
     if(count_ >= resetCount_) {
         t0_ = t;
@@ -30,6 +39,17 @@ float FrameCounter::get() const
     count_++;
 
     return res;
+}
+
+void FrameCounter::limit_frame_rate(float fps)
+{
+    if(fps > 1.0e-8)
+        period_ = Duration(1.0 / fps);
+}
+
+void FrameCounter::free_frame_rate()
+{
+    period_ = Duration::zero();
 }
 
 std::ostream& FrameCounter::print(std::ostream& os) const

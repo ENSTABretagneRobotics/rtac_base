@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <thread>
 
 namespace rtac { namespace time {
 
@@ -39,15 +40,23 @@ class Clock
 
 class FrameCounter
 {
+    public:
+
+    using Duration = std::chrono::duration<double, std::ratio<1,1>>;
+
     protected:
     
     int resetCount_;
     mutable int count_;
     mutable std::chrono::time_point<std::chrono::high_resolution_clock> t0_;
+    Duration period_;
 
     public:
     
     FrameCounter(int resetCount = 1);
+
+    void limit_frame_rate(float fps);
+    void free_frame_rate();
     
     float get() const;
     std::ostream& print(std::ostream& os) const;
