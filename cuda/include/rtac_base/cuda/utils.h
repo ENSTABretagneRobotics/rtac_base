@@ -65,76 +65,76 @@ inline void set_device(int deviceOrdinal)
     CUDA_CHECK( cudaSetDevice(deviceOrdinal) );
 }
 
-template <typename T>
-inline T* alloc(size_t size)
-{
-    T* res;
-    CUDA_CHECK( cudaMalloc(reinterpret_cast<void**>(&res), sizeof(T)*size) );
-    return res;
-}
-
-template <typename T>
-inline void free(T* devPtr)
-{
-    CUDA_CHECK( cudaFree(reinterpret_cast<void*>(devPtr)) );
-}
-
-struct memcpy
-{
-    template <typename T>
-    static void device_to_host(T* dst, const T* src, size_t count)
-    {
-        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
-                               reinterpret_cast<const void*>(src),
-                               sizeof(T)*count,
-                               cudaMemcpyDeviceToHost) );
-    }
-
-    template <typename T>
-    static void host_to_device(T* dst, const T* src, size_t count)
-    {
-        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
-                               reinterpret_cast<const void*>(src),
-                               sizeof(T)*count,
-                               cudaMemcpyHostToDevice) );
-    }
-
-    template <typename T>
-    static void device_to_device(T* dst, const T* src, size_t count)
-    {
-        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
-                               reinterpret_cast<const void*>(src),
-                               sizeof(T)*count,
-                               cudaMemcpyDeviceToDevice) );
-    }
-
-    template <typename T>
-    static void host_to_host(T* dst, const T* src, size_t count)
-    {
-        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
-                               reinterpret_cast<const void*>(src),
-                               sizeof(T)*count,
-                               cudaMemcpyHostToHost) );
-    }
-
-    template <typename T>
-    static T* host_to_device(const T& src)
-    {
-        T* dst = alloc<T>(1);
-        host_to_device(dst, &src, 1);
-        return dst;
-    }
-
-    template <typename T, typename T2>
-    static T device_to_host(const T2* src)
-    {
-        T dst;
-        device_to_host(reinterpret_cast<void*>(&dst),
-                       reinterpret_cast<const void*>(src),
-                       sizeof(T));
-        return dst;
-    }
-};
+//template <typename T>
+//inline T* alloc(size_t size)
+//{
+//    T* res;
+//    CUDA_CHECK( cudaMalloc(reinterpret_cast<void**>(&res), sizeof(T)*size) );
+//    return res;
+//}
+//
+//template <typename T>
+//inline void free(T* devPtr)
+//{
+//    CUDA_CHECK( cudaFree(reinterpret_cast<void*>(devPtr)) );
+//}
+//
+//struct memcpy
+//{
+//    template <typename T>
+//    static void device_to_host(T* dst, const T* src, size_t count)
+//    {
+//        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
+//                               reinterpret_cast<const void*>(src),
+//                               sizeof(T)*count,
+//                               cudaMemcpyDeviceToHost) );
+//    }
+//
+//    template <typename T>
+//    static void host_to_device(T* dst, const T* src, size_t count)
+//    {
+//        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
+//                               reinterpret_cast<const void*>(src),
+//                               sizeof(T)*count,
+//                               cudaMemcpyHostToDevice) );
+//    }
+//
+//    template <typename T>
+//    static void device_to_device(T* dst, const T* src, size_t count)
+//    {
+//        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
+//                               reinterpret_cast<const void*>(src),
+//                               sizeof(T)*count,
+//                               cudaMemcpyDeviceToDevice) );
+//    }
+//
+//    template <typename T>
+//    static void host_to_host(T* dst, const T* src, size_t count)
+//    {
+//        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
+//                               reinterpret_cast<const void*>(src),
+//                               sizeof(T)*count,
+//                               cudaMemcpyHostToHost) );
+//    }
+//
+//    template <typename T>
+//    static T* host_to_device(const T& src)
+//    {
+//        T* dst = alloc<T>(1);
+//        host_to_device(dst, &src, 1);
+//        return dst;
+//    }
+//
+//    template <typename T, typename T2>
+//    static T device_to_host(const T2* src)
+//    {
+//        T dst;
+//        device_to_host(reinterpret_cast<void*>(&dst),
+//                       reinterpret_cast<const void*>(src),
+//                       sizeof(T));
+//        return dst;
+//    }
+//};
 
 }; //namespace cuda
 }; //namespace rtac
