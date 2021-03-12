@@ -34,5 +34,11 @@ endforeach(name)
 add_subdirectory(texture)
 
 
-
+add_executable(reductions_test
+    src/reductions_test.cu
+)
+target_link_libraries(reductions_test PRIVATE
+    rtac_cuda
+)
+    
 
