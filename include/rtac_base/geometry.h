@@ -23,21 +23,14 @@ template <typename T, int D>
 Eigen::Matrix<T,D,1> find_noncolinear(const Eigen::Matrix<T,D,1>& v, float tol = 1e-6)
 {
     Eigen::Matrix<T,D,1> res = v.cwiseAbs();
-    int maxIndex = 0;
+    int minIndex = 0;
     for(int i = 1; i < res.rows(); i++) {
-        if(res(i) > res(maxIndex)) {
-            maxIndex = i;
+        if(res(i) < res(minIndex)) {
+            minIndex = i;
         }
     }
-    res = v;
-    res(maxIndex) = 0;
-    if (res.norm() < tol) {
-        // v is in canonical basis. Returning a different canonical vector.
-        for(int i = 0; i < res.rows(); i++) {
-            res(i) = 0;
-        }
-        res((maxIndex + 1) % res.rows()) = 1;
-    }
+    res = Eigen::Matrix<T,D,1>::Zero();
+    res(minIndex) = 1;
     return res;
 }
 

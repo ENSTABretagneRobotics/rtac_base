@@ -40,6 +40,8 @@ class CallbackQueue
 
     CallbackQueue() {}
 
+    unsigned int callback_count() const;
+
     CallbackId add_callback(const CallbackT& callback);
     bool remove_callback(CallbackId index);
     
@@ -47,6 +49,12 @@ class CallbackQueue
 
     void call(ArgTypes... args);
 };
+
+template <class ...ArgTypes>
+unsigned int CallbackQueue<ArgTypes...>::callback_count() const
+{
+    return callbacks_.size() + singleShots_.size();
+}
 
 template <class ...ArgTypes>
 typename CallbackQueue<ArgTypes...>::CallbackId 
