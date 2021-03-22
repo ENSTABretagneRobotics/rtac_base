@@ -38,7 +38,7 @@ PathList find(const std::string& reString, bool followSimlink)
 
 PathList find(const std::string& reString, const std::string& path, bool followSimlink)
 {
-    return find(reString, {path}, followSimlink);
+    return find(reString, PathList({path}), followSimlink);
 }
 
 PathList find(const std::string& reString, const PathList& searchPaths, bool followSimlink)
@@ -70,7 +70,7 @@ std::string find_one(const std::string& reString, bool followSimlink)
 std::string find_one(const std::string& reString,
                      const std::string& path, bool followSimlink)
 {
-    return find_one(reString, {path}, followSimlink);
+    return find_one(reString, PathList({path}), followSimlink);
 }
 
 std::string find_one(const std::string& reString,
