@@ -1,5 +1,5 @@
-#ifndef _DEF_RTAC_OCULUS_CALLBACK_QUEUE_H_
-#define _DEF_RTAC_OCULUS_CALLBACK_QUEUE_H_
+#ifndef _DEF_RTAC_TYPES_CALLBACK_QUEUE_H_
+#define _DEF_RTAC_TYPES_CALLBACK_QUEUE_H_
 
 #include <functional>
 #include <unordered_map>
@@ -131,4 +131,4 @@ void CallbackQueue<ArgTypes...>::call(ArgTypes... args)
 }; //namespace types
 }; //namespace rtac
 
-#endif //_DEF_RTAC_OCULUS_CALLBACK_QUEUE_H_
+#endif //_DEF_RTAC_TYPES_CALLBACK_QUEUE_H_
