@@ -3,9 +3,12 @@ project(rtac_base VERSION 0.1)
 
 option(WITH_CUDA "Compile and install cuda-dependent code." ON)
 
-find_package(Eigen3 REQUIRED)
+# This script fixes some issues related to LD_LIBRARY_PATH # DOES NOT WORK
+# include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rpath_config.cmake)
 # Loading installation script (just loading function, not calling)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_installation.cmake)
+
+find_package(Eigen3 REQUIRED)
 
 list(APPEND rtac_base_headers
     include/rtac_base/types/Handle.h
