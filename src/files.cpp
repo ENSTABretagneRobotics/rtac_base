@@ -14,13 +14,34 @@ std::string rtac_data_path()
     return std::string(std::getenv(DATA_PATH_ENV_VARIABLE));
 }
 
+PathList rtac_data_paths(const std::string& delimiter)
+{
+    PathList paths;
+    auto env = rtac_data_path();
+    size_t idx = env.find(delimiter);
+    while(idx != std::string::npos) {
+        paths.push_back(env.substr(0, idx));
+        idx = env.find(delimiter);
+        env.erase(0, paths.back().length() + delimiter.length());
+    }
+    if(env.length() > 0) {
+        paths.push_back(env);
+    }
+    return paths;
+}
+
 PathList find(const std::string& reString, bool followSimlink)
 {
-    auto path = rtac_data_path();
-    return find(reString, path, followSimlink);
+    auto paths = rtac_data_paths();
+    return find(reString, paths, followSimlink);
 }
 
 PathList find(const std::string& reString, const std::string& path, bool followSimlink)
+{
+    return find(reString, {path}, followSimlink);
+}
+
+PathList find(const std::string& reString, const PathList& searchPaths, bool followSimlink)
 {
     PathList paths;
     
@@ -29,9 +50,11 @@ PathList find(const std::string& reString, const std::string& path, bool followS
         doptions = fs::directory_options::follow_directory_symlink;
     
     std::regex re(reString);
-    for(auto& path : fs::recursive_directory_iterator(path, doptions)) {
-        if(std::regex_match(path.path().string(), re))
-            paths.push_back(path.path());
+    for(auto& sPath : searchPaths) {
+        for(auto& path : fs::recursive_directory_iterator(sPath, doptions)) {
+            if(std::regex_match(path.path().string(), re))
+                paths.push_back(path.path());
+        }
     }
     paths.sort();
 
@@ -40,20 +63,29 @@ PathList find(const std::string& reString, const std::string& path, bool followS
 
 std::string find_one(const std::string& reString, bool followSimlink)
 {
-    auto path = rtac_data_path();
-    return find_one(reString, path, followSimlink);
+    auto paths = rtac_data_paths();
+    return find_one(reString, paths, followSimlink);
 }
 
-std::string find_one(const std::string& reString, const std::string& path, bool followSimlink)
+std::string find_one(const std::string& reString,
+                     const std::string& path, bool followSimlink)
+{
+    return find_one(reString, {path}, followSimlink);
+}
+
+std::string find_one(const std::string& reString,
+                     const PathList& searchPaths, bool followSimlink)
 {
     fs::directory_options doptions = fs::directory_options::none;
     if (followSimlink)
         doptions = fs::directory_options::follow_directory_symlink;
     
     std::regex re(reString);
-    for(auto& path : fs::recursive_directory_iterator(path, doptions)) {
-        if(std::regex_match(path.path().string(), re))
-            return path.path().string();
+    for(auto& sPath : searchPaths) {
+        for(auto& path : fs::recursive_directory_iterator(sPath, doptions)) {
+            if(std::regex_match(path.path().string(), re))
+                return path.path().string();
+        }
     }
     return NotFound;
 }

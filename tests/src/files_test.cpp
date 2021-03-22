@@ -11,6 +11,12 @@ int main()
 {
     Clock clock;
     cout << "RTAC_DATA : " << nf::rtac_data_path() << endl;
+    
+    auto paths = nf::rtac_data_paths();
+    for(auto p : paths) {
+        cout << "  " << p << endl;
+    }
+
     for(auto& path : nf::find()) {
         cout << path << endl;
     }
@@ -21,8 +27,9 @@ int main()
     }
     cout << "Ellapsed : " << clock.interval() << "s" << endl;
 
-    cout << nf::find_one(".*ortho.*\\.tif") << endl;
+    cout << nf::find_one(".*dsm.*\\.tif") << endl;
     cout << "Ellapsed : " << clock.interval() << "s" << endl;
+
     return 0;
 }
 

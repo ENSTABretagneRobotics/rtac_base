@@ -14,17 +14,23 @@ namespace rtac { namespace files {
 
 const char* const NotFound = "Not Found";
 
-std::string rtac_data_path();
-
 using PathList = std::list<std::string>;
+
+std::string rtac_data_path();
+PathList rtac_data_paths(const std::string& delimiter = ":");
+
 // default search in rtac_data_path
 PathList find(const std::string& reString=".*", bool followSimlink=true);
 PathList find(const std::string& reString, const std::string& path,
+              bool followSimlink=true);
+PathList find(const std::string& reString, const PathList& path,
               bool followSimlink=true);
 
 // default search in rtac_data_path
 std::string find_one(const std::string& reString=".*", bool followSimlink=true);
 std::string find_one(const std::string& reString, const std::string& path,
+                     bool followSimlink=true);
+std::string find_one(const std::string& reString, const PathList& path,
                      bool followSimlink=true);
 
 std::string append_extension(const std::string& path, const std::string& ext);
