@@ -52,6 +52,8 @@ class Pose
     Pose<T>& look_at(const Vector3<T>& target,
                      const Vector3<T>& position,
                      const Vector3<T>& up = Vector3<T>({0,0,1}));
+
+    T angle() const;
 };
 
 // class definition
@@ -158,6 +160,14 @@ Pose<T>& Pose<T>::look_at(const Vector3<T>& target,
     *this = Pose<T>::from_rotation_matrix(geometry::look_at(target, position, up),
                                           position);
     return *this;
+}
+
+template <typename T>
+T Pose<T>::angle() const
+{
+    return std::asin(Vec3({orientation_.x(),
+                           orientation_.y(),
+                           orientation_.z()}).norm());
 }
 
 using Posef = Pose<float>;
