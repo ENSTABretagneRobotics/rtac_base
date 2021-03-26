@@ -21,6 +21,8 @@ PathList rtac_data_paths(const std::string& delimiter = ":");
 
 // default search in rtac_data_path
 PathList find(const std::string& reString=".*", bool followSimlink=true);
+PathList find(const std::string& reString, const char* path,
+              bool followSimlink=true);
 PathList find(const std::string& reString, const std::string& path,
               bool followSimlink=true);
 PathList find(const std::string& reString, const PathList& path,
@@ -28,6 +30,8 @@ PathList find(const std::string& reString, const PathList& path,
 
 // default search in rtac_data_path
 std::string find_one(const std::string& reString=".*", bool followSimlink=true);
+std::string find_one(const std::string& reString, const char* path,
+                     bool followSimlink=true);
 std::string find_one(const std::string& reString, const std::string& path,
                      bool followSimlink=true);
 std::string find_one(const std::string& reString, const PathList& path,

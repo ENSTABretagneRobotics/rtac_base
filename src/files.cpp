@@ -36,6 +36,11 @@ PathList find(const std::string& reString, bool followSimlink)
     return find(reString, paths, followSimlink);
 }
 
+PathList find(const std::string& reString, const char* path, bool followSimlink)
+{
+    return find(reString, std::string(path), followSimlink);
+}
+
 PathList find(const std::string& reString, const std::string& path, bool followSimlink)
 {
     return find(reString, PathList({path}), followSimlink);
@@ -65,6 +70,12 @@ std::string find_one(const std::string& reString, bool followSimlink)
 {
     auto paths = rtac_data_paths();
     return find_one(reString, paths, followSimlink);
+}
+
+std::string find_one(const std::string& reString,
+                     const char* path, bool followSimlink)
+{
+    return find_one(reString, std::string(path), followSimlink);
 }
 
 std::string find_one(const std::string& reString,
