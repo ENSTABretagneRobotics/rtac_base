@@ -54,6 +54,15 @@ class Pose
                      const Vector3<T>& up = Vector3<T>({0,0,1}));
 
     T angle() const;
+
+    T x() const { return translation_(0); }
+    T y() const { return translation_(1); }
+    T z() const { return translation_(2); }
+
+    T qw() const { return orientation_.w(); }
+    T qx() const { return orientation_.x(); }
+    T qy() const { return orientation_.y(); }
+    T qz() const { return orientation_.z(); }
 };
 
 // class definition
