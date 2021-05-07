@@ -52,14 +52,6 @@ inline void init_cuda()
     CUDA_CHECK( cudaFree(0) ); 
 }
 
-template <typename T>
-T zero()
-{
-    T res;
-    std::memset(&res,0,sizeof(T));
-    return res;
-}
-
 inline void set_device(int deviceOrdinal)
 {
     CUDA_CHECK( cudaSetDevice(deviceOrdinal) );
