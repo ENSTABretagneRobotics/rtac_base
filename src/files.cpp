@@ -148,6 +148,73 @@ void write_ppm(const std::string& path, size_t width, size_t height, const char*
     f.close();
 }
 
+void read_ppm(const std::string& path, size_t& width, size_t& height,
+              std::vector<uint8_t>& data)
+{
+    std::ifstream f;
+    f.open(path, std::ios::in | std::ios::binary);
+    if(!f.good())
+        throw std::runtime_error("Cloud not open file for pgm export : " + path);
+    
+    std::array<char,256> buf;
+    auto count = f.read(buf.data(), 2).gcount();
+    buf[count] = '\0';
+
+    if(count != 2 || buf[0] != 'P' || (buf[1] != '3' && buf[1] != '6')) {
+        throw std::runtime_error("Invalid ppm file : \"" + path + "\"");
+    }
+    
+    unsigned int maxValue = 0;
+    f >> width;
+    f >> height;
+    f >> maxValue;
+    
+    if(maxValue > 255) {
+        data.resize(6*width*height);
+    }
+    else {
+        data.resize(3*width*height);
+    }
+
+    std::cout << "Reading .ppm file (" << width << "x" << height
+              << ", max value : " << maxValue << ")" << std::endl;
+
+    if(buf[1] == '3') {
+        if(maxValue > 255) {
+            unsigned int tmp;
+            uint16_t* dst = (uint16_t*)data.data();
+            uint16_t* end = (uint16_t*)(data.data() + data.size());
+            do {
+                f >> tmp;
+                *dst = tmp;
+                dst += 1;
+                count = f.gcount();
+            } while(count > 0 && dst < end);
+        }
+        else {
+            unsigned int tmp;
+            uint8_t* dst = (uint8_t*)data.data();
+            uint8_t* end = (uint8_t*)(data.data() + data.size());
+            do {
+                f >> tmp;
+                *dst = tmp;
+                dst += 1;
+                count = f.gcount();
+            } while(count > 0 && dst < end);
+        }
+    }
+    else {
+        f.get();
+        auto dst = data.data();
+        do {
+            count = f.read((char*)dst, 256).gcount();
+            dst += count;
+        } while(count == 256);
+    }
+
+    f.close();
+}
+
 }; //namespace files
 }; //namespace rtac
 

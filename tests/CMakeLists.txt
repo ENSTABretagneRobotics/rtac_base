@@ -13,6 +13,8 @@ list(APPEND test_names
     mappedpointer_test.cpp
     buildables_test.cpp
     buildtarget_test.cpp
+
+    ppmformat_test.cpp
 )
 
 list(APPEND test_deps

@@ -65,6 +65,9 @@ void write_ppm(const std::string& path, size_t width, size_t height, const T* da
     write_ppm(path, width, height, reinterpret_cast<const char*>(imgData.data()), comment);
 }
 
+void read_ppm(const std::string& path, size_t& width, size_t& height,
+              std::vector<uint8_t>& data);
+
 }; //namespace files
 }; //namespace rtac
 
