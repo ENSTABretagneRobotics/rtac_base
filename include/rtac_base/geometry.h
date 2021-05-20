@@ -1,3 +1,7 @@
+/**
+ * @file geometry.h
+ */
+
 #ifndef _DEF_RTAC_BASE_GEOMETRY_H_
 #define _DEF_RTAC_BASE_GEOMETRY_H_
 
@@ -19,8 +23,17 @@ constexpr T to_radians(T degrees)
     return degrees * M_PI / 180.0;
 }
 
+/**
+ * Find a vector non-colinear to v.
+ *
+ * The non-colinear vector is found by starting from a zero vector the same
+ * size of v. Then a single coefficient is set to 1 at the same index as the
+ * lowest coefficient of v.
+ *
+ * @return A vector non-colinear to v.
+ */
 template <typename T, int D>
-Eigen::Matrix<T,D,1> find_noncolinear(const Eigen::Matrix<T,D,1>& v, float tol = 1e-6)
+Eigen::Matrix<T,D,1> find_noncolinear(const Eigen::Matrix<T,D,1>& v)
 {
     Eigen::Matrix<T,D,1> res = v.cwiseAbs();
     int minIndex = 0;
@@ -34,8 +47,17 @@ Eigen::Matrix<T,D,1> find_noncolinear(const Eigen::Matrix<T,D,1>& v, float tol =
     return res;
 }
 
+/**
+ * Find a vector orthogonal to v.
+ *
+ * An orthogonal vector is found by first finding a vector vn non-colinear to
+ * v. Then an orthogonal vector to v is constructed by negating the projection
+ * of vn on v.
+ *
+ * @return A vector orthogonal to v.
+ */
 template <typename T, int D>
-Eigen::Matrix<T,D,1> find_orthogonal(const Eigen::Matrix<T,D,1>& v, float tol = 1e-6)
+Eigen::Matrix<T,D,1> find_orthogonal(const Eigen::Matrix<T,D,1>& v)
 {
     Eigen::Matrix<T,D,1> res = find_noncolinear(v, tol);
     Eigen::Matrix<T,D,1> vn = v.normalized();
@@ -43,21 +65,38 @@ Eigen::Matrix<T,D,1> find_orthogonal(const Eigen::Matrix<T,D,1>& v, float tol = 
     return res;
 }
 
+/**
+ * Find the rotation matrix R the closest to M in the Frobenius norm. (M must
+ * be close to be orthonormal. This is usefull to regularize rotation
+ * matrices).
+ *
+ * The rotation matrix R is computed from the Singular Value Decomposition of
+ * M ([See here](https://www.maths.manchester.ac.uk/~higham/narep/narep161.pdf)):
+ *
+ * \f[ M = U \Sigma V \f]
+ * \f[ R = UV \f]
+ *
+ * @return A rotation matrix R closest to M in Frobenius norm.
+ */
 template <typename T, int D>
-Eigen::Matrix<T,D,D> orthonormalized(const Eigen::Matrix<T,D,D>& m, T tol = 1e-6)
+Eigen::Matrix<T,D,D> orthonormalized(const Eigen::Matrix<T,D,D>& M, T tol = 1e-6)
 {
     // Produce a orthonormal matrix from m using SVD.
     // https://eigen.tuxfamily.org/dox/classEigen_1_1JacobiSVD.html
     // (closest orthonormal matrix in Frobenius norm ? (check it))
-    Eigen::JacobiSVD<Eigen::Matrix<T,D,D>> svd(m, Eigen::ComputeFullU | Eigen::ComputeFullV);
+    Eigen::JacobiSVD<Eigen::Matrix<T,D,D>> svd(M, Eigen::ComputeFullU | Eigen::ComputeFullV);
     Eigen::Matrix<T,D,1> sv = svd.singularValues();
-    if(sv(Eigen::last) < tol*sv(0))
-        throw std::runtime_error("Orthonormalized : bad conditionned matrix. Cannot orthonormalize.");
+    if(sv(Eigen::last) < tol*sv(0)) {
+        throw std::runtime_error(
+            "Orthonormalized : bad conditionned matrix. Cannot orthonormalize.");
+    }
 
     return svd.matrixU()*(svd.matrixV().transpose());
 }
 
-// outputs a pose looking towards a point, assuming x-left, y-front, z-up local camera frame
+/**
+ * See Pose::look_at for details.
+ */
 template <typename T>
 Matrix3<T> look_at(const Vector3<T>& target, const Vector3<T>& position, const Vector3<T>& up)
 {
