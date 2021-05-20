@@ -1,3 +1,7 @@
+/**
+ * @file files.h
+ */
+
 #ifndef _DEF_RTAC_TOOLS_FILES_H_
 #define _DEF_RTAC_TOOLS_FILES_H_
 
