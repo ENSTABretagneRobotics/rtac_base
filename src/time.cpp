@@ -7,6 +7,9 @@ Clock::Clock()
     this->reset();
 }
 
+/**
+ * Set reference epoch t0_ to now.
+ */
 void Clock::reset()
 {
     t0_ = std::chrono::high_resolution_clock::now();

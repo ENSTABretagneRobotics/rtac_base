@@ -7,6 +7,9 @@
 
 namespace rtac { namespace time {
 
+/** 
+ * Simple type to measure time less verbose than std::chrono.
+ */
 class Clock
 {
     protected:
@@ -18,7 +21,11 @@ class Clock
     Clock();
     
     void reset();
-
+    
+    /**
+     * Return current time relative to epoch t0_.
+     * (Successive calls to interval will give ellapsed time since last reset).
+     */
     template<typename T = double>
     T now() const
     {
@@ -26,6 +33,10 @@ class Clock
             std::chrono::high_resolution_clock::now() - t0_).count();
     } 
 
+    /**
+     * Return current time relative to epoch t0_, and set epoch t0_ to now.
+     * (Successive calls to interval will give ellapsed time since last call).
+     */
     template<typename T = double>
     T interval()
     {
@@ -38,6 +49,9 @@ class Clock
     } 
 };
 
+/** 
+ * Simple type to count a frequency (in Hz or FramePerSecond).
+ */
 class FrameCounter
 {
     public:
