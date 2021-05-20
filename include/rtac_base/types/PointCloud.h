@@ -15,8 +15,18 @@
 
 namespace rtac { namespace types {
 
-// Rtac interface for point cloud type.  Was made to contain a
-// pcl::PointCloud but with a soft dependency to pcl.
+/**
+ * Interface template for manipulating pointclouds in the RTAC framework.
+ *
+ * This template is made to be a soft interface to
+ * [PCL](https://pointclouds.org/documentation/index.html). The
+ * rtac::types::PointCloudBase type is provided to enable the use of this
+ * template without linking with PCL.
+ *
+ * @tparam PointCloudT a pointcloud type holding the point data. Compatible
+ * with the [PCL::PointCloud](https://pointclouds.org/documentation/index.html)
+ * type.
+*/
 template <typename PointCloudT = PointCloudBase<Point3<float>>>
 class PointCloud
 {
@@ -114,6 +124,14 @@ PointCloud<PointCloudT> PointCloud<PointCloudT>::copy() const
     return PointCloud<PointCloudT>(Ptr(new PointCloudT(*pointCloud_)));
 }
 
+/**
+ * Reallocates point buffer to contain n elements.
+ * 
+ * After the operation, the PointCloud will be unorganized (this->width() == n,
+ * this->height() == 1).
+ * 
+ * @param n New number of points.
+ */
 template <typename PointCloudT>
 void PointCloud<PointCloudT>::resize(size_t n)
 {
@@ -123,6 +141,15 @@ void PointCloud<PointCloudT>::resize(size_t n)
         pointCloud_->resize(n);
 }
 
+/**
+ * Reallocates points data to contain width x height elements.
+ * 
+ * After the operation, the PointCloud will be organized (this->width() == width,
+ * this->height() == height).
+ * 
+ * @param width  New width of PointCloud
+ * @param height New height of PointCloud
+ */
 template <typename PointCloudT>
 void PointCloud<PointCloudT>::resize(uint32_t width, uint32_t height)
 {
@@ -136,30 +163,68 @@ void PointCloud<PointCloudT>::resize(uint32_t width, uint32_t height)
     }
 }
 
+/**
+ * Insert a new Point at back of point buffer.
+ *
+ * After the operation, the PointCloud will be unorganized (this->width() == this->size(),
+ * this->height() == 1).
+ *
+ * @param p A new point.
+ */
 template <typename PointCloudT>
 void PointCloud<PointCloudT>::push_back(const PointType& p)
 {
     pointCloud_->push_back(p);
 }
 
+/**
+ * Implicit cast to underlying type (const).
+ * 
+ * If PointCloudT is
+ * [PCL::PointCloud](https://pointclouds.org/documentation/index.html), this
+ * method allows to use this type in PCL functions without explicit type
+ * conversion.
+ *
+ * @return A const reference to the underlying PointCloudT.
+ */
 template <typename PointCloudT>
 PointCloud<PointCloudT>::operator const PointCloudT&() const
 {
     return *pointCloud_;
 }
 
+/**
+ * Implicit cast to underlying type.
+ * 
+ * If PointCloudT is
+ * [PCL::PointCloud](https://pointclouds.org/documentation/index.html), this
+ * method allows to use this type in PCL functions without explicit type
+ * conversion.
+ *
+ * @return A reference to the underlying PointCloudT.
+ */
 template <typename PointCloudT>
 PointCloud<PointCloudT>::operator PointCloudT&()
 {
     return *pointCloud_;
 }
 
+/**
+ * Implicit cast to underlying pointer.
+ *
+ * @return A pointer to the underlying PointCloudT.
+ */
 template <typename PointCloudT>
 PointCloud<PointCloudT>::operator PointCloud<PointCloudT>::ConstPtr() const
 {
     return pointCloud_;
 }
 
+/**
+ * Implicit cast to underlying pointer.
+ *
+ * @return A pointer to the underlying PointCloudT.
+ */
 template <typename PointCloudT>
 PointCloud<PointCloudT>::operator PointCloud<PointCloudT>::Ptr()
 {
@@ -226,24 +291,36 @@ typename PointCloud<PointCloudT>::PointType& PointCloud<PointCloudT>::operator[]
     return (*pointCloud_)[n];
 }
 
+/**
+ * begin iterator on points container.
+ */
 template <typename PointCloudT>
 typename PointCloud<PointCloudT>::const_iterator PointCloud<PointCloudT>::begin() const
 {
     return pointCloud_->begin();
 }
 
+/**
+ * begin iterator on points container.
+ */
 template <typename PointCloudT>
 typename PointCloud<PointCloudT>::iterator PointCloud<PointCloudT>::begin()
 {
     return pointCloud_->begin();
 }
 
+/**
+ * end iterator on points container.
+ */
 template <typename PointCloudT>
 typename PointCloud<PointCloudT>::const_iterator PointCloud<PointCloudT>::end() const
 {
     return pointCloud_->end();
 }
 
+/**
+ * end iterator on points container.
+ */
 template <typename PointCloudT>
 typename PointCloud<PointCloudT>::iterator PointCloud<PointCloudT>::end()
 {
@@ -290,13 +367,26 @@ size_t PointCloud<PointCloudT>::height()  const
     return pointCloud_->height;
 }
 
+/**
+ * Checks if PointCloud is empty
+ *
+ * @return Boolean true if is empty.
+ */
 template <typename PointCloudT>
 bool PointCloud<PointCloudT>::empty() const
 {
     return pointCloud_->empty();
 }
 
-// .ply files
+/**
+ * Loads a PointCloud from a .ply file.
+ * 
+ * The ply file must contain "shape", "pose" and "vertex" elements.
+ * 
+ * @param path Path to the .ply file to load from.
+ *
+ * @return A newly allocated PointCloud.
+ */
 template <typename PointCloudT>
 PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(const std::string& path)
 {
@@ -308,6 +398,15 @@ PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(const std::string& pat
     return PointCloud<PointCloudT>::from_ply(f);
 }
 
+/**
+ * Loads a PointCloud from a .ply file.
+ * 
+ * The ply file must contain "shape", "pose" and "vertex" elements.
+ * 
+ * @param is File descriptor to load from.
+ *
+ * @return A newly allocated PointCloud.
+ */
 template <typename PointCloudT>
 PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(std::istream& is)
 {
@@ -315,6 +414,15 @@ PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(std::istream& is)
     return from_ply(data);
 }
 
+/**
+ * Loads a PointCloud from a .ply file.
+ * 
+ * The ply file must contain "shape", "pose" and "vertex" elements.
+ * 
+ * @param data Data to load from.
+ *
+ * @return A newly allocated PointCloud.
+ */
 template <typename PointCloudT>
 PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(happly::PLYData& data)
 {
@@ -347,6 +455,15 @@ PointCloud<PointCloudT> PointCloud<PointCloudT>::from_ply(happly::PLYData& data)
     return res;
 }
 
+/**
+ * Export PointCloud to a .ply file.
+ *
+ * This will populate the "pose", "shape" and "vertex" elements in the .ply
+ * file.
+ *
+ * @param path Path of exported .ply file.
+ * @param ascii Export in ascii (true) or binary (false) format.
+ */
 template <typename PointCloudT>
 void PointCloud<PointCloudT>::export_ply(const std::string& path, bool ascii) const
 {
@@ -358,6 +475,15 @@ void PointCloud<PointCloudT>::export_ply(const std::string& path, bool ascii) co
     PointCloud<PointCloudT>::export_ply(f, ascii);
 }
 
+/**
+ * Export PointCloud to a .ply file.
+ *
+ * This will populate the "pose", "shape" and "vertex" elements in the .ply
+ * file.
+ *
+ * @param os File descriptor to write to.
+ * @param ascii Export in ascii (true) or binary (false) format.
+ */
 template <typename PointCloudT>
 void PointCloud<PointCloudT>::export_ply(std::ostream& os, bool ascii) const
 {
@@ -373,6 +499,16 @@ void PointCloud<PointCloudT>::export_ply(std::ostream& os, bool ascii) const
         data.write(os, happly::DataFormat::Binary);
 }
 
+/**
+ * Export PointCloud to a happly::PLYData data structure.
+ *
+ * This will populate the "pose", "shape" and "vertex" elements in the .ply
+ * structure.
+ *
+ * @param ascii Export in ascii (true) or binary (false) format.
+ *
+ * @return A new happly::PLYData structure containing data from the PointCloud.
+ */
 template <typename PointCloudT>
 happly::PLYData PointCloud<PointCloudT>::export_ply() const
 {

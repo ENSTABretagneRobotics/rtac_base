@@ -10,9 +10,14 @@
 
 namespace rtac { namespace types {
 
-// Definition of a default PointCloud type. This stands for the minimum
-// interface a PointCloud must define in order to be usable in rtac
-// framework.  (This is a subset of the interface of a pcl::PointCloud).
+/**
+ * Default PointCloud template parameter. 
+ * 
+ * PointCloudBase implements the minimal interface to be used as template type
+ * in rtac::types::PointCloud. The interface of this type is a subset of the
+ * interface of the
+ * [PCL::PointCloud](https://pointclouds.org/documentation/index.html) type.
+ */
 template <typename PointT = Point3<float>>
 class PointCloudBase
 {
@@ -25,12 +30,12 @@ class PointCloudBase
     using iterator       = typename VectorType::iterator;
     using const_iterator = typename VectorType::const_iterator;
 
-    public: // attributes
+    public:
 
     std::vector<PointT> points;
     uint32_t width;
-    uint32_t height; // height is 1 if unorganized
-    Vector4<float>    sensor_origin_;
+    uint32_t height;                  /**<If height == 1, PointCloud is deemed unorganized */
+    Vector4<float>    sensor_origin_; /**< Position in 3D (Homogeneous coordinates x,y,z,w=1).*/
     Quaternion<float> sensor_orientation_;
 
     public:
@@ -84,6 +89,14 @@ typename PointCloudBase<PointT>::Ptr PointCloudBase<PointT>::makeShared() const
     return Ptr(new PointCloudBase<PointT>(*this));
 }
 
+/**
+ * Reallocates point buffer to contain n elements.
+ * 
+ * After the operation, the PointCloud will be unorganized (this->width() == n,
+ * this->height() == 1).
+ * 
+ * @param n New number of points.
+ */
 template <typename PointT>
 void PointCloudBase<PointT>::resize(size_t n)
 {
@@ -92,6 +105,14 @@ void PointCloudBase<PointT>::resize(size_t n)
     this->height = 1;
 }
 
+/**
+ * Insert a new Point at back of point buffer (this->points).
+ *
+ * After the operation, the PointCloud will be unorganized (this->width() == this->size(),
+ * this->height() == 1).
+ *
+ * @param p A new point.
+ */
 template <typename PointT>
 void PointCloudBase<PointT>::push_back(const PointT& p)
 {
@@ -148,24 +169,36 @@ PointT& PointCloudBase<PointT>::operator[](size_t n)
     return this->points[n];
 }
 
+/**
+ * begin iterator on this->points.
+ */
 template <typename PointT>
 typename PointCloudBase<PointT>::const_iterator PointCloudBase<PointT>::begin() const
 {
     return this->points.begin();
 }
 
+/**
+ * begin iterator on this->points.
+ */
 template <typename PointT>
 typename PointCloudBase<PointT>::iterator PointCloudBase<PointT>::begin()
 {
     return this->points.begin();
 }
 
+/**
+ * end iterator on this->points.
+ */
 template <typename PointT>
 typename PointCloudBase<PointT>::const_iterator PointCloudBase<PointT>::end() const
 {
     return this->points.end();
 }
 
+/**
+ * end iterator on this->points.
+ */
 template <typename PointT>
 typename PointCloudBase<PointT>::iterator PointCloudBase<PointT>::end()
 {
@@ -178,6 +211,11 @@ size_t PointCloudBase<PointT>::size()  const
     return this->points.size();
 }
 
+/**
+ * Checks if PointCloudBase is empty
+ *
+ * @return Boolean true if is empty.
+ */
 template <typename PointT>
 bool PointCloudBase<PointT>::empty() const
 {
