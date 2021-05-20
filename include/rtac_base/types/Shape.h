@@ -5,6 +5,11 @@
 
 namespace rtac { namespace types {
 
+/**
+ * Represent the dimension of an image or another 2 dimensional buffer.
+ *
+ * @tparam Underlying scalar type.
+ */
 template <typename T>
 struct Shape
 {
@@ -18,8 +23,14 @@ struct Shape
     {
         return ((RatioType)width / height);
     }
-
+    
     T area() const
+    {
+        return width * height;
+    }
+
+    template <typename SizeType = T>
+    SizeType size() const
     {
         return width * height;
     }

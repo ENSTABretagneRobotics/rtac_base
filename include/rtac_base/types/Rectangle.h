@@ -7,6 +7,9 @@
 
 namespace rtac { namespace types {
 
+/**
+ * Represent an Area Of Interest on a 2D surface (screen, image...)
+ */
 template <typename T>
 class Rectangle
 {
