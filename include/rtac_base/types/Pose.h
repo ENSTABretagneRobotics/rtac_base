@@ -8,7 +8,25 @@
 
 namespace rtac { namespace types {
 
-// class declaration
+/**
+ * Represent a full 3D pose (position and orientation).
+ *
+ * The pose is represented with a 3D vector and a Quaternion.  Can be inverted,
+ * composed with another Pose, built from and converted to a 4D homogeneous
+ * matrix... Usefull to represent position of a sensor or of a robot while not
+ * using a full flegded robotics Framework. Built on
+ * [Eigen](https://eigen.tuxfamily.org/) types.
+ *
+ * In this class (and in the RTAC framework in general), the right-hand
+ * convension is used for homogeneous coordinates and matrices.
+ *
+ * \f[ \left[ \begin{array}{cc} y \\ 1 \end{array} \right] = 
+ *                 \left[ \begin{array}{cc} R & T  \\ 
+ *                 \mathtt O& 1 \end{array} \right] . 
+ *                 \left[ \begin{array}{cc} x \\ 1 \end{array} \right] \f]
+ *
+ * @tparam T Base scalar type (float, double, ...)
+*/
 template <typename T>
 class Pose
 {
@@ -146,6 +164,17 @@ typename Pose<T>::Mat4 Pose<T>::homogeneous_matrix() const
     return H;
 }
 
+/**
+ * Pose composition.
+ * 
+ * This Pose is right multiplied by rhs.
+ *
+ * \f[ H_{this} = H_{this} . H_{rhs}\f]
+ *
+ * @param A Pose for this to be right multiplied with.
+ *
+ * @return A reference to this after multiplication.
+ */
 template <typename T>
 Pose<T>& Pose<T>::operator*=(const Pose<T>& rhs)
 {
@@ -161,6 +190,23 @@ Pose<T> Pose<T>::inverse() const
     return Pose<T>(-(qinv*translation_), qinv);
 }
 
+/**
+ * Makes the Pose "look at" a target.
+ *
+ * The translation_ component is set to position. The orientation_ is
+ * calculated in such a way that the y vector of the pose will points to
+ * target, and the z vector will mostly points towards up (y,z and up end up in
+ * the same plane).
+ *
+ * This function is made after the
+ * [gluLookAt](https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluLookAt.xml)
+ * function, now deprecated from the OpenGL specification. It is most usefull
+ * to position a camera on a scene for rendering or sensor simulation.
+ *
+ * @param target   The target to "look_at" (back of screen for 3D rendering).
+ * @param position The new position of this Pose.
+ * @param up       The top direction (top of screen for 3D rendering).
+ */
 template <typename T>
 Pose<T>& Pose<T>::look_at(const Vector3<T>& target,
                           const Vector3<T>& position,
