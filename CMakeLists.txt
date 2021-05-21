@@ -7,6 +7,8 @@ option(WITH_CUDA "Compile and install cuda-dependent code." ON)
 # include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rpath_config.cmake)
 # Loading installation script (just loading function, not calling)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_installation.cmake)
+# This script handles Doxygen documentation (add a BUILD_DOCUMENTATION option)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_build_docs.cmake)
 
 find_package(Eigen3 REQUIRED)
 
@@ -64,6 +66,7 @@ add_subdirectory(tests)
 rtac_install_target(rtac_base
     ADDITIONAL_CONFIG_FILES cmake/rtac_installation.cmake
 )
+# target_add_docs(rtac_base)
 
 
 
