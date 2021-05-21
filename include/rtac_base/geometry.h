@@ -59,7 +59,7 @@ Eigen::Matrix<T,D,1> find_noncolinear(const Eigen::Matrix<T,D,1>& v)
 template <typename T, int D>
 Eigen::Matrix<T,D,1> find_orthogonal(const Eigen::Matrix<T,D,1>& v)
 {
-    Eigen::Matrix<T,D,1> res = find_noncolinear(v, tol);
+    Eigen::Matrix<T,D,1> res = find_noncolinear(v);
     Eigen::Matrix<T,D,1> vn = v.normalized();
     res = res - res.dot(vn) * vn;
     return res;
