@@ -21,6 +21,19 @@ list(APPEND test_deps
     rtac_base
 )
 
+find_package(matplotlib_cpp)
+if(TARGET matplotlib_cpp::matplotlib_cpp)
+    list(APPEND test_names
+        interpolation_test.cpp
+    )
+    
+    list(APPEND test_deps
+        matplotlib_cpp::matplotlib_cpp
+    )
+else()
+    message(WARNING "matplotlib_cpp not found : cannot build interpolation_test")
+endif()
+
 foreach(name ${test_names})
 
     # Generating a unique target name to avoid name colision with other rtac

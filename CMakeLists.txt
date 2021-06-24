@@ -33,6 +33,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/happly.h
     include/rtac_base/type_utils.h
     include/rtac_base/geometry.h
+    include/rtac_base/interpolation.h
 )
 
 add_library(rtac_base SHARED
