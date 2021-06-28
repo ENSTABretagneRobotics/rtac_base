@@ -13,7 +13,7 @@ namespace rtac { namespace algorithm {
 /**
  * Abstract base class representing a generic interpolator.
  */
-template <typename T, template<typename> class VectorT = std::vector>
+template <typename T>
 class Interpolator
 {
     public:
@@ -21,8 +21,8 @@ class Interpolator
     using Ptr      = types::Handle<Interpolator>;
     using ConstPtr = types::Handle<const Interpolator>;
 
-    using Indexes = VectorT<unsigned int>;
-    using Vector  = VectorT<T>;
+    using Indexes = types::Vector<unsigned int>;
+    using Vector  = types::Vector<T>;
 
     using Xconst_iterator = typename Vector::const_iterator;
 
@@ -36,9 +36,11 @@ class Interpolator
     public:
     
     Vector operator()(const Vector& x) const;
+    unsigned int size() const;
     
     Xconst_iterator lower_bound(T x) const;
     std::vector<Xconst_iterator> lower_bound(const Vector& x) const;
+    Indexes lower_bound_indexes(const Vector& x) const;
 
     /**
      * Core interpolating method. To be reimplemented in subclasses.
@@ -52,13 +54,13 @@ class Interpolator
 /**
  * Nearest-Neighbor interpolator.
  */
-template <typename T, template<typename>class VectorT = std::vector>
-class InterpolatorNearest : public Interpolator<T,VectorT>
+template <typename T>
+class InterpolatorNearest : public Interpolator<T>
 {
     public:
 
-    using Indexes = typename Interpolator<T,VectorT>::Indexes;
-    using Vector  = typename Interpolator<T,VectorT>::Vector;
+    using Indexes = typename Interpolator<T>::Indexes;
+    using Vector  = typename Interpolator<T>::Vector;
 
     public:
 
@@ -70,13 +72,13 @@ class InterpolatorNearest : public Interpolator<T,VectorT>
 /**
  * Linear interpolator.
  */
-template <typename T, template<typename>class VectorT = std::vector>
-class InterpolatorLinear : public Interpolator<T,VectorT>
+template <typename T>
+class InterpolatorLinear : public Interpolator<T>
 {
     public:
 
-    using Indexes = typename Interpolator<T,VectorT>::Indexes;
-    using Vector  = typename Interpolator<T,VectorT>::Vector;
+    using Indexes = typename Interpolator<T>::Indexes;
+    using Vector  = typename Interpolator<T>::Vector;
 
     public:
 
@@ -85,11 +87,40 @@ class InterpolatorLinear : public Interpolator<T,VectorT>
     virtual void interpolate(const Vector& x, Vector& output) const;
 };
 
+/**
+ * Cubic spline interpolator.
+ *
+ * y = an_.(x-xn)**3 + bn_.(x-xn)**2 + cn_.(x-xn) + dn_
+ */
+template <typename T>
+class InterpolatorCubicSpline : public Interpolator<T>
+{
+    public:
+
+    using Indexes = typename Interpolator<T>::Indexes;
+    using Vector  = typename Interpolator<T>::Vector;
+
+    protected:
+
+    Vector a_;
+    Vector b_;
+    Vector c_;
+    Vector d_;
+
+    public:
+
+    InterpolatorCubicSpline(const Vector& x0, const Vector& y0);
+
+    virtual void interpolate(const Vector& x, Vector& output) const;
+};
+
 // Interpolator IMPLEMENTATION //////////////////////////////////////////
-template <typename T, template<typename>class VectorT>
-Interpolator<T,VectorT>::Interpolator(const Vector& x0, const Vector& y0) :
+template <typename T>
+Interpolator<T>::Interpolator(const Vector& x0, const Vector& y0) :
     x0_(x0), y0_(y0)
-{}
+{
+    assert(x0_.size() == y0_.size());
+}
 
 /**
  * Interpolate at values x.
@@ -98,8 +129,8 @@ Interpolator<T,VectorT>::Interpolator(const Vector& x0, const Vector& y0) :
  *
  * @return Interpolated values.
  */
-template <typename T, template<typename>class VectorT>
-typename Interpolator<T,VectorT>::Vector Interpolator<T,VectorT>::operator()(const Vector& x) const
+template <typename T>
+typename Interpolator<T>::Vector Interpolator<T>::operator()(const Vector& x) const
 {
     Vector output(x.size());
     this->interpolate(x, output);
@@ -107,12 +138,22 @@ typename Interpolator<T,VectorT>::Vector Interpolator<T,VectorT>::operator()(con
 }
 
 /**
+ * @return number of data element which are interpolated (= size of origin data
+ *         vectors)
+ */
+template <typename T>
+unsigned int Interpolator<T>::size() const
+{
+    return x0_.size();
+}
+
+/**
  * Find an iterator in x0_ the closest below or equal x.
  *
  * throws a std::range error if such iterator could not be found.
  */
-template <typename T, template<typename>class VectorT>
-typename Interpolator<T,VectorT>::Xconst_iterator Interpolator<T,VectorT>::lower_bound(T x) const
+template <typename T>
+typename Interpolator<T>::Xconst_iterator Interpolator<T>::lower_bound(T x) const
 {
     auto it = std::lower_bound(x0_.begin(), x0_.end(), x);
     if(it == x0_.end() || it == x0_.begin() && *it > x) {
@@ -134,9 +175,9 @@ typename Interpolator<T,VectorT>::Xconst_iterator Interpolator<T,VectorT>::lower
  * @return a vector of iterators pointing to valid values in x0_ below of equal
  * to x values (a std::range_error is throwed if am iterator is not valid).
  */
-template <typename T, template<typename>class VectorT>
-std::vector<typename Interpolator<T,VectorT>::Xconst_iterator> 
-    Interpolator<T,VectorT>::lower_bound(const Vector& x) const
+template <typename T>
+std::vector<typename Interpolator<T>::Xconst_iterator> 
+    Interpolator<T>::lower_bound(const Vector& x) const
 {
     std::vector<Xconst_iterator> output(x.size());
     for(int i = 0; i < output.size(); i++) {
@@ -145,51 +186,113 @@ std::vector<typename Interpolator<T,VectorT>::Xconst_iterator>
     return output;
 }
 
+/**
+ * Retrieve indexes to the x0_ elements just below or equal to a value, for
+ * each value in x.
+ *
+ * @return a vector of indexes pointing values in x0_ below of equal to x
+ * values (a std::range_error is throwed if an iterator is not valid).
+ */
+template <typename T>
+typename Interpolator<T>::Indexes
+    Interpolator<T>::lower_bound_indexes(const Vector& x) const
+{
+    Indexes output(x.size());
+    for(int i = 0; i < output.size(); i++) {
+        // not working 
+        //output[i] = std::distance(this->lower_bound(x[i]), this->x0_.begin());
+        output[i] = this->lower_bound(x[i]) - this->x0_.begin();
+    }
+    return output;
+}
+
 // InterpolatorNearest IMPLEMENTATION //////////////////////////////////////////
-template <typename T, template<typename>class VectorT>
-InterpolatorNearest<T,VectorT>::InterpolatorNearest(const Vector& x0, const Vector& y0) :
-    Interpolator<T,VectorT>(x0, y0)
+template <typename T>
+InterpolatorNearest<T>::InterpolatorNearest(const Vector& x0, const Vector& y0) :
+    Interpolator<T>(x0, y0)
 {}
 
-template <typename T, template<typename>class VectorT>
-void InterpolatorNearest<T,VectorT>::interpolate(const Vector& x, Vector& output) const
+template <typename T>
+void InterpolatorNearest<T>::interpolate(const Vector& x, Vector& output) const
 {
     using namespace rtac::types::indexing;
 
-    auto iterators = this->lower_bound(x);
+    Indexes idx = this->lower_bound_indexes(x);
     for(int i = 0; i < x.size(); i++) {
-        if(iterators[i] == this->x0_.end() - 1) {
-            output[i] = *(this->y0_.end() - 1);
+        if(idx[i] == this->x0_.size() - 1) {
+            output[i] = this->y0_[idx[i]];
             continue;
         }
-        unsigned int idx = iterators[i] - this->x0_.begin();
-        if(x[i] - this->x0_[idx] <= this->x0_[idx + 1] - x[i])
-            output[i] = this->y0_[idx];
+        if(x[i] - this->x0_[idx[i]] <= this->x0_[idx[i] + 1] - x[i])
+            output[i] = this->y0_[idx[i]];
         else
-            output[i] = this->y0_[idx + 1];
+            output[i] = this->y0_[idx[i] + 1];
     }
 }
 
 // InterpolatorLinear IMPLEMENTATION //////////////////////////////////////////
-template <typename T, template<typename>class VectorT>
-InterpolatorLinear<T,VectorT>::InterpolatorLinear(const Vector& x0, const Vector& y0) :
-    Interpolator<T,VectorT>(x0, y0)
+template <typename T>
+InterpolatorLinear<T>::InterpolatorLinear(const Vector& x0, const Vector& y0) :
+    Interpolator<T>(x0, y0)
 {}
 
-template <typename T, template<typename>class VectorT>
-void InterpolatorLinear<T,VectorT>::interpolate(const Vector& x, Vector& output) const
+template <typename T>
+void InterpolatorLinear<T>::interpolate(const Vector& x, Vector& output) const
 {
     using namespace rtac::types::indexing;
-    auto iterators = this->lower_bound(x);
+    Indexes idx = this->lower_bound_indexes(x);
     for(int i = 0; i < x.size(); i++) {
-        if(iterators[i] == this->x0_.end() - 1) {
-            output[i] = *(this->y0_.end() - 1);
+        if(idx[i] == this->x0_.size() - 1) {
+            output[i] = this->y0_[idx[i]];
             continue;
         }
-        unsigned int idx = iterators[i]  - this->x0_.begin();
-        T lambda = (x[i] - this->x0_[idx])
-                 / (this->x0_[idx + 1] - this->x0_[idx]);
-        output[i] = (1.0 - lambda)*this->y0_[idx] + lambda*this->y0_[idx + 1];
+        T lambda = (x[i] - this->x0_[idx[i]])
+                 / (this->x0_[idx[i] + 1] - this->x0_[idx[i]]);
+        output[i] = (1.0 - lambda)*this->y0_[idx[i]] + lambda*this->y0_[idx[i] + 1];
+    }
+}
+
+// InterpolatorCubicSpline IMPLEMENTATION //////////////////////////////////////////
+template <typename T>
+InterpolatorCubicSpline<T>::InterpolatorCubicSpline(const Vector& x0, const Vector& y0) :
+    Interpolator<T>(x0, y0)//,
+    //a_(x0.size()-1), b_(x0.size()-1), c_(x0.size()-1), d_(x0.size()-1)
+{
+    using namespace rtac::types::indexing;
+
+    Vector dx =  x0(seq(1,last)) - x0(seq(0,last-1));
+    Vector dy = (y0(seq(1,last)) - y0(seq(0,last-1))).array() / dx.array();
+
+    Vector beta        =  6.0*(dy(seq(1,last)) - dy(seq(0,last-1)));
+    types::Matrix<T> A = (2.0*(x0(seq(2,last)) - x0(seq(0,last-2)))).asDiagonal();
+    for(int i = 0; i < this->size() - 2; i++) {
+        A(i,i+1) = dx(i+1);
+        A(i+1,i) = dx(i+1);
+    }
+    Vector alpha(this->size());
+    alpha(seq(1,last-1)) = A.colPivHouseholderQr().solve(beta);
+    alpha(0) = 0.0;
+    alpha(alpha.size() - 1) = 0.0;
+    
+    this->a_ = (alpha(seq(1,last)) - alpha(seq(0,last-1))).array() / (6.0*dx.array());
+    this->b_ = 0.5*alpha(seq(1,last));
+    this->c_ = dy.array()
+             + dx.array() * (2.0*alpha(seq(1,last)) + alpha(seq(0,last-1))).array() / 6.0;
+    this->d_ = y0(seq(1,last));
+}
+
+template <typename T>
+void InterpolatorCubicSpline<T>::interpolate(const Vector& x, Vector& output) const
+{
+    using namespace rtac::types::indexing;
+    Indexes idx = this->lower_bound_indexes(x);
+    for(int i = 0; i < x.size(); i++) {
+        if(idx[i] == this->x0_.size() - 1) {
+            output[i] = this->y0_[idx[i]];
+            continue;
+        }
+        T v = x[i] - this->x0_[idx[i] + 1];
+        output[i] = a_[idx[i]]*v*v*v + b_[idx[i]]*v*v + c_[idx[i]]*v + d_[idx[i]];
     }
 }
 

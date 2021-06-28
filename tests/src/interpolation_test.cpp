@@ -6,9 +6,7 @@ namespace plt = matplotlibcpp;
 
 #include <rtac_base/types/common.h>
 #include <rtac_base/interpolation.h>
-//using namespace rtac::types;
 template <typename T>
-//using Vector = std::vector<T>;
 using Vector = rtac::types::Vector<T>;
 using namespace rtac::algorithm;
 using namespace rtac::types::indexing;
@@ -74,18 +72,20 @@ int main()
     auto x0 = data(all,0);
     auto y0 = data(all,1);
 
-    auto x = linspace<Vector<float>>(data(0,0), data(last,0), 512);
+    auto x = linspace<Vector<float>>(data(0,0), data(last,0), 8192);
 
-    InterpolatorNearest<float, Vector> interpNN(x0, y0);
-    //InterpolatorNearest<float, Vector> interpNN(to_vector(x0), to_vector(y0));
+    InterpolatorNearest<float> interpNN(x0, y0);
     auto ynn = interpNN(x);
-    InterpolatorLinear<float, Vector> interpLinear(x0, y0);
-    //InterpolatorLinear<float, Vector> interpLinear(to_vector(x0), to_vector(y0));
+    InterpolatorLinear<float> interpLinear(x0, y0);
     auto yl = interpLinear(x);
+    InterpolatorCubicSpline<float> interpCubicSpline(x0, y0);
+    auto yc = interpCubicSpline(x);
     
-    plt::plot(to_vector(x0), to_vector(y0),  {{"label", "original"}});
+    plt::plot(to_vector(x0), to_vector(y0),  {{"marker", "o"},
+                                              {"label", "original"}});
     plt::plot(to_vector(x),  to_vector(ynn), {{"label", "nearest"}});
     plt::plot(to_vector(x),  to_vector(yl),  {{"label", "linear"}});
+    plt::plot(to_vector(x),  to_vector(yc),  {{"label", "cubic"}});
     plt::legend();
     plt::show();
 
