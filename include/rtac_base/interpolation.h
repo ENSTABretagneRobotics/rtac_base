@@ -265,7 +265,7 @@ InterpolatorCubicSpline<T>::InterpolatorCubicSpline(const Vector& x0, const Vect
 
     Vector beta        =  6.0*(dy(seq(1,last)) - dy(seq(0,last-1)));
     types::Matrix<T> A = (2.0*(x0(seq(2,last)) - x0(seq(0,last-2)))).asDiagonal();
-    for(int i = 0; i < this->size() - 2; i++) {
+    for(int i = 0; i < this->size() - 3; i++) {
         A(i,i+1) = dx(i+1);
         A(i+1,i) = dx(i+1);
     }
