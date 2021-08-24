@@ -34,6 +34,9 @@ class Interpolator
     Interpolator(const Vector& x0, const Vector& y0);
 
     public:
+
+    const Vector& x0() const;
+    const Vector& y0() const;
     
     Vector operator()(const Vector& x) const;
     unsigned int size() const;
@@ -120,6 +123,18 @@ Interpolator<T>::Interpolator(const Vector& x0, const Vector& y0) :
     x0_(x0), y0_(y0)
 {
     assert(x0_.size() == y0_.size());
+}
+
+template <typename T>
+const typename Interpolator<T>::Vector& Interpolator<T>::x0() const
+{
+    return x0_;
+}
+
+template <typename T>
+const typename Interpolator<T>::Vector& Interpolator<T>::y0() const
+{
+    return y0_;
 }
 
 /**
