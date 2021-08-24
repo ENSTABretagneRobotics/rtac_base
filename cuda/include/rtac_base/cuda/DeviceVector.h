@@ -6,6 +6,7 @@
 
 #include <cuda_runtime.h>
 
+#include <rtac_base/types/common.h>
 #include <rtac_base/types/SharedVector.h>
 
 #include <rtac_base/cuda/utils.h>
@@ -45,6 +46,7 @@ class DeviceVector
     DeviceVector(const DeviceVector<T>& other);
     DeviceVector(const HostVector<T>& other);
     DeviceVector(const std::vector<T>& other);
+    DeviceVector(const types::Vector<T>& other);
     ~DeviceVector();
 
     void copy_from_host(size_t size, const T* data);
@@ -52,6 +54,7 @@ class DeviceVector
     DeviceVector& operator=(const DeviceVector<T>& other);
     DeviceVector& operator=(const HostVector<T>& other);
     DeviceVector& operator=(const std::vector<T>& other);
+    DeviceVector& operator=(const types::Vector<T>& other);
 
     void resize(size_t size);
     size_t size() const;
@@ -105,6 +108,13 @@ DeviceVector<T>::DeviceVector(const std::vector<T>& other) :
 }
 
 template <typename T>
+DeviceVector<T>::DeviceVector(const types::Vector<T>& other) :
+    DeviceVector(other.size())
+{
+    *this = other;
+}
+
+template <typename T>
 DeviceVector<T>::~DeviceVector()
 {
     this->free();
@@ -144,6 +154,17 @@ DeviceVector<T>& DeviceVector<T>::operator=(const HostVector<T>& other)
 
 template <typename T>
 DeviceVector<T>& DeviceVector<T>::operator=(const std::vector<T>& other)
+{
+    this->resize(other.size());
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
+                           reinterpret_cast<const void*>(other.data()),
+                           sizeof(T)*size_,
+                           cudaMemcpyHostToDevice) );
+    return *this;
+}
+
+template <typename T>
+DeviceVector<T>& DeviceVector<T>::operator=(const types::Vector<T>& other)
 {
     this->resize(other.size());
     CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
