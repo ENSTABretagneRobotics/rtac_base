@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <cstring>
+#include <complex>
 
 #include <cuda_runtime.h>
 
@@ -41,7 +42,24 @@
         }                                                                  \
     } while(0)                                                             \
 
+// Using NVIDIA thrust framework when compiling CUDA code.
+#ifdef RTAC_CUDACC
+    #include <thrust/complex.h>
+#endif //RTAC_CUDACC
+
 namespace rtac { namespace cuda {
+
+// Complex number definition : using thrust::complex when in CUDA device code
+// (NVCC compiler) and std::complex when in host code (CPU side). Both are
+// binary compatible (a buffer can be created an initialized on host side then
+// uploaded to device and the other way around seamlessly). 
+#ifdef RTAC_CUDACC
+    template <typename T>
+    using Complex = thrust::complex<T>;
+#else
+    template <typename T>
+    using Complex = std::complex<T>;
+#endif //RTAC_CUDACC
 
 inline void init_cuda()
 {
