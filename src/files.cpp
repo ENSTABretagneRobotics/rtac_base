@@ -34,8 +34,8 @@ PathList rtac_data_paths(const std::string& delimiter)
     size_t idx = env.find(delimiter);
     while(idx != std::string::npos) {
         paths.push_back(env.substr(0, idx));
-        idx = env.find(delimiter);
         env.erase(0, paths.back().length() + delimiter.length());
+        idx = env.find(delimiter);
     }
     if(env.length() > 0) {
         paths.push_back(env);
