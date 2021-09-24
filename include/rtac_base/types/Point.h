@@ -20,6 +20,15 @@ struct Point3
     T z;
 };
 
+template <typename T>
+struct Point4
+{
+    T x;
+    T y;
+    T z;
+    T w;
+};
+
 }; //namespace types
 }; //namespace rtac
 
@@ -34,6 +43,13 @@ template <typename T>
 std::ostream& operator<<(std::ostream& os, const rtac::types::Point3<T>& p)
 {
     os << p.x << " " << p.y << " " << p.z;
+    return os;
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const rtac::types::Point4<T>& p)
+{
+    os << p.x << " " << p.y << " " << p.z << " " << p.w;
     return os;
 }
 
