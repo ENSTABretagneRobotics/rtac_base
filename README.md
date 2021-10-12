@@ -12,7 +12,8 @@ Ubuntu. Don't expect to see it work right away with another system.
 ### Dependencies
 
 The two main dependencies are Eigen3 and CUDA (you can skip if these are already
-installed on your system).
+installed on your system). If you do not need CUDA, you may deactivate CUDA
+support in rtac_base (See in the Compiling and Installing section).
 
 #### Installing Eigen
 
@@ -79,13 +80,15 @@ Let the installer do his thing, and voilà ! CUDA should be installed under
 
 
 
-### Compiling
+### Compiling and installing
 
 This is a standard CMake compilation/installation.
 
+You may deactivate CUDA support with the option WITH_CUDA=OFF.
+
 ```
 mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<an install location in $CMAKE_PREFIX_PATH, or on the system> ..
+cmake -DWITH_CUDA=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<an install location in $CMAKE_PREFIX_PATH, or on the system> ..
 make -j4 install
 ```
 
