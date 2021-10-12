@@ -78,4 +78,17 @@ Let the installer do his thing, and voilà ! CUDA should be installed under
 
 
 
+### Compiling
+
+This is a standard CMake compilation/installation.
+
+```
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=<an install location in $CMAKE_PREFIX_PATH, or on the system> ..
+make -j4 install
+```
+
+Feel free to use this CMakeLists.txt and the associated cmake/\*.cmake scripts as
+a CMake template for your own projects. They are not perfect but try to follow
+modern CMake conventions (Please use CMake targets !)
 
