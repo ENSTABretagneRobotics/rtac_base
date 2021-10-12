@@ -17,12 +17,13 @@ installed on your system).
 #### Installing Eigen
 
 The Eigen version being provided in the Ubuntu package manager being rather old,
-this software uses more recent version of Eigen provided by Eigen [official
-repository](https://gitlab.com/libeigen/eigen).
+this software uses more recent version of Eigen (we use Eigen 3.4) provided by
+Eigen [official repository](https://gitlab.com/libeigen/eigen).
 
 ```
 git clone https://gitlab.com/libeigen/eigen.git
 cd eigen
+git checkout 3.4
 make build && cd build
 cmake -DCMAKE_INSTALL_PREFIX=<your install location> ..
 make install
