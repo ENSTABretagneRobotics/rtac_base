@@ -63,12 +63,14 @@ class Texture2D
 
     void allocate_data(size_t width, size_t height);
     void set_image(size_t width, size_t height, const T* data);
+    void set_image(size_t width, size_t height, const DeviceVector<T>& data);
     void set_subimage(size_t width,   size_t height, 
                       size_t wOffset, size_t hOffset, 
                       const T* data);
 
     size_t width()  const;
     size_t height() const;
+    size_t size()   const;
 
     cudaTextureDesc description() const;
 
@@ -244,6 +246,35 @@ void Texture2D<T>::set_image(size_t width, size_t height, const T* data)
 }
 
 template <typename T>
+void Texture2D<T>::set_image(size_t width, size_t height,
+                             const DeviceVector<T>& data)
+{
+    if(data.size() < width*height) {
+        std::ostringstream oss;
+        oss << "error Texture2D::set_image : not enough input data for "
+            << "requested size (expected " << width*height
+            << ", got " << data.size() << ")";
+        throw std::runtime_error(oss.str());
+    }
+
+    this->allocate_data(width, height);
+
+    //CUDA_CHECK( cudaMemcpyToArray(data_, 0, 0, data,
+    //                              sizeof(T)*width_*height_,
+    //                              cudaMemcpyHostToDevice) );
+
+    CUDA_CHECK( cudaMemcpy2DToArray(data_, 0, 0,
+                                    data.data(),
+                                    sizeof(T)*width_,
+                                    sizeof(T)*width_,
+                                    height_,
+                                    cudaMemcpyDeviceToDevice) );
+
+    // A new texture handle creation seems to be necessary when data is changed.
+    this->update_texture_handle();
+}
+
+template <typename T>
 void Texture2D<T>::set_subimage(size_t width,   size_t height, 
                                 size_t wOffset, size_t hOffset, 
                                 const T* data)
@@ -279,6 +310,12 @@ template <typename T>
 size_t Texture2D<T>::height() const
 {
     return height_;
+}
+
+template <typename T>
+size_t Texture2D<T>::size() const
+{
+    return this->width() * this->height();
 }
 
 template <typename T>
