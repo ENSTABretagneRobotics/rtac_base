@@ -59,7 +59,12 @@ class Texture2D
     public:
 
     Texture2D();
+    Texture2D(const Texture2D<T>& other);
+    Texture2D(Texture2D<T>&& other);
     ~Texture2D();
+
+    Texture2D<T>& operator=(const Texture2D<T>& other);
+    Texture2D<T>& operator=(Texture2D<T>&& other);
 
     void allocate_data(size_t width, size_t height);
     void set_image(size_t width, size_t height, const T* data);
@@ -101,17 +106,7 @@ class Texture2D
     void disable_mipmap(bool updateTexture = true);
 };
 
-//Implementation
-template <typename T>
-Texture2D<T>::Texture2D() :
-    width_(0),
-    height_(0),
-    data_(nullptr),
-    description_(default_texture_description()),
-    textureHandle_(0)
-{
-}
-
+// Implementation (static methods)
 template <typename T>
 cudaChannelFormatDesc Texture2D<T>::channel_description()
 {
@@ -162,6 +157,62 @@ cudaTextureDesc Texture2D<T>::default_texture_description()
     res.normalizedCoords = 1;
 
     return res;
+}
+
+// Implementation (non-static methods)
+template <typename T>
+Texture2D<T>::Texture2D() :
+    width_(0),
+    height_(0),
+    data_(nullptr),
+    description_(default_texture_description()),
+    textureHandle_(0)
+{}
+
+template <typename T>
+Texture2D<T>::Texture2D(const Texture2D<T>& other) :
+    Texture2D<T>()
+{
+    *this = other;
+}
+
+template <typename T>
+Texture2D<T>::Texture2D(Texture2D<T>&& other) :
+    width_(std::exchange(other.width_,  0)),
+    height_(std::exchange(other.height_, 0)),
+    data_(std::exchange(other.data_, nullptr)),
+    description_(std::move(other.description_)),
+    textureHandle_(std::exchange(other.textureHandle_, 0))
+{}
+
+template <typename T>
+Texture2D<T>& Texture2D<T>::operator=(const Texture2D<T>& other)
+{
+    this->allocate_data(other.width_, other.height_);
+    description_ = other.description_;
+    
+    CUDA_CHECK( cudaMemcpy2DArrayToArray(data_, 0, 0,
+                                         other.data_, 0, 0,
+                                         sizeof(T)*width_,
+                                         height_,
+                                         cudaMemcpyDeviceToDevice) );
+    this->update_texture_handle();
+    return *this;
+}
+
+template <typename T>
+Texture2D<T>& Texture2D<T>::operator=(Texture2D<T>&& other)
+{
+    this->free_data();
+    this->destroy_texture_handle();
+
+    width_         = std::exchange(other.width_,  0);
+    height_        = std::exchange(other.height_, 0);
+    data_          = std::exchange(other.data_, nullptr);
+    description_   = std::move(other.description_);
+    textureHandle_ = std::exchange(other.textureHandle_, 0);
+    
+    return *this;
 }
 
 template <typename T>

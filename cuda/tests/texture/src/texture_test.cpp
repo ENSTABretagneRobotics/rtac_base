@@ -44,6 +44,9 @@ int main()
     std::vector<float4> subdata1(W2*H2, float4({0.5f,0.5f,0.5f,1.0f}));
     tex1.set_subimage(W2,H2,W2,H2, subdata1.data());
     res1 = render_texture(Wout,Hout,tex1);
+    // testing texture copy
+    Texture2D<float4> tex2(tex1);
+    tex2.set_subimage(W2,H2,0,0, subdata1.data());
 
     auto rgbData = std::vector<uint8_t>(3*res1.size());
     for(int i = 0, j = 0; i < res1.size(); i++) {
@@ -52,8 +55,30 @@ int main()
         rgbData[j + 2] = 255*res1[i].z;
         j += 3;
     }
-
     write_ppm("output.ppm", Wout, Hout, (const char*)rgbData.data());
+
+    HostVector<float4> res2;
+    res2 = render_texture(Wout,Hout,tex2);
+    rgbData.resize(3*res2.size());
+    for(int i = 0, j = 0; i < res2.size(); i++) {
+        rgbData[j]     = 255*res2[i].x;
+        rgbData[j + 1] = 255*res2[i].y;
+        rgbData[j + 2] = 255*res2[i].z;
+        j += 3;
+    }
+    write_ppm("output_copy.ppm", Wout, Hout, (const char*)rgbData.data());
+
+
+    Texture2D<float4> tex3(std::move(tex2));
+    res2 = render_texture(Wout,Hout,tex3);
+    rgbData.resize(3*res2.size());
+    for(int i = 0, j = 0; i < res2.size(); i++) {
+        rgbData[j]     = 255*res2[i].x;
+        rgbData[j + 1] = 255*res2[i].y;
+        rgbData[j + 2] = 255*res2[i].z;
+        j += 3;
+    }
+    write_ppm("output_move.ppm", Wout, Hout, (const char*)rgbData.data());
 
     return 0; 
 }
