@@ -12,6 +12,7 @@ list(APPEND rtac_cuda_headers
     include/rtac_base/cuda/DeviceMesh.h
     include/rtac_base/cuda/DeviceObject.h
     include/rtac_base/cuda/Texture2D.h
+    include/rtac_base/cuda/Mapping.h
     include/rtac_base/cuda/reductions.hcu
     include/rtac_base/cuda/operators.h
 )
