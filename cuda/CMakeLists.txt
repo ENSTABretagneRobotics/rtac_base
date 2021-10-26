@@ -31,7 +31,8 @@ target_include_directories(rtac_cuda PUBLIC
     ${CUDA_TOOLKIT_INCLUDE}
 )
 target_compile_options(rtac_cuda PUBLIC
-    $<$<COMPILE_LANGUAGE:CUDA>:-gencode arch=compute_61,code=sm_61>
+    # $<$<COMPILE_LANGUAGE:CUDA>:-gencode arch=compute_61,code=sm_61>
+    $<$<COMPILE_LANGUAGE:CUDA>:-gencode arch=compute_61,code=sm_61 --expt-relaxed-constexpr>
 )
 target_link_libraries(rtac_cuda PUBLIC
     ${CUDA_LIBRARIES}

@@ -33,6 +33,7 @@ endforeach(name)
 
 add_subdirectory(texture)
 add_subdirectory(mapping)
+add_subdirectory(functors)
 
 
 add_executable(reductions_test
