@@ -34,10 +34,42 @@ struct DeviceMapping2D
     #endif //RTAC_CUDACC
 };
 
-}; //namespace cuda
-}; //namespace rtac
+template <typename T>
+struct DeviceMapping1D
+{
+    // Declaring input and output types to be compatible with other functors.
+    using InputT  = float;
+    using OutputT = T;
 
-namespace rtac { namespace cuda {
+    cudaTextureObject_t data;
+
+    #ifdef RTAC_CUDACC // this cannot be used from host side because of the texture fetch
+    __device__ T operator()(float u) const {
+        return tex2D<T>(data, u, 0.0f);
+    }
+    #endif //RTAC_CUDACC
+};
+
+/**
+ * This is a convenience definition allowing to deduce a full DeviceMap type
+ * depending on the given FunctorT. Is used primarily in the Mapping type.
+ */
+template <typename T, class FunctorT>
+struct device_map_type {
+    using FoutT = typename FunctorT::OutputT;
+
+    static_assert(std::is_same<float, FoutT>::value || std::is_same<float2, FoutT>::value,
+                  "For a cuda::Mapping type, the output type of the optional functor must be either float or float2");
+    
+    // Deducing DeviceMap type to use (1D or 2D), depending on the
+    // FunctorT::OutputT type.
+    using DeviceMapT = typename std::conditional<std::is_same<float, FoutT>::value,
+                                                 DeviceMapping1D<T>,
+                                                 DeviceMapping2D<T>>::type;
+    
+    // Building final type.
+    using type = functors::FunctorCompound<DeviceMapT, FunctorT>;
+};
 
 /**
  * Host side class with manage device side Device mapping data. This also
@@ -53,7 +85,7 @@ class Mapping
     using Ptr       = std::shared_ptr<Mapping>;
     using ConstPtr  = std::shared_ptr<const Mapping>;
     using Texture   = Texture2D<T>;
-    using DeviceMap = functors::FunctorCompound<DeviceMapping2D<T>, FunctorT>;
+    using DeviceMap = typename device_map_type<T, FunctorT>::type;
 
     protected:
     

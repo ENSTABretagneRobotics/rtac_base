@@ -4,7 +4,16 @@
 #include <rtac_base/cuda/DeviceVector.h>
 #include <rtac_base/cuda/HostVector.h>
 #include <rtac_base/cuda/Mapping.h>
+#include <rtac_base/cuda/functors.h>
 using namespace rtac::cuda;
+
+// This should fail successfully.
+// using TypeTest0 = device_map_type<float, functors::Scaling<int>>;
+// const TypeTest0 test0;
+using TypeTest1 = device_map_type<float, functors::Scaling<float>>;
+const TypeTest1 test1;
+using TypeTest2 = device_map_type<float, functors::Scaling<float2>>;
+const TypeTest2 test2;
 
 // This Functor transforms pixel coordinates in normalized texture coordinates,
 // given a size (width, height).
