@@ -80,7 +80,9 @@ struct FunctorCompound
         // below is to suppress the warning but has no effect on the code. See
         // here for more info :
         // https://stackoverflow.com/questions/64523302/cuda-missing-return-statement-at-end-of-non-void-function-in-constexpr-if-fun
-        return std::get<Level>(functors_)(input);
+        // CAUTION : THIS CODE IMPLIES THAT ALL FUNCTORS OUTPUT MUST BE DEFAULT
+        // CONSTRUCTIBLE. MAYBE KEEPING THE WARNING IS BETTER.
+        return typename functor_get<Level>::OutputT();
     }
 
     public:

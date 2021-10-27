@@ -7,7 +7,38 @@
 
 namespace rtac { namespace cuda {
 
+
+struct Vectorize4 {
+    using InputT  = float;
+    using OutputT = float4;
+
+    float x;
+
+    RTAC_HOSTDEVICE float4 operator()(float input) const {
+        return float4({input, input, input, input});
+    }
+};
+
+struct Norm4 {
+    using InputT  = float4;
+    using OutputT = float;
+
+    float x;
+
+    RTAC_HOSTDEVICE float operator()(const float4& input) const {
+        // return length(input); // WHY U NOT WORKING ???
+        return sqrt( input.x*input.x
+                   + input.y*input.y
+                   + input.z*input.z
+                   + input.w*input.w);
+                    
+    }
+};
+
+using MultiType = functors::FunctorCompound<Norm4, Vectorize4>;
+
 using Saxpy = functors::FunctorCompound<functors::Offset<float>, functors::Scaling<float>>;
+
 
 DeviceVector<float> scaling(const DeviceVector<float>& input, 
                             const functors::Scaling<float>& func);
