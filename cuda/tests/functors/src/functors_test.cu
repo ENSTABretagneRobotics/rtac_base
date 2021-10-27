@@ -4,7 +4,7 @@
 namespace rtac { namespace cuda {
 
 DeviceVector<float> scaling(const DeviceVector<float>& input,
-                            const functor::Scaling<float>& func)
+                            const functors::Scaling<float>& func)
 {
     DeviceVector<float> output(input.size());
 

@@ -8,7 +8,7 @@
 #include <tuple>
 #include <rtac_base/cuda/utils.h>
 
-namespace rtac { namespace cuda { namespace functor {
+namespace rtac { namespace cuda { namespace functors {
 
 template <typename Tout, typename Tin = Tout, typename Tscale = Tin>
 struct Scaling {
@@ -35,7 +35,7 @@ struct Offset {
     }
 };
 
-}; //namespace functor
+}; //namespace functors
 }; //namespace cuda
 }; //namespace rtac
 

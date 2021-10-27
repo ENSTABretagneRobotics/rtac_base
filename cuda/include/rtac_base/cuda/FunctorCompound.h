@@ -4,7 +4,7 @@
 #include <tuple>
 #include <rtac_base/cuda/utils.h>
 
-namespace rtac { namespace cuda {
+namespace rtac { namespace cuda { namespace functors {
 
 /**
  * This class allows for the creation of custom unary Functor types on the fly.
@@ -83,6 +83,7 @@ struct FunctorCompound
     }
 };
 
+}; //namespace functors
 }; //namespace cuda
 }; //namespace rtac
 

@@ -18,11 +18,11 @@ int main()
 
     //auto output = scaling(input, functor::Scaling<float>({2.0f}));
 
-    auto f = Saxpy(functor::Offset<float>({3.0f}), functor::Scaling<float>({2.0f}));
+    auto f = Saxpy(functors::Offset<float>({3.0f}), functors::Scaling<float>({2.0f}));
     cout << f(1.0f) << endl;
 
-    auto output = saxpy(input, Saxpy(functor::Offset<float>({3.0f}),
-                                     functor::Scaling<float>({2.0f})));
+    auto output = saxpy(input, Saxpy(functors::Offset<float>({3.0f}),
+                                     functors::Scaling<float>({2.0f})));
 
     cout << input  << endl;
     cout << output << endl;
