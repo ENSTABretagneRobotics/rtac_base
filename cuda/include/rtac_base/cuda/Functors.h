@@ -7,7 +7,7 @@
 namespace rtac { namespace cuda {
 
 /**
- * This class allows for creating of custom unary Functor types on the fly.
+ * This class allows for the creation of custom unary Functor types on the fly.
  *
  * A functor is a callable struct (defines an operator()). In the RTAC
  * framework, a valid functor must define an InputT and OutputT types, as well
@@ -33,6 +33,16 @@ namespace rtac { namespace cuda {
  *     T operator()(T input) const { return 2.0f * input; }
  * };
  * \endcode
+ *
+ * Combining two functors can be done like so :
+ *
+ * \code
+ * auto multBy2ThenAdd3 = FunctorCompound(Offset(3), Scaling(2));
+ * \endcode
+ *
+ * After compilation in release mode, the compound is equivalent to directly
+ * writting the operation by hand (but with the benefit is has been written at
+ * a single location in the code).
  */
 template <class... FunctorsT>
 struct FunctorCompound
