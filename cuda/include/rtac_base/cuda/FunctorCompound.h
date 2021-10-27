@@ -75,14 +75,14 @@ struct FunctorCompound
         // PURPOSE.
         // At the time this file were written, there was a bug in nvcc compiler
         // about if constexpr. The bug triggers a "warning: missing return
-        // statement at end of non-void function" even though the function
+        // statement at end of non-void function" even though the functionOutputT();
         // always returns in one of the branch of the condition above. The line
         // below is to suppress the warning but has no effect on the code. See
         // here for more info :
         // https://stackoverflow.com/questions/64523302/cuda-missing-return-statement-at-end-of-non-void-function-in-constexpr-if-fun
         // CAUTION : THIS CODE IMPLIES THAT ALL FUNCTORS OUTPUT MUST BE DEFAULT
         // CONSTRUCTIBLE. MAYBE KEEPING THE WARNING IS BETTER.
-        return typename functor_get<Level>::OutputT();
+        // return typename functor_get<Level>::OutputT();
     }
 
     public:
