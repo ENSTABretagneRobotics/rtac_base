@@ -71,6 +71,16 @@ struct FunctorCompound
         else {
             return std::get<Level>(functors_)(call_functor<Level+1>(input));
         }
+        // CAUTION : THE CODE BELOW IS UNREACHABLE, BUT THIS IS DONE ON
+        // PURPOSE.
+        // At the time this file were written, there was a bug in nvcc compiler
+        // about if constexpr. The bug triggers a "warning: missing return
+        // statement at end of non-void function" even though the function
+        // always returns in one of the branch of the condition above. The line
+        // below is to suppress the warning but has no effect on the code. See
+        // here for more info :
+        // https://stackoverflow.com/questions/64523302/cuda-missing-return-statement-at-end-of-non-void-function-in-constexpr-if-fun
+        return std::get<Level>(functors_)(input);
     }
 
     public:
