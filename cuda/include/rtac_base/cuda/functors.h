@@ -10,6 +10,22 @@
 
 namespace rtac { namespace cuda { namespace functors {
 
+/**
+ * This functor is usefull to define default template argument which have no
+ * effects. This shouldn't have any impact on performance after an optimized
+ * compilation.
+ */
+template <typename T>
+struct IdentityFunctor
+{
+    using InputT  = T;
+    using OutputT = T;
+
+    RTAC_HOSTDEVICE const T& operator()(const T& input) const {
+        return input;
+    }
+};
+
 template <typename Tout, typename Tin = Tout, typename Tscale = Tin>
 struct Scaling {
     using InputT  = Tin;

@@ -32,8 +32,8 @@ foreach(name ${cuda_test_names})
 endforeach(name)
 
 add_subdirectory(texture)
-add_subdirectory(mapping)
 add_subdirectory(functors)
+add_subdirectory(mapping)
 
 
 add_executable(reductions_test
