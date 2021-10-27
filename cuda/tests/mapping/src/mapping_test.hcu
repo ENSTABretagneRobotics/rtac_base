@@ -41,6 +41,19 @@ __global__ void do_render_mapping2(T* output, int W, int H, MappingT map)
     }
 }
 
+template <typename T, class MappingT1, class MappingT2>
+__global__ void do_render_mapping3(T* output, int W, int H,
+                                   MappingT1 map1, MappingT2 map2)
+{
+    float2 p;
+    for(int h = 0; h < H; h++) {
+        p.y = map2(((float)h) / (H - 1));
+        for(int w = 0; w < W; w++) {
+            p.x = map2(1.0f - ((float)w) / (W - 1));
+            output[W*h + w] = map1(p);
+        }
+    }
+}
 
 
 #endif //_DEF_RTAC_BASE_CUDA_TESTS_MAPPING_TEST_HCU_

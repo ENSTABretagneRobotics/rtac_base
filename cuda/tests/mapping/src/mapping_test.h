@@ -5,6 +5,7 @@
 #include <rtac_base/cuda/HostVector.h>
 #include <rtac_base/cuda/Mapping.h>
 #include <rtac_base/cuda/functors.h>
+#include <rtac_base/cuda/mappings.h>
 using namespace rtac::cuda;
 
 // This should fail successfully.
@@ -31,10 +32,16 @@ struct NormalizerUV {
 
 using Mapping1 = Mapping<float>;
 using Mapping2 = Mapping<float, NormalizerUV>;
+using Mapping3 = Mapping1D<float>;
 
 DeviceVector<float> render_texture(int W, int H, const Texture2D<float>& texData);
 
 DeviceVector<float> render_mapping1(int W, int H, const Mapping1::DeviceMap& map);
 DeviceVector<float> render_mapping2(int W, int H, const Mapping2::DeviceMap& map);
+DeviceVector<float> render_mapping3(int W, int H,
+                                    const Mapping1::DeviceMap& map1,
+                                    const Mapping3::DeviceMap& map3);
+
+
 
 #endif //_DEF_RTAC_BASE_CUDA_TESTS_MAPPING_TEST_H_

@@ -51,6 +51,19 @@ struct Offset {
     }
 };
 
+template <typename Tout, typename Tin = Tout, typename Tscaling = Tout, typename Toff = Tout>
+struct AffineTransform {
+    using InputT  = Tin;
+    using OutputT = Tout;
+
+    Tscaling scaling;
+    Toff     offset;
+
+    RTAC_HOSTDEVICE Tout operator()(const Tin& input) const {
+        return scaling*input + offset;
+    }
+};
+
 }; //namespace functors
 }; //namespace cuda
 }; //namespace rtac

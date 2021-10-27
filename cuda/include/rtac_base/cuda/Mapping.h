@@ -63,12 +63,12 @@ struct device_map_type {
     
     // Deducing DeviceMap type to use (1D or 2D), depending on the
     // FunctorT::OutputT type.
-    using DeviceMapT = typename std::conditional<std::is_same<float, FoutT>::value,
-                                                 DeviceMapping1D<T>,
-                                                 DeviceMapping2D<T>>::type;
+    using BaseDeviceMapT = typename std::conditional<std::is_same<float, FoutT>::value,
+                                                     DeviceMapping1D<T>,
+                                                     DeviceMapping2D<T>>::type;
     
     // Building final type.
-    using type = functors::FunctorCompound<DeviceMapT, FunctorT>;
+    using type = functors::FunctorCompound<BaseDeviceMapT, FunctorT>;
 };
 
 /**
@@ -85,7 +85,8 @@ class Mapping
     using Ptr       = std::shared_ptr<Mapping>;
     using ConstPtr  = std::shared_ptr<const Mapping>;
     using Texture   = Texture2D<T>;
-    using DeviceMap = typename device_map_type<T, FunctorT>::type;
+    using BaseDeviceMapT = typename device_map_type<T, FunctorT>::BaseDeviceMapT;
+    using DeviceMap      = typename device_map_type<T, FunctorT>::type;
 
     protected:
     
@@ -185,7 +186,7 @@ const FunctorT& Mapping<T,FunctorT>::functor() const
 template <typename T, class FunctorT>
 typename Mapping<T,FunctorT>::DeviceMap Mapping<T,FunctorT>::device_map() const
 {
-    return DeviceMap(DeviceMapping2D<T>({data_.texture()}), f_);
+    return DeviceMap(BaseDeviceMapT({data_.texture()}), f_);
 }
 
 }; //namespace cuda

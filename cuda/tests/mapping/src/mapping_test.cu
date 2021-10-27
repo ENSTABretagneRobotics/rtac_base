@@ -30,3 +30,16 @@ DeviceVector<float> render_mapping2(int W, int H, const Mapping2::DeviceMap& map
 
     return output;
 }
+
+DeviceVector<float> render_mapping3(int W, int H,
+                                    const Mapping1::DeviceMap& map1,
+                                    const Mapping3::DeviceMap& map3)
+{
+    DeviceVector<float> output(W*H);
+    
+    do_render_mapping3<<<1,1>>>(output.data(), W, H, map1, map3);
+    cudaDeviceSynchronize();
+
+    return output;
+}
+
