@@ -16,6 +16,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/Handle.h
     include/rtac_base/types/Shape.h
     include/rtac_base/types/Rectangle.h
+    include/rtac_base/types/Bounds.h
     include/rtac_base/types/common.h
     include/rtac_base/types/Pose.h
     include/rtac_base/types/Point.h
