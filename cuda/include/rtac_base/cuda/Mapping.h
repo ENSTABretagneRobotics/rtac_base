@@ -93,6 +93,7 @@ class Mapping
     Texture  data_;
     FunctorT f_;
     
+    Mapping();
     Mapping(Texture&& data);
     Mapping(Texture&& data, const FunctorT& f);
 
@@ -113,6 +114,10 @@ class Mapping
 
     DeviceMap device_map() const;
 };
+
+template <typename T, class FunctorT>
+Mapping<T,FunctorT>::Mapping()
+{}
 
 template <typename T, class FunctorT>
 Mapping<T,FunctorT>::Mapping(Texture&& data) :
