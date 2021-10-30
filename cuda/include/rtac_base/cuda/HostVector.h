@@ -6,10 +6,12 @@
 
 #include <cuda_runtime.h>
 
-#include <rtac_base/types/common.h>
+#include <rtac_base/cuda/utils.h>
 #include <rtac_base/types/SharedVector.h>
 
-#include <rtac_base/cuda/utils.h>
+#ifndef RTAC_CUDACC
+#include <rtac_base/types/common.h>
+#endif
 
 namespace rtac { namespace cuda {
 
@@ -46,13 +48,16 @@ class HostVector
     HostVector(const HostVector<T>& other);
     HostVector(const DeviceVector<T>& other);
     HostVector(const std::vector<T>& other);
-    HostVector(const types::Vector<T>& other);
     ~HostVector();
     
     HostVector& operator=(const HostVector<T>& other);
     HostVector& operator=(const DeviceVector<T>& other);
     HostVector& operator=(const std::vector<T>& other);
+
+    #ifndef RTAC_CUDACC
+    HostVector(const types::Vector<T>& other);
     HostVector& operator=(const types::Vector<T>& other);
+    #endif
 
     void resize(size_t size);
     size_t size() const;
@@ -114,13 +119,6 @@ HostVector<T>::HostVector(const std::vector<T>& other) :
 }
 
 template <typename T>
-HostVector<T>::HostVector(const types::Vector<T>& other) :
-    HostVector(other.size())
-{
-    *this = other;
-}
-
-template <typename T>
 HostVector<T>::~HostVector()
 {
     this->free();
@@ -159,6 +157,14 @@ HostVector<T>& HostVector<T>::operator=(const std::vector<T>& other)
     return *this;
 }
 
+#ifndef RTAC_CUDACC
+template <typename T>
+HostVector<T>::HostVector(const types::Vector<T>& other) :
+    HostVector(other.size())
+{
+    *this = other;
+}
+
 template <typename T>
 HostVector<T>& HostVector<T>::operator=(const types::Vector<T>& other)
 {
@@ -169,6 +175,7 @@ HostVector<T>& HostVector<T>::operator=(const types::Vector<T>& other)
                            cudaMemcpyHostToHost) );
     return *this;
 }
+#endif
 
 template <typename T>
 void HostVector<T>::allocate(size_t size)
