@@ -1,7 +1,7 @@
 #ifndef _DEF_RTAC_BASE_TYPES_SHAPE_H_
 #define _DEF_RTAC_BASE_TYPES_SHAPE_H_
 
-#include <iostream>
+#include <rtac_base/cuda_defines.h>
 
 namespace rtac { namespace types {
 
@@ -19,7 +19,7 @@ struct Shape
     T height;
 
     template <typename RatioType = T>
-    RatioType ratio() const
+    RTAC_HOSTDEVICE RatioType ratio() const
     {
         return ((RatioType)width / height);
     }
@@ -30,7 +30,7 @@ struct Shape
     }
 
     template <typename SizeType = T>
-    SizeType size() const
+    RTAC_HOSTDEVICE SizeType size() const
     {
         return width * height;
     }
@@ -39,11 +39,15 @@ struct Shape
 }; //namespace types
 }; //namespace rtac
 
+#ifndef RTAC_CUDACC
+
+#include <iostream>
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const rtac::types::Shape<T>& shape)
 {
     os << "width : " << shape.width << ", height : " << shape.height;
     return os;
 }
+#endif //RTAC_CUDACC
 
 #endif //_DEF_RTAC_BASE_TYPES_SHAPE_H_
