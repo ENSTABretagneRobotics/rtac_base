@@ -8,15 +8,7 @@
 
 #include <cuda_runtime.h>
 
-
-#if defined(__CUDACC__) || defined(__CUDABE__)
-#   define RTAC_CUDACC
-#   define RTAC_HOSTDEVICE __host__ __device__
-#   define RTAC_INLINE     __forceinline__
-#else
-#   define RTAC_HOSTDEVICE
-#   define RTAC_INLINE     inline
-#endif
+#include <rtac_base/cuda_defines.h>
 
 #define CUDA_CHECK( call )                                                 \
     do {                                                                   \
