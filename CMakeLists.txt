@@ -36,6 +36,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/geometry.h
     include/rtac_base/interpolation.h
     include/rtac_base/cuda_defines.h
+    include/rtac_base/nmea_utils.h
 )
 
 add_library(rtac_base SHARED

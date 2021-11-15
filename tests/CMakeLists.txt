@@ -15,6 +15,7 @@ list(APPEND test_names
     buildtarget_test.cpp
 
     ppmformat_test.cpp
+    nmea_utils.cpp
 )
 
 list(APPEND test_deps
