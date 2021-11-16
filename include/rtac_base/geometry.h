@@ -24,6 +24,32 @@ constexpr T to_radians(T degrees)
 }
 
 /**
+ * Conversion from Tait-Bryan angles to Quaternion in NED convention.
+ *
+ * Input as radians.
+ */
+template <typename T>
+Quaternion<T> quaternion_from_nautical_rad(T yaw, T pitch, T roll)
+{
+    return Eigen::AngleAxis<T>(yaw,   Eigen::Vector3<T>::UnitZ())
+         * Eigen::AngleAxis<T>(pitch, Eigen::Vector3<T>::UnitY())
+         * Eigen::AngleAxis<T>(roll,  Eigen::Vector3<T>::UnitX());
+}
+
+/**
+ * Conversion from Tait-Bryan angles to Quaternion in NED convention.
+ *
+ * Input as degrees.
+ */
+template <typename T>
+Quaternion<T> quaternion_from_nautical_degrees(T yaw, T pitch, T roll)
+{
+    return quaternion_from_nautical_rad(to_radians(yaw),
+                                        to_radians(pitch),
+                                        to_radians(roll));
+}
+
+/**
  * Find a vector non-colinear to v.
  *
  * The non-colinear vector is found by starting from a zero vector the same
