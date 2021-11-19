@@ -16,6 +16,7 @@ list(APPEND test_names
 
     ppmformat_test.cpp
     nmea_utils.cpp
+    navigation_test.cpp
 )
 
 list(APPEND test_deps
