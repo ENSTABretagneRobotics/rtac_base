@@ -33,10 +33,6 @@ Eigen::Quaternion<T> enu_to_ned_quaternion()
     return ned_to_enu_quaternion<T>().inverse();
 }
 
-/**
- * Conversion of a Quaternion from North East Down (NED) convention to
- * East North Up convention.
- */
 template <typename T>
 Eigen::Quaternion<T> ned_to_enu(const Eigen::Quaternion<T>& nedRot)
 {
@@ -44,10 +40,6 @@ Eigen::Quaternion<T> ned_to_enu(const Eigen::Quaternion<T>& nedRot)
     return q.inverse()*nedRot*q;
 }
 
-/**
- * Conversion of a  Matrix3 from North East Down (NED) convention to
- * East North Up convention.
- */
 template <typename T>
 Eigen::Matrix3<T> ned_to_enu(const Eigen::Matrix3<T>& m)
 {
@@ -56,12 +48,29 @@ Eigen::Matrix3<T> ned_to_enu(const Eigen::Matrix3<T>& m)
 }
 
 
-/**
- * Conversion of a Vector3 from North East Down (NED) convention to
- * East North Up convention.
- */
 template <typename T>
 Eigen::Vector3<T> ned_to_enu(const Eigen::Vector3<T>& v)
+{
+    return (Eigen::Vector3<T>() << v(1), v(0), -v(2)).finished();
+}
+
+template <typename T>
+Eigen::Quaternion<T> enu_to_ned(const Eigen::Quaternion<T>& nedRot)
+{
+    auto q = enu_to_ned_quaternion<T>();
+    return q.inverse()*nedRot*q;
+}
+
+template <typename T>
+Eigen::Matrix3<T> enu_to_ned(const Eigen::Matrix3<T>& m)
+{
+    auto P = enu_to_ned_matrix<T>();
+    return P.transpose()*m*P;
+}
+
+
+template <typename T>
+Eigen::Vector3<T> enu_to_ned(const Eigen::Vector3<T>& v)
 {
     return (Eigen::Vector3<T>() << v(1), v(0), -v(2)).finished();
 }
