@@ -43,6 +43,8 @@ class Mesh
 
     const PointVector& points() const;
     const FaceVector&  faces()  const;
+    PointVector& points();
+    FaceVector&  faces();
 
     const Point& point(size_t idx) const;
     const Face&  face(size_t idx)  const;
@@ -115,6 +117,20 @@ const typename Mesh<PointT,FaceT,VectorT>::PointVector&
 template <typename PointT, typename FaceT, template <typename> class VectorT>
 const typename Mesh<PointT,FaceT,VectorT>::FaceVector&
     Mesh<PointT,FaceT,VectorT>::faces() const
+{
+    return faces_;
+}
+
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+typename Mesh<PointT,FaceT,VectorT>::PointVector&
+    Mesh<PointT,FaceT,VectorT>::points()
+{
+    return points_;
+}
+
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+typename Mesh<PointT,FaceT,VectorT>::FaceVector&
+    Mesh<PointT,FaceT,VectorT>::faces()
 {
     return faces_;
 }
