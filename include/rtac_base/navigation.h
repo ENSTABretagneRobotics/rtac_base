@@ -2,6 +2,7 @@
 #define _DEF_RTAC_BASE_NAVIGATION_H_
 
 #include <rtac_base/types/common.h>
+#include <rtac_base/types/Pose.h>
 #include <rtac_base/geometry.h>
 
 namespace rtac { namespace navigation {
@@ -47,11 +48,17 @@ Eigen::Matrix3<T> ned_to_enu(const Eigen::Matrix3<T>& m)
     return P.transpose()*m*P;
 }
 
-
 template <typename T>
 Eigen::Vector3<T> ned_to_enu(const Eigen::Vector3<T>& v)
 {
     return (Eigen::Vector3<T>() << v(1), v(0), -v(2)).finished();
+}
+
+template <typename T>
+types::Pose<T> ned_to_enu(const types::Pose<T>& p)
+{
+    return types::Pose<T>(ned_to_enu<T>(p.translation()),
+                          ned_to_enu<T>(p.orientation()));
 }
 
 template <typename T>
@@ -75,6 +82,12 @@ Eigen::Vector3<T> enu_to_ned(const Eigen::Vector3<T>& v)
     return (Eigen::Vector3<T>() << v(1), v(0), -v(2)).finished();
 }
 
+template <typename T>
+types::Pose<T> enu_to_ned(const types::Pose<T>& p)
+{
+    return types::Pose<T>(enu_to_ned(p.translation()),
+                          enu_to_ned(p.orientation()));
+}
 
 /**
  * Conversion from Tait-Bryan angles to Quaternion in NED convention.
