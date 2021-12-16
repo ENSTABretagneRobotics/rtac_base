@@ -8,8 +8,8 @@ class TargetBase : public BuildTarget
 {
     public:
 
-    using Ptr     = BuildTargetHandle<TargetBase>;
-    using ConsPtr = BuildTargetHandle<const TargetBase>;
+    using Ptr     = Handle<TargetBase>;
+    using ConsPtr = Handle<const TargetBase>;
 
     public:
 
@@ -32,8 +32,8 @@ class TargetBase : public BuildTarget
         if(dependencies_.size() > 0) {
             cout << "Check dependencies status:\n";
             for(auto dep : dependencies_) {
-                cout << "dependency " << dynamic_cast<const TargetBase*>(dep.get())->id_
-                     << ", needs_build : " << dep->needs_build()
+                cout << "dependency " << dynamic_cast<const TargetBase*>(dep.target().get())->id_
+                     << ", needs_build : " << dep.target()->needs_build()
                      << ", has_changed : " << dep.has_changed() << endl;
             }
         }
@@ -49,8 +49,8 @@ class TargetChild0 : public TargetBase
 {
     public:
 
-    using Ptr     = BuildTargetHandle<TargetChild0>;
-    using ConsPtr = BuildTargetHandle<const TargetChild0>;
+    using Ptr     = Handle<TargetChild0>;
+    using ConsPtr = Handle<const TargetChild0>;
 
     virtual void do_build() const {
         cout << "Building TargetChild0 : " << id_ << endl;
@@ -89,7 +89,7 @@ int main()
     cout << "targetPtr2 : " << targetPtr2.get() << endl;
 
     for(auto dep : target2->dependencies()) {
-        cout << "dep     : " << dep.get() << endl;
+        cout << "dep     : " << dep.target().get() << endl;
     }
     cout << endl;
     

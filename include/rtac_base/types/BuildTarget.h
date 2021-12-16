@@ -2,8 +2,9 @@
 #define _DEF_RTAC_BASE_TYPES_BUILD_TARGET_H_
 
 #include <iostream>
-#include <memory>
 #include <vector>
+
+#include <rtac_base/types/Handle.h>
 
 namespace rtac { namespace types {
 
@@ -29,69 +30,38 @@ namespace rtac { namespace types {
 // trigger the build of the targets which depends on the first. Note that this
 // behavior should be transparent for the child targets.
 
-template <typename TargetT,
-          template <typename T> class PointerT = std::shared_ptr>
+class BuildTarget;
+
 class BuildTargetHandle
 {
     public:
 
-    using TargetType = TargetT;
-    using Ptr        = PointerT<TargetT>;
-
-    // defining a hash function to be able to use this pointer as a key in a
-    // std::unordered_map
-    struct Hash {
-        std::size_t operator()(const BuildTargetHandle<TargetT, PointerT>& ptr) const {
-            return std::hash<const TargetT*>{}(ptr.get());
-        }
-    };
+    using TargetPtr = Handle<const BuildTarget>;
 
     protected:
 
-    Ptr          target_;
+    TargetPtr    target_;
     unsigned int version_;
 
     public:
 
-    BuildTargetHandle(TargetT* target = nullptr, unsigned int version = 0);
-    BuildTargetHandle(const Ptr& target, unsigned int version = 0);
+    BuildTargetHandle(const TargetPtr& target = nullptr);
+
+    bool has_changed()  const; // this checks version_ vs target_->version()
+    void acknowledge();        // set this version_ to target_->version()
     
     unsigned int version() const;
-    bool has_changed() const; // this checks version_ vs target_->version()
-    void acknowledge();       // set this version_ to target_->version()
-
-    // This enables cast to point to base classes (as smart pointers would do).
-    template <typename OtherTargetT>
-    operator BuildTargetHandle<OtherTargetT, PointerT>() const;
-
-    // Minimal pointer behavior
-    TargetT& operator*();
-    const TargetT& operator*() const;
-
-    TargetT* get();
-    const TargetT* get() const;
-
-    Ptr ptr() { return target_; }
-    Ptr ptr() const { return target_; } 
-
-    TargetT* operator->();
-    const TargetT* operator->() const;
-    
-    template <typename OtherTargetT>
-    bool operator==(const OtherTargetT* other) const;
-    template <typename OtherTargetT>
-    bool operator==(const BuildTargetHandle<OtherTargetT>& other) const;
-
-    operator bool() const;
+    TargetPtr    target()  const;
 };
 
 class BuildTarget
 {
     public:
 
-    using Ptr          = BuildTargetHandle<BuildTarget>;
-    using ConstPtr     = BuildTargetHandle<const BuildTarget>;
-    using Dependencies = std::vector<ConstPtr>;
+    using Ptr          = Handle<BuildTarget>;
+    using ConstPtr     = Handle<const BuildTarget>;
+    using Dependencies = std::vector<BuildTargetHandle>;
+
     struct CircularDependencyError : std::runtime_error {
         CircularDependencyError() : std::runtime_error(
             "Adding the dependency would create an infinite loop") {}
@@ -105,11 +75,6 @@ class BuildTarget
     mutable bool         needsBuild_;
     mutable unsigned int version_;
     mutable Dependencies dependencies_;
-    
-    // A const version of bump version allows for this object to request a need
-    // build from other const methods. (For example if a dependency was
-    // changed).
-    void bump_version(bool needsRebuild = true) const;
 
     // to_build and clean methods are to be reimplemented in subclasses.
     virtual void do_build() const = 0;
@@ -120,116 +85,18 @@ class BuildTarget
     
     bool needs_build() const;
     unsigned int version() const;
-    void bump_version(bool needsRebuild = true);
+    // A const version of bump version allows for this object to request a need
+    // build from other const methods. (For example if a dependency was
+    // changed).
+    void bump_version(bool needsRebuild = true) const;
 
     void add_dependency(const ConstPtr& dep); 
     const Dependencies& dependencies() const;
-    void check_circular_dependencies(const ConstPtr& dep) const;
+    bool depends_on(const BuildTarget* other) const;
 
     virtual void build() const;
     virtual void clean() const {} // no cleanup by default;
 };
-
-// BuildTargetHandle implementation ////////////////////////////////////////
-template <typename TargetT, template <typename T> class PointerT>
-BuildTargetHandle<TargetT,PointerT>::BuildTargetHandle(TargetT* target,
-                                                       unsigned int version) :
-    target_(target),
-    version_(version)
-{}
-
-template <typename TargetT, template <typename T> class PointerT>
-BuildTargetHandle<TargetT,PointerT>::BuildTargetHandle(const Ptr& target,
-                                                       unsigned int version) :
-    target_(target),
-    version_(version)
-{}
-
-template <typename TargetT, template <typename T> class PointerT>
-unsigned int BuildTargetHandle<TargetT,PointerT>::version() const
-{
-    return version_;
-}
-
-template <typename TargetT, template <typename T> class PointerT>
-bool BuildTargetHandle<TargetT,PointerT>::has_changed() const
-{
-    if(version_ != target_->version() || target_->needs_build())
-        return true;
-    return false;
-}
-
-template <typename TargetT, template <typename T> class PointerT>
-void BuildTargetHandle<TargetT,PointerT>::acknowledge()
-{
-    version_ = target_->version();
-}
-
-template <typename TargetT, template <typename T> class PointerT>
-template <typename OtherTargetT> BuildTargetHandle<TargetT,PointerT>::operator
-BuildTargetHandle<OtherTargetT, PointerT>() const
-{
-    return BuildTargetHandle<OtherTargetT, PointerT>(target_, version_);
-}
-
-template <typename TargetT, template <typename T> class PointerT>
-TargetT& BuildTargetHandle<TargetT,PointerT>::operator*()
-{
-    return *target_;
-}
-
-template <typename TargetT, template <typename T> class PointerT>
-const TargetT& BuildTargetHandle<TargetT,PointerT>::operator*() const
-{
-    return *target_;
-}
-
-template <typename TargetT, template <typename T> class PointerT>
-TargetT* BuildTargetHandle<TargetT,PointerT>::get()
-{
-    return target_.get();
-}
-
-template <typename TargetT, template <typename T> class PointerT>
-const TargetT* BuildTargetHandle<TargetT,PointerT>::get() const
-{
-    return target_.get();
-}
-
-template <typename TargetT, template <typename T> class PointerT>
-TargetT* BuildTargetHandle<TargetT,PointerT>::operator->()
-{
-    return this->get();
-}
-
-template <typename TargetT, template <typename T> class PointerT>
-const TargetT* BuildTargetHandle<TargetT,PointerT>::operator->() const
-{
-    return this->get();
-}
-
-template <typename TargetT, template <typename T> class PointerT>
-template <typename OtherTargetT>
-bool BuildTargetHandle<TargetT,PointerT>::operator==(const OtherTargetT* other) const
-{
-    return ((const void*)this->get()) == ((const void*)other);
-}
-
-template <typename TargetT, template <typename T> class PointerT>
-template <typename OtherTargetT>
-bool BuildTargetHandle<TargetT,PointerT>::operator==(
-                const BuildTargetHandle<OtherTargetT>& other) const
-{
-    return ((const void*)this->get()) == ((const void*)other.get());
-}
-
-template <typename TargetT, template <typename T> class PointerT>
-BuildTargetHandle<TargetT,PointerT>::operator bool() const
-{
-    return !(!(target_));
-}
-
-// BuildTarget implementation ////////////////////////////////////////
 
 }; //namespace types
 }; //namespace rtac

@@ -2,7 +2,35 @@
 
 namespace rtac { namespace types {
 
-    
+// BuildTargetHandle implementation ////////////////////////////////////////
+BuildTargetHandle::BuildTargetHandle(const TargetPtr& target) :
+    target_(target),
+    version_(target_->version())
+{}
+
+bool BuildTargetHandle::has_changed() const
+{
+    if(version_ != target_->version() || target_->needs_build())
+        return true;
+    return false;
+}
+
+void BuildTargetHandle::acknowledge()
+{
+    version_ = target_->version();
+}
+
+unsigned int BuildTargetHandle::version() const
+{
+    return version_;
+}
+
+BuildTargetHandle::TargetPtr BuildTargetHandle::target() const
+{
+    return target_;
+}
+
+// BuildTarget implementation ////////////////////////////////////////
 BuildTarget::BuildTarget(const Dependencies& deps) :
     needsBuild_(true),
     version_(0),
@@ -14,17 +42,15 @@ bool BuildTarget::needs_build() const
     if(needsBuild_)
         return true;
     for(auto& dep : dependencies_) {
-        if(!dep) {
-            std::cout << "Dep is null !" << std::endl << std::flush;
+        if(!dep.target()) {
+            std::cerr << "Dep is null !" << std::endl << std::flush;
         }
         if(dep.has_changed()) {
             this->bump_version(true);
             return true;
-            //dep.acknowledge(); // Keeping track of changes
         }
     }
     return false;
-    //return needsBuild_;
 }
 
 unsigned int BuildTarget::version() const
@@ -38,16 +64,13 @@ void BuildTarget::bump_version(bool needsRebuild) const
     version_++;
 }
 
-void BuildTarget::bump_version(bool needsRebuild)
-{
-    if(needsRebuild) needsBuild_ = true;
-    version_++;
-}
-
 void BuildTarget::add_dependency(const ConstPtr& dep)
 {
-    this->check_circular_dependencies(dep);
-    this->dependencies_.push_back(dep);
+    //this->check_circular_dependencies(dep);
+    if(dep->depends_on(this)) {
+        throw CircularDependencyError();
+    }
+    this->dependencies_.push_back(BuildTargetHandle(dep));
 }
 
 const BuildTarget::Dependencies& BuildTarget::dependencies() const
@@ -55,16 +78,17 @@ const BuildTarget::Dependencies& BuildTarget::dependencies() const
     return dependencies_;
 }
 
-void BuildTarget::check_circular_dependencies(const ConstPtr& dep) const
+bool BuildTarget::depends_on(const BuildTarget* other) const
 {
-    if(dep == this) {
-        throw CircularDependencyError();
+    if(other == this) {
+        return true;
     }
     for(auto& dep : dependencies_) {
-        if(dep == this) {
-            throw CircularDependencyError();
+        if(dep.target()->depends_on(other)) {
+            return true;
         }
     }
+    return false;
 }
 
 void BuildTarget::build() const
@@ -72,13 +96,13 @@ void BuildTarget::build() const
     if(!this->needs_build())
         return;
 
-    // cleanup before build this can be a no-op
+    // cleanup before build. This can be a no-op
     this->clean();
 
     // Building dependencies (this will build all the dependency tree).
     for(auto& dep : dependencies_) {
-        if(dep->needs_build()) {
-            dep->build();
+        if(dep.target()->needs_build()) {
+            dep.target()->build();
         }
         dep.acknowledge();
     }
