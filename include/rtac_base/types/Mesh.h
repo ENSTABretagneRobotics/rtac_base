@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 #include <rtac_base/types/Point.h>
 #include <rtac_base/happly.h>
@@ -54,6 +55,11 @@ class Mesh
 
     // Some helpful builder functions
     static Mesh<PointT,FaceT,VectorT> cube(float scale = 1.0);
+    static Mesh<PointT,FaceT,VectorT> sphere_section(float radius,
+                                                     float xAperture,
+                                                     float yAperture,
+                                                     size_t Nx,
+                                                     size_t Ny);
 
     //// .ply files
     template <typename PointScalarT = float, typename FaceIndexT = uint32_t>
@@ -187,6 +193,55 @@ Mesh<PointT,FaceT,VectorT> Mesh<PointT,FaceT,VectorT>::cube(float scale)
     res.face( 9) = FaceT({2,7,6});
     res.face(10) = FaceT({3,0,4});
     res.face(11) = FaceT({3,4,7});
+    return res;
+}
+
+template <typename PointT, typename FaceT, template <typename> class VectorT>
+Mesh<PointT,FaceT,VectorT> Mesh<PointT,FaceT,VectorT>::sphere_section(float  radius,
+                                                                      float  xAperture,
+                                                                      float  yAperture,
+                                                                      size_t Nx,
+                                                                      size_t Ny)
+{
+    Mesh<PointT,FaceT,VectorT> res(Nx*Ny + 1, 0);
+                                   //2*(Nx*Ny - 1));
+    res.point(0) = PointT({0,0,0});
+    for(int ny = 0; ny < Ny; ny++) {
+        auto cy = radius*cos(yAperture*(((float)ny) / (Ny - 1) - 0.5f));
+        auto sy = radius*sin(yAperture*(((float)ny) / (Ny - 1) - 0.5f));
+        for(int nx = 0; nx < Nx; nx++) {
+            auto cx = cos(xAperture*(((float)nx) / (Nx - 1) - 0.5f));
+            auto sx = sin(xAperture*(((float)nx) / (Nx - 1) - 0.5f));
+            res.point(Nx*ny + nx + 1) = PointT({cx*cy, sx*cy, sy});
+        }
+    }
+    
+    // size_t nf = 0;
+    // for(int nx = 0; nx < Nx - 1; nx++) {
+    //     res.face(nf) = FaceT({0, nx+2, nx+1});
+    //     nf++;
+    // }
+    // for(int ny = 0; ny < Ny-1; ny++) {
+    //     res.face(nf) = FaceT({0, Nx*ny+1, Nx*(ny - 1)+1});
+    //     nf++;
+    // }
+    // for(int nx = 0; nx < Nx - 1; nx++) {
+    //     res.face(nf) = FaceT({0, Nx*Ny-nx-1, Nx*Ny-nx});
+    //     nf++;
+    // }
+    // for(int ny = 0; ny < Ny-1; ny++) {
+    //     res.face(nf) = FaceT({0, Nx*(Ny-1) - Nx*(ny+1) + 1, Nx*(Ny-1) - Nx*ny + 1});
+    //     nf++;
+    // }
+
+    // for(int ny = 0; ny < Ny - 2; ny++) {
+    //     for(int nx = 0; nx < Nx - 2; nx++) {
+    //         unsigned int Nc = Nx*ny + nx + 1;
+    //         res.face(nf)   = FaceT({Nc, Nc+1,  Nc+1+Nx});
+    //         res.face(nf+1) = FaceT({Nc, Nc+1+Nx, Nc+Nx});
+    //         nf += 2;
+    //     }
+    // }
     return res;
 }
 
