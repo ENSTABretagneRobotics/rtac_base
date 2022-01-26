@@ -1,0 +1,16 @@
+#ifndef _DEF_RTAC_BASE_CUDA_CONVOLUTION_HCU_
+#define _DEF_RTAC_BASE_CUDA_CONVOLUTION_HCU_
+
+#include <rtac_base/cuda/operators.h>
+
+namespace rtac { namespace cuda { namespace device {
+
+template <typename T, unsigned int BlockSize>
+__global__ void convolve_h(T* out, const T* in, 
+
+
+}; //namespace device
+}; //namespace cuda
+}; //namespace rtac
+
+#endif //_DEF_RTAC_BASE_CUDA_CONVOLUTION_HCU_

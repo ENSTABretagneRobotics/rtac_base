@@ -50,4 +50,4 @@ foreach(name ${test_names})
 endforeach(name)
 
 
-
+add_subdirectory(array_tests)
