@@ -181,8 +181,8 @@ Mesh<PointT,FaceT,VectorT> Mesh<PointT,FaceT,VectorT>::cube(float scale)
     res.point(5) = PointT({ scale,-scale, scale});
     res.point(6) = PointT({ scale, scale, scale});
     res.point(7) = PointT({-scale, scale, scale});
-    res.face( 0) = FaceT({0,2,1});
-    res.face( 1) = FaceT({0,3,2});
+    res.face( 0) = FaceT({0,3,2});
+    res.face( 1) = FaceT({0,2,1});
     res.face( 2) = FaceT({4,5,6});
     res.face( 3) = FaceT({4,6,7});
     res.face( 4) = FaceT({0,1,5});
