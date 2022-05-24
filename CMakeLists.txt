@@ -11,6 +11,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_installation.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_build_docs.cmake)
 
 find_package(Eigen3 REQUIRED)
+find_package(PNG)
 
 list(APPEND rtac_base_headers
     include/rtac_base/types/Handle.h
@@ -66,6 +67,20 @@ target_compile_features(rtac_base PUBLIC cxx_std_17)
 if(${WITH_CUDA})
     add_subdirectory(cuda)
 endif()
+
+if(PNG_FOUND) 
+    message(STATUS "Found libpng, version ${PNG_VERSION_STRING}")
+    target_include_directories(rtac_base PUBLIC ${PNG_INCLUDE_DIRS})
+    target_link_libraries(rtac_base PUBLIC ${PNG_LIBRARIES})
+    target_compile_definitions(rtac_base PUBLIC ${PNG_DEFINITIONS} RTAC_PNG)
+    list(APPEND rtac_base_headers
+        include/rtac_base/external/png_codec.h
+    )
+    set_target_properties(rtac_base PROPERTIES
+        RTAC_PUBLIC_HEADERS "${rtac_base_headers}"
+    )
+endif()
+
 
 add_subdirectory(tests)
 

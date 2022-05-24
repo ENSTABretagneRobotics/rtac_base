@@ -52,3 +52,4 @@ endforeach(name)
 
 
 add_subdirectory(array_tests)
+add_subdirectory(external)
