@@ -64,7 +64,22 @@ inline T zero()
     return res;
 }
 
+
+template<class ...Ts>
+struct voider {
+    using type = void;
+};
+
+// checks at compile time if a type implements operator[]
+template<class T, class = void>
+struct is_subscriptable : std::false_type {};
+template<class T>
+struct is_subscriptable<T, 
+    typename voider<decltype(std::declval<T>().operator[](0))>::type> : std::true_type {};
+
 }; //namespace types
 }; //namespace rtac
 
 #endif //_DEF_RTAC_BASE_TYPE_UTILS_H_
+
+
