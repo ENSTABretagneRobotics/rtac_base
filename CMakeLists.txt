@@ -20,6 +20,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/common.h
     include/rtac_base/types/Pose.h
     include/rtac_base/types/Point.h
+    include/rtac_base/types/Image.h
     include/rtac_base/types/PointCloudBase.h
     include/rtac_base/types/PointCloud.h
     include/rtac_base/types/Mesh.h

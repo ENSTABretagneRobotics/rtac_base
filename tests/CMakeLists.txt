@@ -6,6 +6,7 @@ list(APPEND test_names
     geometry_test.cpp
     type_utils_test.cpp
     ply_files_test.cpp
+    image_test.cpp
     mesh.cpp
     # ply_test.cpp
     pointcloud_test.cpp

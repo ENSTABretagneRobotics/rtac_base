@@ -3,6 +3,7 @@ list(APPEND test_names
     devicevector_test
     devicemesh_test
     linear_algebra
+    image_test
 )
 
 list(APPEND test_deps
