@@ -8,7 +8,6 @@ list(APPEND test_names
     ply_files_test.cpp
     image_test.cpp
     mesh.cpp
-    # ply_test.cpp
     pointcloud_test.cpp
     sharedvector_test.cpp
     mappedpointer_test.cpp

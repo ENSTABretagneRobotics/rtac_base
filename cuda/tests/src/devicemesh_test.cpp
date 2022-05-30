@@ -10,21 +10,21 @@ using namespace rtac::types;
 int main()
 {
     auto mesh = DeviceMesh<>::cube();
-    cout << mesh << endl;
+    cout << *mesh << endl;
 
-    mesh.export_ply("device_cube.ply", true);
+    HostMesh<>(*mesh).export_ply("device_cube.ply", true);
 
     auto loaded = DeviceMesh<>::from_ply("device_cube.ply");
-    cout << "Loaded " << loaded << endl;
+    cout << "Loaded " << *loaded << endl;
     
-    auto cube0 = Mesh<DeviceMesh<>::Point, DeviceMesh<>::Face, HostVector>::cube();
+    auto cube0 = HostMesh<>::cube();
 
     DeviceMesh<> copied;
-    copied = cube0;
+    copied = *cube0;
     cout << "Device copied " << copied << endl;
 
-    auto hostCopied = Mesh<DeviceMesh<>::Point, DeviceMesh<>::Face, HostVector>();
-    hostCopied = cube0;
+    HostMesh<> hostCopied;
+    hostCopied = copied;
     cout << "Host copied " << hostCopied << endl;
 
     return 0;
