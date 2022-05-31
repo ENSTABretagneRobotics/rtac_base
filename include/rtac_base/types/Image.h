@@ -39,7 +39,7 @@ class Image
     }
 
     void resize(const Shape& shape) {
-        data_.resize(shape.area);
+        data_.resize(shape.area());
         shape_ = shape;
     }
 
