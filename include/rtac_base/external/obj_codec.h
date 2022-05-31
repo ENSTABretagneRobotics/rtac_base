@@ -268,8 +268,11 @@ class ObjLoader
         return materials_.at(name);
     }
     
+
     template <class MeshT>
     std::map<std::string, typename MeshT::Ptr> create_meshes();
+    template <class MeshT>
+    typename MeshT::Ptr create_single_mesh();
 };
 
 template <class MeshT>
@@ -324,6 +327,49 @@ std::map<std::string, typename MeshT::Ptr> ObjLoader::create_meshes()
         meshes[name] = mesh;
     }
     return meshes;
+}
+
+template <class MeshT>
+typename MeshT::Ptr ObjLoader::create_single_mesh()
+{
+    auto mesh = MeshT::Create();
+
+
+    {
+        std::vector<typename MeshT::Point> points(vertices_.size());
+        for(auto v : vertices_) {
+            points[v.id].x = points_[v.p].x;
+            points[v.id].y = points_[v.p].y;
+            points[v.id].z = points_[v.p].z;
+        }
+        mesh->points() = points;
+    }
+
+    if(normals_.size() > 0) {
+        std::vector<typename MeshT::Normal> normals(vertices_.size());
+        for(auto v : vertices_) {
+            normals[v.id].x = normals_[v.n].x;
+            normals[v.id].y = normals_[v.n].y;
+            normals[v.id].z = normals_[v.n].z;
+        }
+        mesh->normals() = normals;
+    }
+
+    if(faceGroups_.size() > 0) {
+        std::vector<typename MeshT::Face> faces;
+        for(auto name : groupNames_) {
+            auto data = &faceGroups_[name];
+            for(int i = 0; i < data->size(); i++) {
+                typename MeshT::Face f;
+                f.x = (*data)[i].x;
+                f.y = (*data)[i].y;
+                f.z = (*data)[i].z;
+                faces.push_back(f);
+            }
+        }
+        mesh->faces() = faces;
+    }
+    return mesh;
 }
 
 }; //namespace display
