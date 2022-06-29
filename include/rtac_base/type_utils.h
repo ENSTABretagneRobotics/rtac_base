@@ -7,6 +7,13 @@
 
 namespace rtac { namespace types {
 
+// checks at compile time if a typename refers to a tuple
+template <typename T>
+struct is_tuple : std::false_type {};
+template <class... Types>
+struct is_tuple<std::tuple<Types...>> : std::true_type {};
+
+
 // TupleTypeIndex ///////////////////////////////////////////////////////////
 // The following structs will calculate at compile time the first index of the
 // type "T" in std::tuple<Types...> (outputs a compile time constant).  If T is
@@ -76,6 +83,7 @@ struct is_subscriptable : std::false_type {};
 template<class T>
 struct is_subscriptable<T, 
     typename voider<decltype(std::declval<T>().operator[](0))>::type> : std::true_type {};
+
 
 }; //namespace types
 }; //namespace rtac
