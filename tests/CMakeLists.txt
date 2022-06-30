@@ -13,6 +13,7 @@ list(APPEND test_names
     mappedpointer_test.cpp
     buildables_test.cpp
     buildtarget_test.cpp
+    vector_view.cpp
 
     ppmformat_test.cpp
     nmea_utils.cpp
