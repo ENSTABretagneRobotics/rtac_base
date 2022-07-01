@@ -8,7 +8,8 @@ using namespace rtac::types;
 template <typename T>
 void print_vector(const std::vector<T>& data)
 {
-    auto view = VectorView(data);
+    //auto view = VectorView(data.size(), data.data());
+    auto view = make_view(data);
     for(auto v : view) {
         cout << " " << v;
     }
@@ -25,8 +26,8 @@ void print_vector(const std::vector<T>& data)
 template <typename T>
 void fill_vector(std::vector<T>& data)
 {
-    //auto view = VectorView<std::vector<T>>(data);
-    auto view = VectorView(data);
+    //auto view = VectorView(data.size(), data.data());
+    auto view = make_view(data);
     int count = 0;
     for(auto& v : view) {
         v = count++;

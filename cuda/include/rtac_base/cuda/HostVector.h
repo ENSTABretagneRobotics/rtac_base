@@ -71,8 +71,8 @@ class HostVector
     const_iterator begin() const;
     const_iterator end() const;
 
-    types::VectorView<const DeviceVector<T>> view() const { return types::VectorView(*this); }
-    types::VectorView<DeviceVector<T>> view()             { return types::VectorView(*this); }
+    auto view() const { return types::make_view(*this); }
+    auto view()       { return types::make_view(*this); }
 
     value_type& operator[](size_t idx);
     const value_type& operator[](size_t idx) const;

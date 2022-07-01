@@ -3,8 +3,8 @@
 #include <rtac_base/types/VectorView.h>
 using namespace rtac::types;
 
-template <class Derived>
-__global__ void copy(VectorView<const Derived> in, VectorView<Derived> out)
+template <typename T>
+__global__ void copy(VectorView<const T> in, VectorView<T> out)
 {
     out[threadIdx.x] = in[threadIdx.x];
 }
