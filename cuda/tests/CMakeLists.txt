@@ -36,7 +36,7 @@ endforeach(name)
 add_subdirectory(texture)
 add_subdirectory(functors)
 add_subdirectory(mapping)
-
+add_subdirectory(vector_view)
 
 add_executable(reductions_test
     src/reductions_test.cu

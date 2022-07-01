@@ -1,0 +1,11 @@
+#pragma once
+
+#include <rtac_base/types/VectorView.h>
+using namespace rtac::types;
+
+template <class Derived>
+__global__ void copy(VectorView<const Derived> in, VectorView<Derived> out)
+{
+    out[threadIdx.x] = in[threadIdx.x];
+}
+

@@ -7,6 +7,19 @@
 
 namespace rtac { namespace types {
 
+template<class ...Ts>
+struct voider {
+    using type = void;
+};
+
+// checks at compile time if a type implements operator[]
+template<class T, class = void>
+struct is_subscriptable : std::false_type {};
+template<class T>
+struct is_subscriptable<T, 
+    typename voider<decltype(std::declval<T>().operator[](0))>::type> : std::true_type {};
+
+
 // checks at compile time if a typename refers to a tuple
 template <typename T>
 struct is_tuple : std::false_type {};
@@ -70,19 +83,6 @@ inline T zero()
     std::memset(&res, 0, sizeof(T));
     return res;
 }
-
-
-template<class ...Ts>
-struct voider {
-    using type = void;
-};
-
-// checks at compile time if a type implements operator[]
-template<class T, class = void>
-struct is_subscriptable : std::false_type {};
-template<class T>
-struct is_subscriptable<T, 
-    typename voider<decltype(std::declval<T>().operator[](0))>::type> : std::true_type {};
 
 
 }; //namespace types
