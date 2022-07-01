@@ -3,5 +3,5 @@
 
 void copy(const DeviceVector<float>& input, DeviceVector<float>& output)
 {
-    copy<<<1,input.size()>>>(VectorView(input), VectorView(output));
+    copy<<<1,input.size()>>>(input.view(), output.view());
 }

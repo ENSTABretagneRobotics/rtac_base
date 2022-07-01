@@ -7,7 +7,7 @@
 #include <cuda_runtime.h>
 
 #include <rtac_base/cuda/utils.h>
-#include <rtac_base/types/SharedVector.h>
+#include <rtac_base/types/VectorView.h>
 
 #ifndef RTAC_CUDACC
 #include <rtac_base/types/common.h>
@@ -78,6 +78,9 @@ class DeviceVector
     const_iterator begin() const;
     const_iterator end() const;
 
+    types::VectorView<const DeviceVector<T>> view() const { return types::VectorView(*this); }
+    types::VectorView<DeviceVector<T>> view()             { return types::VectorView(*this); }
+
     #ifdef RTAC_CUDACC  // the following methods are only usable in CUDA code.
     value_type& operator[](size_t idx);
     const value_type& operator[](size_t idx) const;
@@ -93,8 +96,6 @@ class DeviceVector
     thrust::device_ptr<const T> end_thrust() const;
     #endif
 };
-template <typename T>
-using SharedDeviceVector = rtac::types::SharedVectorBase<DeviceVector<T>>;
 
 // implementation
 template <typename T>
