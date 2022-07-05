@@ -26,6 +26,21 @@ struct is_tuple : std::false_type {};
 template <class... Types>
 struct is_tuple<std::tuple<Types...>> : std::true_type {};
 
+namespace details {
+
+template <std::size_t CurrentSize, typename... Ts>
+struct pack_size_impl {};
+template <std::size_t CurrentSize, typename T, typename... Ts>
+struct pack_size_impl<CurrentSize, T, Ts...> {
+    static constexpr const std::size_t value = pack_size_impl<CurrentSize+1,Ts...>::value;
+};
+template <std::size_t CurrentSize>
+struct pack_size_impl<CurrentSize> { static constexpr const std::size_t value = CurrentSize; };
+
+};
+template <typename... Ts>
+struct pack_size { static constexpr std::size_t value = details::pack_size_impl<0,Ts...>::value; };
+
 
 // TupleTypeIndex ///////////////////////////////////////////////////////////
 // The following structs will calculate at compile time the first index of the
