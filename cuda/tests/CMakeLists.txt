@@ -36,6 +36,7 @@ add_subdirectory(texture)
 add_subdirectory(functors)
 add_subdirectory(mapping)
 add_subdirectory(vector_view)
+add_subdirectory(tuple_pointer)
 
 add_executable(reductions_test
     src/reductions_test.cu

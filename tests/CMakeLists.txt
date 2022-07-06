@@ -14,6 +14,7 @@ list(APPEND test_names
     buildables_test.cpp
     buildtarget_test.cpp
     vector_view.cpp
+    tuplepointer.cpp
 
     ppmformat_test.cpp
     nmea_utils.cpp
