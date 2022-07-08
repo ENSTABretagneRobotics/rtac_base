@@ -154,8 +154,10 @@ class ArrayScale
 
     using value_type = typename details::functors_return_type<Ts...>::type;
     using TupleType  = std::tuple<Ts...>;
+
     static constexpr std::size_t 
-        Dimension = std::tuple_size<std::tuple<Ts...>>::value;
+        Dimensionality = std::tuple_size<std::tuple<Ts...>>::value;
+    using OutputType   = std::array<value_type, Dimensionality>;
 
     protected:
 
@@ -170,7 +172,7 @@ class ArrayScale
      * result as a std::array.
      */
     template <typename... Indexes> RTAC_HOSTDEVICE
-    std::array<value_type, Dimension> operator()(Indexes... indexes) const {
+    std::array<value_type, Dimensionality> operator()(Indexes... indexes) const {
         static_assert(sizeof...(Ts) == sizeof...(Indexes),
                       "Number of indices on ArrayScale call does not match Dimension count");
         return details::call_functors(std::forward<const TupleType>(scales_), indexes...);
