@@ -16,6 +16,7 @@ list(APPEND test_names
     vector_view.cpp
     tuplepointer.cpp
     array_scale.cpp
+    array_2d.cpp
 
     ppmformat_test.cpp
     nmea_utils.cpp
