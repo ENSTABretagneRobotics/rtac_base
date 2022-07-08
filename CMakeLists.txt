@@ -31,6 +31,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/CallbackQueue.h
     include/rtac_base/types/VectorView.h
     include/rtac_base/types/TuplePointer.h
+    include/rtac_base/types/ArrayScale.h
     include/rtac_base/files.h
     include/rtac_base/time.h
     include/rtac_base/ply_files.h
