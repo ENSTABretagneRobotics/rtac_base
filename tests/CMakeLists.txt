@@ -17,6 +17,7 @@ list(APPEND test_names
     tuplepointer.cpp
     array_scale.cpp
     array_2d.cpp
+    sampled_field.cpp
 
     ppmformat_test.cpp
     nmea_utils.cpp

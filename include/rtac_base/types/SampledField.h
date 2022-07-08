@@ -1,7 +1,7 @@
 #ifndef _DEF_RTAC_BASE_TYPES_DOMAIN_H_
 #define _DEF_RTAC_BASE_TYPES_DOMAIN_H_
 
-#include <rtac_types/ArrayScale.h>
+#include <rtac_base/types/ArrayScale.h>
 
 namespace rtac { namespace types {
 
@@ -29,17 +29,17 @@ class SampledField : public ArrayBaseT<T>
 
     protected:
 
-    ScalerType scales_;
+    ScalerType scalers_;
     
     public:
     
     template <typename... Args>
-    Domain(Scalertype scales, Args... args) :
-        ArrayBase<T>(args...),
-        scales_(scales)
+    SampledField(ScalerType scales, Args... args) :
+        ArrayBaseT<T>(args...),
+        scalers_(scales)
     {}
     
-    RTAC_HOSTDEVICE const ScalerType& scalers() const { return scaler_; }
+    RTAC_HOSTDEVICE const ScalerType& scalers() const { return scalers_; }
     
     template <typename... Indexes> RTAC_HOSTDEVICE
     Coordinates coordinates(Indexes... indexes) const {
@@ -51,12 +51,6 @@ class SampledField : public ArrayBaseT<T>
         return scalers_.get(dimIdx, idx);
     }
 };
-
-template <typename T, template<typename>class ArrayBaseT, class FunctorT>
-using Domain1D = Domain<T,ArrayBaseT,FunctorT>;
-
-template <typename T, template<typename>class ArrayBaseT, class FunctorT1, class FunctorT2>
-using Domain2D = Domain<T,ArrayBaseT,FunctorT1,FunctorT2>;
 
 }; //namespace types
 }; //namespace rtac
