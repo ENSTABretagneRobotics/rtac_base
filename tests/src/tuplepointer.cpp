@@ -89,6 +89,13 @@ int main()
         cout << "p0[" << n << "]  : " <<  p0[n] << endl;
     }
 
+    auto constP0 = p0.make_const();
+    for(int n = 0; n < N; n++) {
+        cout << "constP0 + " << n << " : " <<  *(constP0 + n) << endl;
+        cout << "constP0[" << n << "]  : " <<  constP0[n] << endl;
+        //std::get<0>(constP0[n]) = 0; // this fails sucessfully
+    }
+    
     return 0;
 }
 

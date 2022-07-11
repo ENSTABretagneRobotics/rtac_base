@@ -99,9 +99,38 @@ constexpr decltype(auto) dereference_pointer_shift(TupleT&& t, int shift) {
             typename std::remove_reference<TupleT>::type>::value>{});
 }
 
+/**
+ * These make a std::tuple<const Ts*...> from a std::tuple<const Ts*...>
+ *
+ * Maybe
+ */
+template <typename... Ts> RTAC_HOSTDEVICE
+inline std::tuple<const Ts*...> do_make_const_tuple(const Ts*... args)
+{
+    return std::make_tuple(args...);
+}
+template <class TupleT, std::size_t... I> RTAC_HOSTDEVICE
+inline decltype(auto) make_const_tuple_stub(TupleT&& t,
+                                               std::index_sequence<I...>)
+{
+    return do_make_const_tuple((std::get<I>(std::forward<TupleT>(t)))...);
+}
+template <class TupleT> RTAC_HOSTDEVICE
+inline decltype(auto) make_const_tuple(TupleT&& t)
+{
+    return make_const_tuple_stub(std::forward<TupleT>(t),
+        std::make_index_sequence<std::tuple_size<
+            typename std::remove_reference<TupleT>::type>::value>{});
+}
 
-};
+}; //namespace details
 
+/**
+ * This is an object holding a std::tuple of independent pointers.
+ *
+ * When dereferenced, returns a std::tuple of the underlying value types (or
+ * references).
+ */
 template <typename... Ts>
 struct TuplePointer
 {
@@ -196,7 +225,11 @@ struct TuplePointer
     {
         return details::dereference_pointer_shift(data, idx);
     }
-
+    
+    RTAC_HOSTDEVICE TuplePointer<const Ts...> make_const() const
+    {
+        return TuplePointer<const Ts...>{details::make_const_tuple(data)};
+    }
 };
 
 }; //namespace types
