@@ -1,11 +1,17 @@
 #include <iostream>
 using namespace std;
 
-#include <rtac_base/types/ArrayScale.h>
+#include <rtac_base/types/GridMap.h>
 using namespace rtac::types;
 
+#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/HostVector.h>
+using namespace rtac::cuda;
+
+#include "grid_map.hcu"
+
 template <typename T>
-class Affine : public ScaleFunctor<Affine<T>>
+class Affine
 {
     public:
 
@@ -31,24 +37,30 @@ int main()
 {
     int N = 10;
 
-    auto affine = Affine<float>::Create(0.0f, 1.0f, 10);
+    auto affine = Affine<float>::Create(0.0f, 1.0f, N);
     for(int n = 0; n < N; n++) {
         cout << " " << affine(n);
     }
     cout << endl;
 
-    ArrayScale scales(Affine<float>::Create(0.0f, 1.0f, 10),
-                      Affine<float>::Create(0.0f, 2.0f, 10));
+    GridMap gridMap(Affine<float>::Create(0.0f, 1.0f, N),
+                     Affine<float>::Create(0.0f, 2.0f, N));
     for(int n = 0; n < N; n++) {
-        cout << scales.scale<0>()(n) << " "
-             << scales.scale<1>()(n) << endl;
+        cout << gridMap.map<0>()(n) << " "
+             << gridMap.map<1>()(n) << endl;
     }
     
-    cout << "Using ArrayScale :\n";
+    cout << "Using GridMap :\n";
     for(int n = 0; n < N; n++) {
-        auto res = scales(n,n);
+        auto res = gridMap(n,n);
         cout << res[0] << " " << res[1] << endl;
     }
+
+    DeviceVector<float> mappingData(N);
+    get_mapping<<<1, N>>>(mappingData.data(), GridMap(Affine<float>::Create(0.0f, 3.0f, N)));
+    cudaDeviceSynchronize();
+
+    cout << "mappingData : " << mappingData << endl;
 
     return 0;
 }

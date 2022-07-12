@@ -12,9 +12,9 @@ namespace rtac { namespace types {
  * The coordinate space can be of arbitrary dimension and the sampling can be
  * non-uniform.
  */
-template <typename T,                        // Field element type.
+template <typename T,                         // Field element type.
           template<typename>class ArrayBaseT, // underlying Array storing the field elements
-          class... FunctorTs>
+          class... FunctorTs>                 // Functors to access the sampling scheme
 class SampledField : public ArrayBaseT<T>
 {
     public:

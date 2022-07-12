@@ -1,0 +1,14 @@
+#pragma once
+
+#include <rtac_base/types/GridMap.h>
+using namespace rtac::types;
+
+template <typename T, class ScaleT>
+__global__ void get_mapping(T* mappingData, ScaleT mapping)
+{
+    mappingData[threadIdx.x] = mapping(threadIdx.x)[0];
+}
+
+
+
+

@@ -1,5 +1,5 @@
-#ifndef _DEF_RTAC_BASE_TYPES_ARRAY_SCALE_H_
-#define _DEF_RTAC_BASE_TYPES_ARRAY_SCALE_H_
+#ifndef _DEF_RTAC_BASE_TYPES_GRID_MAP_H_
+#define _DEF_RTAC_BASE_TYPES_GRID_MAP_H_
 
 #include <tuple>
 
@@ -8,7 +8,7 @@
 namespace rtac { namespace types {
 
 /**
- * Utility namespace for ArrayScale (mainly for a pack call on functors);
+ * Utility namespace for GridScale (mainly for a pack call on functors);
  */
 namespace details {
 
@@ -68,13 +68,13 @@ template <typename FT, typename... FTs>
 struct functors_return_type<FT,FTs...>
 {
     static_assert(functors_compatible<FT, FTs...>::value,
-        "All functors do not have the same return type for ArrayScale");
+        "All functors do not have the same return type for GridScale");
     using type = typename FunctorType<FT>::type;
 };
 template <typename TupleT>
 struct functor_tuple_return_type {
     static_assert(functor_tuple_compatible<TupleT>::value,
-        "All functors do not have the same return type for ArrayScale");
+        "All functors do not have the same return type for GridScale");
     using type = typename FunctorType<typename std::tuple_element<0,TupleT>::type>::type;
 };
 
@@ -132,23 +132,16 @@ typename functor_tuple_return_type<TupleT>::type
 }; //namespace details
 
 /**
- * The ScaleFunctor defines the interface of a single dimension scale functor,
- * i.e. the mapping between the indexes of an array and the corresponding scale
- * of the physical dimension.
+ * This type represent a mapping between a set of indices used to fetch a datum
+ * in a multidimensional array and the physical coordinates of this datum in
+ * space.
+ *
+ * The mapping is actually a set of Functors (C++ struct with operator()(int),
+ * one for each space dimension). The mappings between the array indices and
+ * the physical dimension does not have to be linear.
  */
-template <class Derived>
-struct ScaleFunctor {
-    /**
-     * Mapping between array index and scale of the corresponding physical
-     * dimension.
-     */
-    RTAC_HOSTDEVICE auto operator()(std::size_t idx) const {
-        return (*reinterpret_cast<const Derived*>(this))(idx);
-    }
-};
-
 template <typename... Ts>
-class ArrayScale 
+class GridMap
 {
     public:
 
@@ -161,34 +154,34 @@ class ArrayScale
 
     protected:
 
-    std::tuple<Ts...> scales_;
+    std::tuple<Ts...> maps_;
 
     public:
 
-    ArrayScale(const Ts&... scales) : scales_(scales...) {}
+    GridMap(const Ts&... maps) : maps_(maps...) {}
 
     /**
-     * This calls operator() on each scale functor in scales_ and returns the
+     * This calls operator() on each map functor in maps_ and returns the
      * result as a std::array.
      */
     template <typename... Indexes> RTAC_HOSTDEVICE
     std::array<value_type, Dimensionality> operator()(Indexes... indexes) const {
         static_assert(sizeof...(Ts) == sizeof...(Indexes),
-                      "Number of indices on ArrayScale call does not match Dimension count");
-        return details::call_functors(std::forward<const TupleType>(scales_), indexes...);
+                      "Number of indices on GridScale call does not match Dimension count");
+        return details::call_functors(std::forward<const TupleType>(maps_), indexes...);
     }
 
     RTAC_HOSTDEVICE value_type get(std::size_t dimIdx, std::size_t idx) const {
-        return details::call_one_functor(std::forward<const TupleType>(scales_), dimIdx, idx);
+        return details::call_one_functor(std::forward<const TupleType>(maps_), dimIdx, idx);
     }
 
     template <std::size_t Idx>
-    RTAC_HOSTDEVICE const auto& scale() const { 
-        return std::get<Idx>(std::forward<const TupleType>(scales_));
+    RTAC_HOSTDEVICE const auto& map() const { 
+        return std::get<Idx>(std::forward<const TupleType>(maps_));
     }
     template <std::size_t Idx>
-    RTAC_HOSTDEVICE auto& scale() { 
-        return std::get<Idx>(scales_);
+    RTAC_HOSTDEVICE auto& map() { 
+        return std::get<Idx>(maps_);
     }
     
 };
@@ -197,6 +190,6 @@ class ArrayScale
 }; //namespace rtac
 
 
-#endif //_DEF_RTAC_BASE_TYPES_ARRAY_SCALE_H_
+#endif //_DEF_RTAC_BASE_TYPES_GRID_MAP_H_
 
 

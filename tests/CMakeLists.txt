@@ -15,9 +15,8 @@ list(APPEND test_names
     buildtarget_test.cpp
     vector_view.cpp
     tuplepointer.cpp
-    array_scale.cpp
     array_2d.cpp
-    sampled_field.cpp
+    # sampled_field.cpp
 
     ppmformat_test.cpp
     nmea_utils.cpp
@@ -55,3 +54,4 @@ foreach(name ${test_names})
 endforeach(name)
 
 add_subdirectory(external)
+add_subdirectory(ndpoint)

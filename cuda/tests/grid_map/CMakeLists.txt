@@ -1,8 +1,8 @@
 
 
-set(target_name array_scale_${PROJECT_NAME})
+set(target_name grid_map_${PROJECT_NAME})
 add_executable(${target_name}
-    src/array_scale.cu
+    src/grid_map.cu
 )
 target_link_libraries(${target_name} PRIVATE rtac_cuda)
 
