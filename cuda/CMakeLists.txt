@@ -18,6 +18,7 @@ list(APPEND rtac_cuda_headers
     include/rtac_base/cuda/mappings.h
     include/rtac_base/cuda/reductions.hcu
     include/rtac_base/cuda/operators.h
+    include/rtac_base/cuda/algorithm.hcu
 )
 
 find_package(CUDA REQUIRED)
