@@ -15,8 +15,6 @@ list(APPEND test_names
     buildtarget_test.cpp
     vector_view.cpp
     tuplepointer.cpp
-    array_2d.cpp
-    # sampled_field.cpp
 
     ppmformat_test.cpp
     nmea_utils.cpp
