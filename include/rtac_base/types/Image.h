@@ -7,6 +7,7 @@
 #include <rtac_base/cuda_defines.h>
 #include <rtac_base/type_utils.h>
 #include <rtac_base/types/Shape.h>
+#include <rtac_base/types/VectorView.h>
 
 namespace rtac { namespace types {
 
@@ -28,13 +29,14 @@ class Image
 
     Image() : shape_({0,0}) {}
     Image(const Shape& shape) : shape_(shape), data_(shape.area()) {}
+    Image(const Shape& shape, const Container& data) : shape_(shape), data_(data) {}
     template <typename T, template<typename> class C>
-    Image(const Image<T,C>& other) : shape_(other.shape()), data_(other.data()) {}
+    Image(const Image<T,C>& other) : shape_(other.shape()), data_(other.container()) {}
 
-    template <typename T, template<typename> class C>
+    template <typename T, template<typename> class C> RTAC_HOSTDEVICE
     Image<PixelT,ContainerT>& operator=(const Image<T,C>& other) {
         shape_ = other.shape();
-        data_  = other.data();
+        data_  = other.container();
         return *this;
     }
 
@@ -43,8 +45,11 @@ class Image
         shape_ = shape;
     }
 
-    const Container& data()  const { return data_;  }
-    Container&       data()        { return data_;  }
+    RTAC_HOSTDEVICE const value_type* data()  const { return data_.data();  }
+    RTAC_HOSTDEVICE value_type*       data()        { return data_.data();  }
+
+    RTAC_HOSTDEVICE const Container& container() const { return data_; }
+    RTAC_HOSTDEVICE       Container& container()       { return data_; }
 
     RTAC_HOSTDEVICE std::size_t  width()  const { return shape_.width;  }
     RTAC_HOSTDEVICE std::size_t  height() const { return shape_.height; }
@@ -55,6 +60,9 @@ class Image
     RTAC_HOSTDEVICE PixelT& operator[](std::size_t idx);
     RTAC_HOSTDEVICE PixelT  operator()(std::size_t h, std::size_t w) const;
     RTAC_HOSTDEVICE PixelT& operator()(std::size_t h, std::size_t w);
+
+    RTAC_HOSTDEVICE Image<const PixelT, VectorView> view() const;
+    RTAC_HOSTDEVICE Image<PixelT, VectorView>       view();
 };
 
 template <typename T, template<typename> class C>
@@ -87,6 +95,19 @@ RTAC_HOSTDEVICE T& Image<T,C>::operator()(std::size_t h, std::size_t w)
     static_assert(is_subscriptable<Container>::value,
                   "rtac::types::Image : container is not subscriptable.");
     return data_[shape_.width*h + w];
+}
+
+template <typename T, template<typename> class C>
+RTAC_HOSTDEVICE Image<const T, VectorView> Image<T,C>::view() const
+{
+    return Image<const T,VectorView>(this->shape(),
+        VectorView<const T>(this->size(), this->data()));
+}
+
+template <typename T, template<typename> class C>
+RTAC_HOSTDEVICE Image<T, VectorView> Image<T,C>::view()
+{
+    return Image<T,VectorView>(this->shape(), VectorView<T>(this->size(), this->data()));
 }
 
 }; //namespace types
