@@ -47,12 +47,16 @@ class MappedGrid : public ArrayBaseT<T>
         mapping_(mapping)
     {}
     
-    RTAC_HOSTDEVICE const MappingType& mapping() const { return mapping_; }
     
     template <typename... Indexes> RTAC_HOSTDEVICE
     Coordinates coordinates(Indexes... indexes) const {
         return mapping_(indexes...);
     }
+    
+    // these are for easy for efficient access
+    RTAC_HOSTDEVICE const MappingType& mapping() const { return mapping_; }
+    template <std::size_t Idx>
+    RTAC_HOSTDEVICE const auto& map() const { return mapping_.template map<Idx>(); }
 
     RTAC_HOSTDEVICE CoordinateScalar
     get_dimension_coordinate(std::size_t dimIdx, std::size_t idx) const {
