@@ -1,10 +1,13 @@
 #ifndef _DEF_RTAC_BASE_CUDA_ALGORITHM_HCU_
 #define _DEF_RTAC_BASE_CUDA_ALGORITHM_HCU_
 
+#include <vector>
+
 #include <thrust/sort.h>
 #include <thrust/execution_policy.h>
 
 #include <rtac_base/cuda_defines.h>
+#include <rtac_base/types/VectorView.h>
 
 namespace rtac { namespace cuda {
 
@@ -15,6 +18,11 @@ struct LessThan {
     }
 };
 
+/**
+ * This function sorts by ascending order on the GPU.
+ *
+ * VectorT muist be a GPU accessible array.
+ */
 template <typename T,
           template<typename>class VectorT,
           template<typename>class ComparatorT = thrust::less>
@@ -24,6 +32,124 @@ void sort(VectorT<T>& data, ComparatorT<T> comp = ComparatorT<T>{})
                  data.begin_thrust(),
                  data.end_thrust(),
                  comp);
+}
+
+/**
+ * This class performs a binning operation using a user-defined criterion.
+ *
+ * Input data is a vector of arbitrary elements. The binning works by
+ * generating a  key value for each data element. This key is actually the bin
+ * index.  The input data is then sorted so elements of each bins are packed
+ * together in the input array. The bins are then sent back to the user as a
+ * list of VectorViews, each VectorView pointing to the first element of each
+ * bin in the global array.
+ *
+ * The criterion is a function of data type T and must return the corresponding
+ * bin index. If the returned bin index is negative, the datum is discarded in
+ * the bin output.
+ */
+class Binning
+{
+    protected:
+    
+    // these are temp data.
+    mutable DeviceVector<int> keys_;
+
+    public:
+
+    Binning() {}
+
+    template <typename T, class Criterion,
+              unsigned int BlockSize = 1024>
+    void compute_keys(const DeviceVector<T>& data, DeviceVector<int>& keys, 
+                      const Criterion& criterion) const;
+    
+    template <typename T, class Criterion,
+              unsigned int BlockSize = 1024>
+    void do_binning(DeviceVector<T>& data,
+                    std::size_t binCount,
+                    const Criterion& criterion,
+                    DeviceVector<types::VectorView<T>>& bins) const;
+};
+
+/**
+ * Useful helper function for binning.
+ *
+ * Recreate temp data at each call. For better performances, use the Binning
+ * object and reuse it instead.
+ */ 
+template <typename T, class Criterion, unsigned int BlockSize = 1024>
+inline DeviceVector<types::VectorView<T>> binning(DeviceVector<T>& data,
+                                                  std::size_t binCount,
+                                                  Criterion criterion)
+{
+    DeviceVector<types::VectorView<T>> bins;
+    Binning().do_binning(data, binCount, criterion, bins);
+    return bins;
+}
+
+namespace details {
+
+template <typename T, class Criterion>
+__global__ void compute_keys(types::VectorView<const T> data,
+                             types::VectorView<int> keys,
+                             Criterion keyGenerator)
+{
+    auto tid = blockDim.x*blockIdx.x + threadIdx.x;
+    if(tid < data.size()) {
+        keys[tid] = keyGenerator(data[tid]);
+    }
+}
+
+};
+
+template <typename T, class Criterion, unsigned int BlockSize>
+inline void Binning::compute_keys(const DeviceVector<T>& data, 
+                                  DeviceVector<int>& keys,
+                                  const Criterion& criterion) const
+{
+    keys.resize(data.size());
+    details::compute_keys<<<(data.size() / BlockSize ) + 1, BlockSize>>>(
+        data.view(), keys.view(), criterion);
+    cudaDeviceSynchronize();
+}
+
+template <typename T, class Criterion, unsigned int BlockSize>
+inline void Binning::do_binning(DeviceVector<T>& data,
+                                std::size_t binCount,
+                                const Criterion& criterion,
+                                DeviceVector<types::VectorView<T>>& bins) const
+{
+    // Generating key for each data element and sorting data according to this
+    // key.
+    Binning::compute_keys(data, keys_, criterion);
+    thrust::sort_by_key(thrust::device,
+                        keys_.begin_thrust(),
+                        keys_.end_thrust(),
+                        data.begin_thrust());
+    
+    // Generating the bins.
+    HostVector<int> keys = keys_;
+    std::vector<types::VectorView<T>> tmpBins(binCount);
+    int currentBin = -1;
+    int currentBinStart = 0;
+    int i = 0;
+    for(; i < data.size() && keys[i] < binCount; i++) {
+        if(keys[i] < 0) continue;
+        if(keys[i] != currentBin) {
+            if(currentBin >= 0) {
+                tmpBins[currentBin] = types::VectorView{i - currentBinStart,
+                                                        data.data() + currentBinStart};
+            }
+            currentBin      = keys[i];
+            currentBinStart = i;
+        }
+    }
+    if(currentBin >= 0) {
+        tmpBins[currentBin] = types::VectorView{i - currentBinStart,
+                                                data.data() + currentBinStart};
+    }
+    bins = tmpBins;
 }
 
 }; //namespace cuda
