@@ -10,7 +10,7 @@
 
 #include <rtac_base/types/Point.h>
 
-#include <rtac_base/external/ImageCodecBase.h>
+#include <rtac_base/external/ImageCodec.h>
 
 namespace rtac { namespace external {
 
@@ -42,6 +42,9 @@ struct PNGPixelType {
 class PNGCodec : public ImageCodecBase
 {
     public:
+
+    using Ptr      = std::shared_ptr<PNGCodec>;
+    using ConstPtr = std::shared_ptr<const PNGCodec>;
     
     protected:
     
@@ -63,6 +66,8 @@ class PNGCodec : public ImageCodecBase
 
     PNGCodec();
     ~PNGCodec();
+
+    static Ptr Create() { return Ptr(new PNGCodec()); }
 
     virtual void read_image(const std::string& path, bool invertRows = false);
 

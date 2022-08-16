@@ -46,7 +46,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/navigation.h
 
     include/rtac_base/external/obj_codec.h
-    include/rtac_base/external/ImageCodecBase.h
+    include/rtac_base/external/ImageCodec.h
 )
 
 add_library(rtac_base SHARED
@@ -56,7 +56,7 @@ add_library(rtac_base SHARED
     src/ply_files.cpp
 
     src/external/obj_codec.cpp
-    src/external/ImageCodecBase.cpp
+    src/external/ImageCodec.cpp
 )
 set_target_properties(rtac_base PROPERTIES
     RTAC_PUBLIC_HEADERS "${rtac_base_headers}"

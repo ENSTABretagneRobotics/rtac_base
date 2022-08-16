@@ -8,12 +8,17 @@
 #include <jpeglib.h>
 #include <jerror.h>
 
-#include <rtac_base/external/ImageCodecBase.h>
+#include <rtac_base/external/ImageCodec.h>
 
 namespace rtac { namespace external {
 
 class JPGCodec : public ImageCodecBase
 {
+    public:
+
+    using Ptr      = std::shared_ptr<JPGCodec>;
+    using ConstPtr = std::shared_ptr<const JPGCodec>;
+
     protected:
 
     FILE* file_;
@@ -28,6 +33,8 @@ class JPGCodec : public ImageCodecBase
 
     JPGCodec();
     ~JPGCodec();
+
+    static Ptr Create() { return Ptr(new JPGCodec()); }
 
     virtual void read_image(const std::string& path, bool invertRows = false);
 

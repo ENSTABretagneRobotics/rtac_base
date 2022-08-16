@@ -5,6 +5,7 @@
 #include <cstring>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 
 namespace rtac { namespace external {
 
@@ -17,6 +18,7 @@ class ImageCodecBase
     public:
 
     using Ptr      = std::shared_ptr<ImageCodecBase>;
+    using ConstPtr = std::shared_ptr<const ImageCodecBase>;
 
     protected:
 
@@ -40,6 +42,40 @@ class ImageCodecBase
 
     // Base to be implemented in a child class
     virtual void read_image(const std::string& path, bool invertRows) = 0;
+};
+
+/**
+ * This class handles high level image codec manipulations.
+ *
+ * Features include :
+ * - automatic codec selection from file path.
+ */
+class ImageCodec
+{
+    public:
+
+    using CodecPtr = ImageCodecBase::Ptr;
+
+    enum ImageEncoding {
+        UNKNOWN_ENCODING,
+        PNG,
+        JPEG,
+    };
+
+    static ImageEncoding encoding_from_extension(const std::string& path);
+    static ImageEncoding find_encoding(const std::string& path);
+
+    protected:
+
+    mutable std::unordered_map<ImageEncoding, CodecPtr> codecs_;
+
+    public:
+
+    ImageCodec() {}
+
+    static ImageCodecBase::Ptr create_codec(ImageEncoding encoding);
+    ImageCodecBase::ConstPtr  read_image(const std::string& path,
+                                         bool invertRows = false) const;
 };
 
 }; //namespace external
