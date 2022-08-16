@@ -7,3 +7,11 @@ if(${PNG_FOUND})
     )
     target_link_libraries(${target_name} PRIVATE rtac_base)
 endif()
+
+if(${JPEG_FOUND})
+    set(target_name jpg_codec_${PROJECT_NAME})
+    add_executable(${target_name}
+        src/jpg_codec.cpp
+    )
+    target_link_libraries(${target_name} PRIVATE rtac_base)
+endif()

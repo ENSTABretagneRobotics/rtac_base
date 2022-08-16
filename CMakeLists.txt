@@ -12,6 +12,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_build_docs.cmake)
 
 find_package(Eigen3 REQUIRED)
 find_package(PNG)
+find_package(JPEG)
 
 list(APPEND rtac_base_headers
     include/rtac_base/types/Handle.h
@@ -80,6 +81,17 @@ if(PNG_FOUND)
     target_compile_definitions(rtac_base PUBLIC ${PNG_DEFINITIONS} RTAC_PNG)
     list(APPEND rtac_base_headers
         include/rtac_base/external/png_codec.h
+    )
+    set_target_properties(rtac_base PROPERTIES
+        RTAC_PUBLIC_HEADERS "${rtac_base_headers}"
+    )
+endif()
+
+if(JPEG_FOUND) 
+    message(STATUS "Found libjpeg, version ${JPEG_VERSION}")
+    target_link_libraries(rtac_base PUBLIC JPEG::JPEG)
+    list(APPEND rtac_base_headers
+        include/rtac_base/external/jpg_codec.h
     )
     set_target_properties(rtac_base PROPERTIES
         RTAC_PUBLIC_HEADERS "${rtac_base_headers}"
