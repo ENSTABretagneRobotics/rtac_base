@@ -44,7 +44,9 @@ list(APPEND rtac_base_headers
     include/rtac_base/cuda_defines.h
     include/rtac_base/nmea_utils.h
     include/rtac_base/navigation.h
+
     include/rtac_base/external/obj_codec.h
+    include/rtac_base/external/ImageCodecBase.h
 )
 
 add_library(rtac_base SHARED
@@ -52,7 +54,9 @@ add_library(rtac_base SHARED
     src/files.cpp
     src/time.cpp
     src/ply_files.cpp
+
     src/external/obj_codec.cpp
+    src/external/ImageCodecBase.cpp
 )
 set_target_properties(rtac_base PROPERTIES
     RTAC_PUBLIC_HEADERS "${rtac_base_headers}"
@@ -79,6 +83,9 @@ if(PNG_FOUND)
     target_include_directories(rtac_base PUBLIC ${PNG_INCLUDE_DIRS})
     target_link_libraries(rtac_base PUBLIC ${PNG_LIBRARIES})
     target_compile_definitions(rtac_base PUBLIC ${PNG_DEFINITIONS} RTAC_PNG)
+    target_sources(rtac_base PRIVATE
+        src/external/png_codec.cpp
+    )
     list(APPEND rtac_base_headers
         include/rtac_base/external/png_codec.h
     )
@@ -90,6 +97,10 @@ endif()
 if(JPEG_FOUND) 
     message(STATUS "Found libjpeg, version ${JPEG_VERSION}")
     target_link_libraries(rtac_base PUBLIC JPEG::JPEG)
+    target_compile_definitions(rtac_base PUBLIC RTAC_JPEG)
+    target_sources(rtac_base PRIVATE
+        src/external/jpg_codec.cpp
+    )
     list(APPEND rtac_base_headers
         include/rtac_base/external/jpg_codec.h
     )

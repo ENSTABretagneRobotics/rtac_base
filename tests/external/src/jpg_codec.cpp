@@ -13,10 +13,14 @@ int main()
     cout << path << endl;
 
     JPGCodec codec;
-    codec.read_jpg(path);
-    codec.read_jpg(path, true);
+    codec.read_image(path);
+    files::write_ppm("output_jpg.ppm", codec.width(), codec.height(),
+                     (const char*)codec.data().data());
 
-    files::write_ppm("output_inverted.ppm", codec.width(), codec.height(),
+    std::cout << "Bit depth : " << codec.bitdepth() << std::endl;
+
+    codec.read_image(path, true);
+    files::write_ppm("output_jpg_inverted.ppm", codec.width(), codec.height(),
                      (const char*)codec.data().data());
 
     return 0;
