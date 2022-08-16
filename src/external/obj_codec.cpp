@@ -109,7 +109,7 @@ void ObjLoader::load_geometry(unsigned int chunkSize)
     std::ifstream f(objPath_, std::ifstream::in);
     if(!f.is_open()) {
         std::ostringstream oss;
-        oss << "Could not open file for reading : " << objPath_;
+        oss << "Could not open .obj file for reading : " << objPath_;
         throw std::runtime_error(oss.str());
     }
     
@@ -122,9 +122,9 @@ void ObjLoader::load_geometry(unsigned int chunkSize)
     
     std::string line, token;
     unsigned int numFaces = 0;
-    while(std::getline(f, line)) {
+    while(rtac::files::getline(f, line)) {
         std::istringstream iss(line);
-        std::getline(iss, token, ' ');
+        rtac::files::getline(iss, token, ' ');
         //std::cout << "here " << token << std::endl << std::flush;
         if(token == "v") {
             Point p;
@@ -147,7 +147,7 @@ void ObjLoader::load_geometry(unsigned int chunkSize)
             normals.push_back(n);
         }
         else if(token == "f") {
-            std::getline(iss, token);
+            rtac::files::getline(iss, token);
             auto v = parse_face(token);
 
             Face f;
@@ -166,7 +166,7 @@ void ObjLoader::load_geometry(unsigned int chunkSize)
             faces.push_back(f);
         }
         else if(token == "usemtl") {
-            std::getline(iss, token);
+            rtac::files::getline(iss, token);
             if(currentMaterial.size() != 0) {
                 faceGroups_[currentMaterial] = faces.to_vector();
                 groupNames_.push_back(currentMaterial);
@@ -175,7 +175,7 @@ void ObjLoader::load_geometry(unsigned int chunkSize)
             currentMaterial = token;
         }
         else if(token == "mtllib") {
-            std::getline(iss, mtlPath_);
+            rtac::files::getline(iss, mtlPath_);
         }
         else {
             std::cerr << "Unhandled token : '" << token << "'\n";
@@ -215,7 +215,7 @@ void ObjLoader::parse_mtl()
     std::ifstream f(mtlPath_, std::ifstream::in);
     if(!f.is_open()) {
         std::ostringstream oss;
-        oss << "Could not open file for reading : " << mtlPath_;
+        oss << "Could not open .mtl file for reading : " << mtlPath_;
         throw std::runtime_error(oss.str());
     }
 
@@ -223,19 +223,19 @@ void ObjLoader::parse_mtl()
     MtlMaterial currentMtl;
     currentMtl.clear();
     std::size_t pos;
-    while(std::getline(f, line)) {
+    while(rtac::files::getline(f, line)) {
         std::istringstream iss(line);
-        std::getline(iss, token, ' ');
+        rtac::files::getline(iss, token, ' ');
 
         if(token == "newmtl") {
             if(currentMtl.name != "") {
                 materials_[currentMtl.name] = currentMtl;
                 currentMtl.clear();
             }
-            std::getline(iss, currentMtl.name);
+            rtac::files::getline(iss, currentMtl.name);
         }
         else if(token == "Ka") {
-            std::getline(iss, token);
+            rtac::files::getline(iss, token);
             currentMtl.Ka.x = std::stof(token, &pos);
             token = token.substr(pos);
             currentMtl.Ka.y = std::stof(token, &pos);
@@ -243,7 +243,7 @@ void ObjLoader::parse_mtl()
             currentMtl.Ka.z = std::stof(token, &pos);
         }
         else if(token == "Kd") {
-            std::getline(iss, token);
+            rtac::files::getline(iss, token);
             currentMtl.Kd.x = std::stof(token, &pos);
             token = token.substr(pos);
             currentMtl.Kd.y = std::stof(token, &pos);
@@ -251,7 +251,7 @@ void ObjLoader::parse_mtl()
             currentMtl.Kd.z = std::stof(token, &pos);
         }
         else if(token == "Ks") {
-            std::getline(iss, token);
+            rtac::files::getline(iss, token);
             currentMtl.Ks.x = std::stof(token, &pos);
             token = token.substr(pos);
             currentMtl.Ks.y = std::stof(token, &pos);
@@ -259,23 +259,23 @@ void ObjLoader::parse_mtl()
             currentMtl.Ks.z = std::stof(token, &pos);
         }
         else if(token == "Ns") {
-            std::getline(iss, token);
+            rtac::files::getline(iss, token);
             currentMtl.Ns = std::stof(token);
         }
         else if(token == "d") {
-            std::getline(iss, token);
+            rtac::files::getline(iss, token);
             currentMtl.d = std::stof(token);
         }
         else if(token == "Tr") {
-            std::getline(iss, token);
+            rtac::files::getline(iss, token);
             currentMtl.d = 1.0f - std::stof(token);
         }
         else if(token == "illum") {
-            std::getline(iss, token);
+            rtac::files::getline(iss, token);
             currentMtl.illum = std::stoul(token);
         }
         else if(token == "map_Kd") {
-            std::getline(iss, token);
+            rtac::files::getline(iss, token);
             currentMtl.map_Kd = rtac::files::find_one(".*" + token, datasetPath_);
         }
     }

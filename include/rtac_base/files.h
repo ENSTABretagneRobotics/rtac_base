@@ -20,6 +20,23 @@ const char* const NotFound = "Not Found";
 
 using PathList = std::list<std::string>;
 
+// These are wrapper around std::getline that handle the \r character in use on
+// Windows.
+template <class CharT, class Traits, class Allocator>
+inline std::basic_istream<CharT,Traits>& getline(std::basic_istream<CharT,Traits>& input,
+                                                 std::basic_string<CharT,Traits,Allocator>& str,
+                                                 CharT delim);
+template <class CharT, class Traits, class Allocator>
+inline std::basic_istream<CharT,Traits>& getline(std::basic_istream<CharT,Traits>&& input,
+                                                 std::basic_string<CharT,Traits,Allocator>& str,
+                                                 CharT delim);
+template <class CharT, class Traits, class Allocator>
+inline std::basic_istream<CharT,Traits>& getline(std::basic_istream<CharT,Traits>& input,
+                                                 std::basic_string<CharT,Traits,Allocator>& str);
+template <class CharT, class Traits, class Allocator>
+inline std::basic_istream<CharT,Traits>& getline(std::basic_istream<CharT,Traits>&& input,
+                                                 std::basic_string<CharT,Traits,Allocator>& str);
+
 std::string rtac_data_path();
 PathList rtac_data_paths(const std::string& delimiter = ":");
 
@@ -71,6 +88,59 @@ void write_ppm(const std::string& path, size_t width, size_t height, const T* da
 
 void read_ppm(const std::string& path, size_t& width, size_t& height,
               std::vector<uint8_t>& data);
+
+/**
+ * Wrapper around std::getline (should have no effect)
+ */
+template <class CharT, class Traits, class Allocator>
+inline std::basic_istream<CharT,Traits>& getline(std::basic_istream<CharT,Traits>& input,
+                                                 std::basic_string<CharT,Traits,Allocator>& str,
+                                                 CharT delim)
+{
+    return std::getline(input, str, delim);
+}
+
+/**
+ * Wrapper around std::getline (should have no effect)
+ */
+template <class CharT, class Traits, class Allocator>
+inline std::basic_istream<CharT,Traits>& getline(std::basic_istream<CharT,Traits>&& input,
+                                                 std::basic_string<CharT,Traits,Allocator>& str,
+                                                 CharT delim)
+{
+    return std::getline(input, str, delim);
+}
+
+/**
+ * Wrapper around std::getline with \n termination character that checks for \r
+ * at end of line.
+ */
+template <class CharT, class Traits, class Allocator>
+inline std::basic_istream<CharT,Traits>& getline(std::basic_istream<CharT,Traits>& input,
+                                                 std::basic_string<CharT,Traits,Allocator>& str)
+{
+    std::getline(input, str, '\n');
+    if(str.back() == '\r') {
+        str.resize(str.size() - 1);
+    }
+    return input;
+}
+
+
+/**
+ * Wrapper around std::getline with \n termination character that checks for \r
+ * at end of line.
+ */
+template <class CharT, class Traits, class Allocator>
+inline std::basic_istream<CharT,Traits>& getline(std::basic_istream<CharT,Traits>&& input,
+                                                 std::basic_string<CharT,Traits,Allocator>& str)
+{
+    std::getline(input, str, '\n');
+    if(str.back() == '\r') {
+        str.resize(str.size() - 1);
+    }
+    return input;
+}
 
 }; //namespace files
 }; //namespace rtac
