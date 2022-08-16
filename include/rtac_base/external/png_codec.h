@@ -205,7 +205,7 @@ inline void PNGCodec::read_png(const std::string& path, bool invertRows)
     file_ = fopen(path.c_str(), "rb");
     if(!file_) {
         std::ostringstream oss;
-        oss << "Could not open file for reading : " << path;
+        oss << "Could not open .png file for reading : " << path;
         throw std::runtime_error(oss.str());
     }
 
