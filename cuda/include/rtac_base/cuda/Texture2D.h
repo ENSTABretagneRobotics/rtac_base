@@ -74,20 +74,19 @@ class Texture2D
                       uint32_t wOffset, uint32_t hOffset, 
                       const T* data);
 
-    uint32_t width()  const;
-    uint32_t height() const;
-    size_t size()   const;
+    uint32_t width()  const { return width_;  }
+    uint32_t height() const { return height_; }
+    size_t   size()   const { return width_ * height_; }
 
-    cudaTextureDesc description() const;
+    cudaTextureDesc description() const { return description_; }
 
-    cudaTextureObject_t texture();
-    operator cudaTextureObject_t();
+    cudaTextureObject_t texture()  { return textureHandle_; }
+    operator cudaTextureObject_t() { return textureHandle_; }
 
-    cudaTextureObject_t texture()  const;
-    operator cudaTextureObject_t() const;
+    cudaTextureObject_t texture()  const { return textureHandle_; }
+    operator cudaTextureObject_t() const { return textureHandle_; }
 
     TextureView2D<T> view() const { return TextureView2D<T>{width_,height_,textureHandle_}; }
-
 
     // Setters for texture fetch configuration (the way the texture will be
     // read when used on the device.
@@ -352,54 +351,6 @@ void Texture2D<T>::set_subimage(uint32_t width,   uint32_t height,
 
     // A new texture handle creation seems to be necessary when data is changed.
     this->update_texture_handle();
-}
-
-template <typename T>
-uint32_t Texture2D<T>::width() const
-{
-    return width_;
-}
-
-template <typename T>
-uint32_t Texture2D<T>::height() const
-{
-    return height_;
-}
-
-template <typename T>
-size_t Texture2D<T>::size() const
-{
-    return this->width() * this->height();
-}
-
-template <typename T>
-struct cudaTextureDesc Texture2D<T>::description() const
-{
-    return description_;
-}
-
-template <typename T>
-cudaTextureObject_t Texture2D<T>::texture()
-{
-    return textureHandle_;
-}
-
-template <typename T>
-Texture2D<T>::operator cudaTextureObject_t()
-{
-    return textureHandle_;
-}
-
-template <typename T>
-cudaTextureObject_t Texture2D<T>::texture() const
-{
-    return textureHandle_;
-}
-
-template <typename T>
-Texture2D<T>::operator cudaTextureObject_t() const
-{
-    return textureHandle_;
 }
 
 // Setters for texture fetch configuration (the way the texture will be
