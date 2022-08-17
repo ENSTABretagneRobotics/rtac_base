@@ -65,6 +65,9 @@ class Image
     RTAC_HOSTDEVICE Image<PixelT, VectorView>       view();
 };
 
+template <typename PixelT>
+using ImageView = Image<PixelT, VectorView>;
+
 template <typename T, template<typename> class C>
 RTAC_HOSTDEVICE T Image<T,C>::operator[](std::size_t idx) const
 {
