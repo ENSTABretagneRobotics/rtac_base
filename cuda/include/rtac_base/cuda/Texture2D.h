@@ -13,6 +13,8 @@
 #include <rtac_base/cuda/DeviceVector.h>
 #include <rtac_base/cuda/TextureView2D.h>
 
+#include <rtac_base/external/ImageCodec.h>
+
 namespace rtac { namespace cuda {
 
 template <typename T>
@@ -24,6 +26,8 @@ class Texture2D
 
     static cudaChannelFormatDesc channel_description();
     static cudaTextureDesc       default_texture_description();
+
+    static uint8_t channel_count();
 
     // These are aliases to CUDA texture enumerations
     using FilterMode = cudaTextureFilterMode;
@@ -74,6 +78,10 @@ class Texture2D
                       uint32_t wOffset, uint32_t hOffset, 
                       const T* data);
 
+    bool load_file(const std::string& path);
+    bool load_file(const std::string& path,
+                   const rtac::external::ImageCodec& codec);
+
     uint32_t width()  const { return width_;  }
     uint32_t height() const { return height_; }
     size_t   size()   const { return width_ * height_; }
@@ -113,6 +121,20 @@ template <typename T>
 cudaChannelFormatDesc Texture2D<T>::channel_description()
 {
     return cudaCreateChannelDesc<T>();
+}
+
+template <typename T>
+uint8_t Texture2D<T>::channel_count()
+{
+    uint8_t channelCount = 0;
+
+    auto desc = Texture2D<T>::channel_description();
+    if(desc.w > 0) channelCount++;
+    if(desc.x > 0) channelCount++;
+    if(desc.y > 0) channelCount++;
+    if(desc.z > 0) channelCount++;
+
+    return channelCount;
 }
 
 template <typename T>
@@ -351,6 +373,54 @@ void Texture2D<T>::set_subimage(uint32_t width,   uint32_t height,
 
     // A new texture handle creation seems to be necessary when data is changed.
     this->update_texture_handle();
+}
+
+template <typename T>
+bool Texture2D<T>::load_file(const std::string& path)
+{
+    rtac::external::ImageCodec codec;
+    return this->load_file(path, codec);
+}
+
+template <typename T>
+bool Texture2D<T>::load_file(const std::string& path, const rtac::external::ImageCodec& codec)
+{
+    auto img = codec.read_image(path, true);
+    if(img->channels() > Texture2D<T>::channel_count()) {
+        std::cerr << "Could not load image into texture : unmatched pixel types." << std::endl;
+        return false;
+    }
+    auto channelCount = img->channels();
+    
+    std::size_t imgSize = img->width() * img->height();
+    std::vector<T> data(imgSize);
+    if(img->bitdepth() == 8) {
+        auto imgData = img->data().data();
+        for(int i = 0; i < imgSize; i++) {
+            data[i].x = *imgData;
+            if(channelCount > 1) data[i].y = *(imgData + 1);
+            if(channelCount > 2) data[i].z = *(imgData + 2);
+            if(channelCount > 3) data[i].w = *(imgData + 3);
+            imgData += channelCount;
+        }
+    }
+    else if(img->bitdepth() == 16) {
+        auto imgData = (const uint16_t*)img->data().data();
+        for(int i = 0; i < imgSize; i++) {
+            data[i].x = *imgData;
+            if(channelCount > 1) data[i].y = *(imgData + 1);
+            if(channelCount > 2) data[i].z = *(imgData + 2);
+            if(channelCount > 3) data[i].w = *(imgData + 3);
+            imgData += channelCount;
+        }
+    }
+    else {
+        std::cerr << "Unhandled bitdepth in image file : " << img->bitdepth() << std::endl;
+        return false;
+    }
+    
+    this->set_image(img->width(), img->height(), data.data());
+    return true;
 }
 
 // Setters for texture fetch configuration (the way the texture will be
