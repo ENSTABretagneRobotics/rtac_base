@@ -11,6 +11,7 @@
 #include <rtac_base/cuda/utils.h>
 #include <rtac_base/cuda/HostVector.h>
 #include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/TextureView2D.h>
 
 namespace rtac { namespace cuda {
 
@@ -40,14 +41,14 @@ class Texture2D
     static const cudaTextureReadMode ReadNormalizedFloat = cudaReadModeNormalizedFloat;
 
     // Helpers to generate helful textures such as a checkerboard.
-    static Texture2D<T> checkerboard(size_t width, size_t height,
+    static Texture2D<T> checkerboard(uint32_t width, uint32_t height,
                                      const T& black, const T& white,
                                      unsigned int oversampling = 1);
 
     protected:
     
-    size_t              width_;
-    size_t              height_;
+    uint32_t            width_;
+    uint32_t            height_;
     cudaArray*          data_;
     cudaTextureDesc     description_;
     cudaTextureObject_t textureHandle_;
@@ -66,15 +67,15 @@ class Texture2D
     Texture2D<T>& operator=(const Texture2D<T>& other);
     Texture2D<T>& operator=(Texture2D<T>&& other);
 
-    void allocate_data(size_t width, size_t height);
-    void set_image(size_t width, size_t height, const T* data);
-    void set_image(size_t width, size_t height, const DeviceVector<T>& data);
-    void set_subimage(size_t width,   size_t height, 
-                      size_t wOffset, size_t hOffset, 
+    void allocate_data(uint32_t width, uint32_t height);
+    void set_image(uint32_t width, uint32_t height, const T* data);
+    void set_image(uint32_t width, uint32_t height, const DeviceVector<T>& data);
+    void set_subimage(uint32_t width,   uint32_t height, 
+                      uint32_t wOffset, uint32_t hOffset, 
                       const T* data);
 
-    size_t width()  const;
-    size_t height() const;
+    uint32_t width()  const;
+    uint32_t height() const;
     size_t size()   const;
 
     cudaTextureDesc description() const;
@@ -84,6 +85,8 @@ class Texture2D
 
     cudaTextureObject_t texture()  const;
     operator cudaTextureObject_t() const;
+
+    TextureView2D<T> view() const { return TextureView2D<T>{width_,height_,textureHandle_}; }
 
 
     // Setters for texture fetch configuration (the way the texture will be
@@ -114,7 +117,7 @@ cudaChannelFormatDesc Texture2D<T>::channel_description()
 }
 
 template <typename T>
-Texture2D<T> Texture2D<T>::checkerboard(size_t width, size_t height,
+Texture2D<T> Texture2D<T>::checkerboard(uint32_t width, uint32_t height,
                                         const T& black, const T& white,
                                         unsigned int oversampling)
 {
@@ -260,7 +263,7 @@ void Texture2D<T>::update_texture_handle()
 }
 
 template <typename T>
-void Texture2D<T>::allocate_data(size_t width, size_t height)
+void Texture2D<T>::allocate_data(uint32_t width, uint32_t height)
 {
     // Not reallocating if dimensions did not changed.
     if(width == width_ && height == height)
@@ -277,7 +280,7 @@ void Texture2D<T>::allocate_data(size_t width, size_t height)
 }
 
 template <typename T>
-void Texture2D<T>::set_image(size_t width, size_t height, const T* data)
+void Texture2D<T>::set_image(uint32_t width, uint32_t height, const T* data)
 {
     this->allocate_data(width, height);
 
@@ -297,7 +300,7 @@ void Texture2D<T>::set_image(size_t width, size_t height, const T* data)
 }
 
 template <typename T>
-void Texture2D<T>::set_image(size_t width, size_t height,
+void Texture2D<T>::set_image(uint32_t width, uint32_t height,
                              const DeviceVector<T>& data)
 {
     if(data.size() < width*height) {
@@ -326,8 +329,8 @@ void Texture2D<T>::set_image(size_t width, size_t height,
 }
 
 template <typename T>
-void Texture2D<T>::set_subimage(size_t width,   size_t height, 
-                                size_t wOffset, size_t hOffset, 
+void Texture2D<T>::set_subimage(uint32_t width,   uint32_t height, 
+                                uint32_t wOffset, uint32_t hOffset, 
                                 const T* data)
 {
     if(width + wOffset > width_ || height + hOffset > height_) {
@@ -352,13 +355,13 @@ void Texture2D<T>::set_subimage(size_t width,   size_t height,
 }
 
 template <typename T>
-size_t Texture2D<T>::width() const
+uint32_t Texture2D<T>::width() const
 {
     return width_;
 }
 
 template <typename T>
-size_t Texture2D<T>::height() const
+uint32_t Texture2D<T>::height() const
 {
     return height_;
 }
