@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.24)
 project(rtac_cuda VERSION 0.1 LANGUAGES CUDA CXX)
 
 if(NOT TARGET rtac_base)
@@ -37,14 +37,19 @@ target_include_directories(rtac_cuda PUBLIC
 )
 target_compile_options(rtac_cuda PUBLIC
     # $<$<COMPILE_LANGUAGE:CUDA>:-gencode arch=compute_61,code=sm_61>
-    $<$<COMPILE_LANGUAGE:CUDA>:-gencode arch=compute_61,code=sm_61 --expt-relaxed-constexpr>
+    # $<$<COMPILE_LANGUAGE:CUDA>:-gencode arch=compute_61,code=sm_61 --expt-relaxed-constexpr>
+    $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>
 )
+# this will compile device code for this host's GPU (for all ?)
+set_target_properties(rtac_cuda PROPERTIES CUDA_ARCHITECTURES native)
 target_link_libraries(rtac_cuda PUBLIC
     ${CUDA_LIBRARIES}
     rtac_base
 )
 
-add_subdirectory(tests)
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
 
 rtac_install_target(rtac_cuda)
 

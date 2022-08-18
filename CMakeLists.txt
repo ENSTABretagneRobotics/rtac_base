@@ -1,7 +1,8 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.24)
 project(rtac_base VERSION 0.1)
 
-option(WITH_CUDA "Compile and install cuda-dependent code." ON)
+option(WITH_CUDA   "Compile and install cuda-dependent code." ON)
+option(BUILD_TESTS "Build unit tests" ON)
 
 # This script fixes some issues related to LD_LIBRARY_PATH # DOES NOT WORK
 # include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rpath_config.cmake)
@@ -109,8 +110,9 @@ if(JPEG_FOUND)
     )
 endif()
 
-
-add_subdirectory(tests)
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
 
 rtac_install_target(rtac_base
     ADDITIONAL_CONFIG_FILES cmake/rtac_installation.cmake
