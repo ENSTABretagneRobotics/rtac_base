@@ -34,6 +34,12 @@ struct Shape
     {
         return width * height;
     }
+    
+    template <typename OtherT>
+    RTAC_HOSTDEVICE operator Shape<OtherT>() const
+    {
+        return Shape<OtherT>{width, height};
+    }
 };
 
 }; //namespace types
