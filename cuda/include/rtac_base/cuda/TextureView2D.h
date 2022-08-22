@@ -18,6 +18,7 @@ struct TextureView2D
     
     #ifdef RTAC_CUDACC // RTAC_KERNEL does not seem to work.
     __device__ T operator()(float u, float v) const { return tex2D<T>(handle_, u, v); }
+    __device__ T operator()(float2 uv)        const { return tex2D<T>(handle_, uv.x, uv.y); }
     __device__ T operator()(uint32_t j, uint32_t i) const {
         // in cuda texture coordinate seems to be relative to pixel center,
         // from 0.0 first pixel to (width-1)/width last pixel.
