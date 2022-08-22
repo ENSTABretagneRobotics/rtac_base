@@ -45,9 +45,9 @@ using Quaternion  = Eigen::Quaternion<T>;
 namespace indexing {
     using Eigen::seq;
     using Eigen::seqN;
-    using Eigen::last;
-    using Eigen::lastN;
-    using Eigen::all;
+    using Eigen::placeholders::last;
+    using Eigen::placeholders::lastN;
+    using Eigen::placeholders::all;
 }
 
 }; // namespace types

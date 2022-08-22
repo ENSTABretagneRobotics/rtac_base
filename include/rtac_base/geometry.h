@@ -81,12 +81,13 @@ Eigen::Matrix<T,D,1> find_orthogonal(const Eigen::Matrix<T,D,1>& v)
 template <typename T, int D>
 Eigen::Matrix<T,D,D> orthonormalized(const Eigen::Matrix<T,D,D>& M, T tol = 1e-6)
 {
+    using namespace rtac::types::indexing;
     // Produce a orthonormal matrix from m using SVD.
     // https://eigen.tuxfamily.org/dox/classEigen_1_1JacobiSVD.html
     // (closest orthonormal matrix in Frobenius norm ? (check it))
     Eigen::JacobiSVD<Eigen::Matrix<T,D,D>> svd(M, Eigen::ComputeFullU | Eigen::ComputeFullV);
     Eigen::Matrix<T,D,1> sv = svd.singularValues();
-    if(sv(Eigen::last) < tol*sv(0)) {
+    if(sv(last) < tol*sv(0)) {
         throw std::runtime_error(
             "Orthonormalized : bad conditionned matrix. Cannot orthonormalize.");
     }
