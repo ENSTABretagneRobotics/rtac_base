@@ -18,7 +18,7 @@ class Image
 
     using value_type = PixelT;
     using Container  = ContainerT<PixelT>;
-    using Shape      = rtac::types::Shape<std::size_t>;
+    using Shape      = rtac::types::Shape<uint32_t>;
 
     protected:
 
@@ -51,8 +51,8 @@ class Image
     RTAC_HOSTDEVICE const Container& container() const { return data_; }
     RTAC_HOSTDEVICE       Container& container()       { return data_; }
 
-    RTAC_HOSTDEVICE std::size_t  width()  const { return shape_.width;  }
-    RTAC_HOSTDEVICE std::size_t  height() const { return shape_.height; }
+    RTAC_HOSTDEVICE uint32_t     width()  const { return shape_.width;  }
+    RTAC_HOSTDEVICE uint32_t     height() const { return shape_.height; }
     RTAC_HOSTDEVICE const Shape& shape()  const { return shape_; }
     RTAC_HOSTDEVICE auto         size()   const { return data_.size(); }
 
