@@ -8,6 +8,8 @@
 
 #include <rtac_base/cuda_defines.h>
 #include <rtac_base/types/VectorView.h>
+#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/PinnedVector.h>
 
 namespace rtac { namespace cuda {
 
@@ -53,7 +55,7 @@ class Binning
     protected:
     
     // these are temp data.
-    mutable DeviceVector<int> keys_;
+    mutable PinnedVector<int> keys_;
 
     public:
 
@@ -61,15 +63,24 @@ class Binning
 
     template <typename T, class Criterion,
               unsigned int BlockSize = 1024>
-    void compute_keys(const DeviceVector<T>& data, DeviceVector<int>& keys, 
+    void compute_keys(const DeviceVector<T>& data, PinnedVector<int>& keys, 
                       const Criterion& criterion) const;
     
     template <typename T, class Criterion,
               unsigned int BlockSize = 1024>
-    void do_binning(DeviceVector<T>& data,
+    void operator()(DeviceVector<T>& data,
                     std::size_t binCount,
                     const Criterion& criterion,
-                    DeviceVector<types::VectorView<T>>& bins) const;
+                    DeviceVector<types::VectorView<T>>& bins,
+                    int binOverlap = 0) const;
+
+    template <typename T, class Criterion,
+              unsigned int BlockSize = 1024>
+    void operator()(DeviceVector<T>& data,
+                    std::size_t binCount,
+                    const Criterion& criterion,
+                    PinnedVector<types::VectorView<T>>& bins,
+                    int binOverlap = 0) const;
 };
 
 /**
@@ -81,10 +92,11 @@ class Binning
 template <typename T, class Criterion, unsigned int BlockSize = 1024>
 inline DeviceVector<types::VectorView<T>> binning(DeviceVector<T>& data,
                                                   std::size_t binCount,
-                                                  Criterion criterion)
+                                                  Criterion criterion,
+                                                  int binOverlap = 0)
 {
     DeviceVector<types::VectorView<T>> bins;
-    Binning().do_binning(data, binCount, criterion, bins);
+    Binning().operator()(data, binCount, criterion, bins, binOverlap);
     return bins;
 }
 
@@ -104,9 +116,9 @@ __global__ void compute_keys(types::VectorView<const T> data,
 };
 
 template <typename T, class Criterion, unsigned int BlockSize>
-inline void Binning::compute_keys(const DeviceVector<T>& data, 
-                                  DeviceVector<int>& keys,
-                                  const Criterion& criterion) const
+void Binning::compute_keys(const DeviceVector<T>& data, 
+                           PinnedVector<int>& keys,
+                           const Criterion& criterion) const
 {
     keys.resize(data.size());
     details::compute_keys<<<(data.size() / BlockSize ) + 1, BlockSize>>>(
@@ -115,10 +127,11 @@ inline void Binning::compute_keys(const DeviceVector<T>& data,
 }
 
 template <typename T, class Criterion, unsigned int BlockSize>
-inline void Binning::do_binning(DeviceVector<T>& data,
-                                std::size_t binCount,
-                                const Criterion& criterion,
-                                DeviceVector<types::VectorView<T>>& bins) const
+void Binning::operator()(DeviceVector<T>& data,
+                         std::size_t binCount,
+                         const Criterion& criterion,
+                         DeviceVector<types::VectorView<T>>& bins,
+                         int binOverlap) const
 {
     // Generating key for each data element and sorting data according to this
     // key.
@@ -129,19 +142,18 @@ inline void Binning::do_binning(DeviceVector<T>& data,
                         data.begin_thrust());
     
     // Generating the bins.
-    HostVector<int> keys = keys_;
     std::vector<types::VectorView<T>> tmpBins(binCount);
     int currentBin = -1;
     int currentBinStart = 0;
     int i = 0;
-    for(; i < data.size() && keys[i] < binCount; i++) {
-        if(keys[i] < 0) continue;
-        if(keys[i] != currentBin) {
+    for(; i < data.size() && keys_[i] < binCount; i++) {
+        if(keys_[i] < 0) continue;
+        if(keys_[i] != currentBin) {
             if(currentBin >= 0) {
                 tmpBins[currentBin] = types::VectorView{i - currentBinStart,
                                                         data.data() + currentBinStart};
             }
-            currentBin      = keys[i];
+            currentBin      = keys_[i];
             currentBinStart = i;
         }
     }
@@ -149,7 +161,61 @@ inline void Binning::do_binning(DeviceVector<T>& data,
         tmpBins[currentBin] = types::VectorView{i - currentBinStart,
                                                 data.data() + currentBinStart};
     }
-    bins = tmpBins;
+    if(binOverlap > 0) {
+        std::vector<types::VectorView<T>> overlapped(binCount);
+        for(int i = 0; i < tmpBins.size(); i++) {
+            auto jstart = std::max(0, i - binOverlap);
+            auto jend   = std::min(tmpBins.size() - 1, (std::size_t)(i + binOverlap));
+            auto p = tmpBins[jstart].data();
+            std::size_t size = 0;
+            for(auto j = jstart; j <= jend; j++) {
+                size += tmpBins[j].size();
+                if(!p) p = tmpBins[j].data();
+            }
+            overlapped[i] = types::VectorView<T>(size, p);
+        }
+        bins = overlapped;
+    }
+    else {
+        bins = tmpBins;
+    }
+}
+
+template <typename T, class Criterion, unsigned int BlockSize>
+void Binning::operator()(DeviceVector<T>& data,
+                         std::size_t binCount,
+                         const Criterion& criterion,
+                         PinnedVector<types::VectorView<T>>& bins,
+                         int binOverlap) const
+{
+    // Generating key for each data element and sorting data according to this
+    // key.
+    Binning::compute_keys(data, keys_, criterion);
+    thrust::sort_by_key(thrust::device,
+                        keys_.begin_thrust(),
+                        keys_.end_thrust(),
+                        data.begin_thrust());
+    
+    // Generating the bins.
+    bins.resize(binCount);
+    int currentBin = -1;
+    int currentBinStart = 0;
+    int i = 0;
+    for(; i < data.size() && keys_[i] < binCount; i++) {
+        if(keys_[i] < 0) continue;
+        if(keys_[i] != currentBin) {
+            if(currentBin >= 0) {
+                bins[currentBin] = types::VectorView{i - currentBinStart,
+                                                     data.data() + currentBinStart};
+            }
+            currentBin      = keys_[i];
+            currentBinStart = i;
+        }
+    }
+    if(currentBin >= 0) {
+        bins[currentBin] = types::VectorView{i - currentBinStart,
+                                             data.data() + currentBinStart};
+    }
 }
 
 }; //namespace cuda
