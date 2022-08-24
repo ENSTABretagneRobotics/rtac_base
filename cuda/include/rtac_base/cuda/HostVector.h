@@ -17,6 +17,8 @@ namespace rtac { namespace cuda {
 
 template <typename T>
 class DeviceVector;
+template <typename T>
+class PinnedVector;
 
 template <typename T>
 class HostVector
@@ -47,11 +49,13 @@ class HostVector
     HostVector(size_t size);
     HostVector(const HostVector<T>& other);
     HostVector(const DeviceVector<T>& other);
+    HostVector(const PinnedVector<T>& other);
     HostVector(const std::vector<T>& other);
     ~HostVector();
     
     HostVector& operator=(const HostVector<T>& other);
     HostVector& operator=(const DeviceVector<T>& other);
+    HostVector& operator=(const PinnedVector<T>& other);
     HostVector& operator=(const std::vector<T>& other);
 
     #ifndef RTAC_CUDACC
@@ -113,6 +117,13 @@ HostVector<T>::HostVector(const DeviceVector<T>& other) :
 }
 
 template <typename T>
+HostVector<T>::HostVector(const PinnedVector<T>& other) :
+    HostVector(other.size())
+{
+    *this = other;
+}
+
+template <typename T>
 HostVector<T>::HostVector(const std::vector<T>& other) :
     HostVector(other.size())
 {
@@ -138,6 +149,17 @@ HostVector<T>& HostVector<T>::operator=(const HostVector<T>& other)
 
 template <typename T>
 HostVector<T>& HostVector<T>::operator=(const DeviceVector<T>& other)
+{
+    this->resize(other.size());
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
+                           reinterpret_cast<const void*>(other.data()),
+                           sizeof(T)*size_,
+                           cudaMemcpyDeviceToHost) );
+    return *this;
+}
+
+template <typename T>
+HostVector<T>& HostVector<T>::operator=(const PinnedVector<T>& other)
 {
     this->resize(other.size());
     CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
