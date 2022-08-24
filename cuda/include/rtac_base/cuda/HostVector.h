@@ -53,6 +53,9 @@ class HostVector
     HostVector(const std::vector<T>& other);
     ~HostVector();
     
+    void copy_from_host(size_t size, const T* data);
+    void copy_from_device(size_t size, const T* data);
+
     HostVector& operator=(const HostVector<T>& other);
     HostVector& operator=(const DeviceVector<T>& other);
     HostVector& operator=(const PinnedVector<T>& other);
@@ -137,46 +140,49 @@ HostVector<T>::~HostVector()
 }
 
 template <typename T>
-HostVector<T>& HostVector<T>::operator=(const HostVector<T>& other)
+void HostVector<T>::copy_from_host(size_t size, const T* data)
 {
-    this->resize(other.size());
+    this->resize(size);
     CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
-                           reinterpret_cast<const void*>(other.data_),
+                           reinterpret_cast<const void*>(data),
                            sizeof(T)*size_,
                            cudaMemcpyHostToHost) );
+}
+
+template <typename T>
+void HostVector<T>::copy_from_device(size_t size, const T* data)
+{
+    this->resize(size);
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
+                           reinterpret_cast<const void*>(data),
+                           sizeof(T)*size_,
+                           cudaMemcpyDeviceToHost) );
+}
+template <typename T>
+HostVector<T>& HostVector<T>::operator=(const HostVector<T>& other)
+{
+    this->copy_from_host(other.size(), other.data());
     return *this;
 }
 
 template <typename T>
 HostVector<T>& HostVector<T>::operator=(const DeviceVector<T>& other)
 {
-    this->resize(other.size());
-    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
-                           reinterpret_cast<const void*>(other.data()),
-                           sizeof(T)*size_,
-                           cudaMemcpyDeviceToHost) );
+    this->copy_from_device(other.size(), other.data());
     return *this;
 }
 
 template <typename T>
 HostVector<T>& HostVector<T>::operator=(const PinnedVector<T>& other)
 {
-    this->resize(other.size());
-    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
-                           reinterpret_cast<const void*>(other.data()),
-                           sizeof(T)*size_,
-                           cudaMemcpyDeviceToHost) );
+    this->copy_from_host(other.size(), other.data());
     return *this;
 }
 
 template <typename T>
 HostVector<T>& HostVector<T>::operator=(const std::vector<T>& other)
 {
-    this->resize(other.size());
-    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
-                           reinterpret_cast<const void*>(other.data()),
-                           sizeof(T)*size_,
-                           cudaMemcpyHostToHost) );
+    this->copy_from_host(other.size(), other.data());
     return *this;
 }
 
@@ -191,11 +197,7 @@ HostVector<T>::HostVector(const types::Vector<T>& other) :
 template <typename T>
 HostVector<T>& HostVector<T>::operator=(const types::Vector<T>& other)
 {
-    this->resize(other.size());
-    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
-                           reinterpret_cast<const void*>(other.data()),
-                           sizeof(T)*size_,
-                           cudaMemcpyHostToHost) );
+    this->copy_from_host(other.size(), other.data());
     return *this;
 }
 #endif

@@ -174,44 +174,28 @@ void PinnedVector<T>::copy_from_device(size_t size, const T* data)
 template <typename T>
 PinnedVector<T>& PinnedVector<T>::operator=(const PinnedVector<T>& other)
 {
-    this->resize(other.size());
-    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
-                           reinterpret_cast<const void*>(other.data_),
-                           sizeof(T)*size_,
-                           cudaMemcpyHostToHost) );
+    this->copy_from_host(other.size(), other.data());
     return *this;
 }
 
 template <typename T>
 PinnedVector<T>& PinnedVector<T>::operator=(const HostVector<T>& other)
 {
-    this->resize(other.size());
-    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
-                           reinterpret_cast<const void*>(other.data()),
-                           sizeof(T)*size_,
-                           cudaMemcpyHostToHost) );
+    this->copy_from_host(other.size(), other.data());
     return *this;
 }
 
 template <typename T>
 PinnedVector<T>& PinnedVector<T>::operator=(const DeviceVector<T>& other)
 {
-    this->resize(other.size());
-    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
-                           reinterpret_cast<const void*>(other.data()),
-                           sizeof(T)*size_,
-                           cudaMemcpyDeviceToHost) );
+    this->copy_from_device(other.size(), other.data());
     return *this;
 }
 
 template <typename T>
 PinnedVector<T>& PinnedVector<T>::operator=(const std::vector<T>& other)
 {
-    this->resize(other.size());
-    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
-                           reinterpret_cast<const void*>(other.data()),
-                           sizeof(T)*size_,
-                           cudaMemcpyHostToHost) );
+    this->copy_from_host(other.size(), other.data());
     return *this;
 }
 
@@ -226,11 +210,7 @@ PinnedVector<T>::PinnedVector(const types::Vector<T>& other) :
 template <typename T>
 PinnedVector<T>& PinnedVector<T>::operator=(const types::Vector<T>& other)
 {
-    this->resize(other.size());
-    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
-                           reinterpret_cast<const void*>(other.data()),
-                           sizeof(T)*size_,
-                           cudaMemcpyHostToHost) );
+    this->copy_from_host(other.size(), other.data());
     return *this;
 }
 #endif
