@@ -67,6 +67,7 @@ class HostVector
     #endif
 
     void resize(size_t size);
+    void clear() { this->free(); }
     size_t size() const;
     size_t capacity() const;
 
