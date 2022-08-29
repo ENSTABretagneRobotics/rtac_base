@@ -87,13 +87,13 @@ class DeviceVector
     auto view()       { return types::make_view(*this); }
 
     #ifdef RTAC_CUDACC  // the following methods are only usable in CUDA code.
-    value_type& operator[](size_t idx);
-    const value_type& operator[](size_t idx) const;
+    //value_type& operator[](size_t idx);
+    //const value_type& operator[](size_t idx) const;
 
-    value_type& front();
-    const value_type& front() const;
-    value_type& back();
-    const value_type& back() const;
+    //value_type& front();
+    //const value_type& front() const;
+    //value_type& back();
+    //const value_type& back() const;
 
     thrust::device_ptr<T>       begin_thrust();
     thrust::device_ptr<T>       end_thrust();
@@ -288,41 +288,41 @@ const_iterator DeviceVector<T>::end() const
 }
 
 #ifdef RTAC_CUDACC
-template <typename T> typename DeviceVector<T>::
-value_type& DeviceVector<T>::operator[](size_t idx)
-{
-    return data_[idx];
-}
-
-template <typename T> const typename DeviceVector<T>::
-value_type& DeviceVector<T>::operator[](size_t idx) const
-{
-    return data_[idx];
-}
-
-template <typename T> typename DeviceVector<T>::
-value_type& DeviceVector<T>::front()
-{
-    return data_[0];
-}
-
-template <typename T> const typename DeviceVector<T>::
-value_type& DeviceVector<T>::front() const
-{
-    return data_[0];
-}
-
-template <typename T> typename DeviceVector<T>::
-value_type& DeviceVector<T>::back()
-{
-    return data_[this->size() - 1];
-}
-
-template <typename T> const typename DeviceVector<T>::
-value_type& DeviceVector<T>::back() const
-{
-    return data_[this->size() - 1];
-}
+// template <typename T> typename DeviceVector<T>::
+// value_type& DeviceVector<T>::operator[](size_t idx)
+// {
+//     return data_[idx];
+// }
+// 
+// template <typename T> const typename DeviceVector<T>::
+// value_type& DeviceVector<T>::operator[](size_t idx) const
+// {
+//     return data_[idx];
+// }
+// 
+// template <typename T> typename DeviceVector<T>::
+// value_type& DeviceVector<T>::front()
+// {
+//     return data_[0];
+// }
+// 
+// template <typename T> const typename DeviceVector<T>::
+// value_type& DeviceVector<T>::front() const
+// {
+//     return data_[0];
+// }
+// 
+// template <typename T> typename DeviceVector<T>::
+// value_type& DeviceVector<T>::back()
+// {
+//     return data_[this->size() - 1];
+// }
+// 
+// template <typename T> const typename DeviceVector<T>::
+// value_type& DeviceVector<T>::back() const
+// {
+//     return data_[this->size() - 1];
+// }
 
 template <typename T>
 thrust::device_ptr<T> DeviceVector<T>::begin_thrust()

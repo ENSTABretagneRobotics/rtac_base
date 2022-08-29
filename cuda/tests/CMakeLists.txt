@@ -23,5 +23,6 @@ add_subdirectory(mapping)
 add_subdirectory(vector_view)
 add_subdirectory(tuple_pointer)
 add_subdirectory(grid_map)
+add_subdirectory(vector_float_nd)
 
 
