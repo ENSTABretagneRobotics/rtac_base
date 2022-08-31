@@ -43,11 +43,7 @@ using Quaternion  = Eigen::Quaternion<T>;
 // The namespace is to be able to use a 'using namespace rtac::types::indexing'
 // without including all of the types.
 namespace indexing {
-    using Eigen::seq;
-    using Eigen::seqN;
-    using Eigen::placeholders::last;
-    using Eigen::placeholders::lastN;
-    using Eigen::placeholders::all;
+    using namespace Eigen::indexing;
 }
 
 }; // namespace types

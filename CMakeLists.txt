@@ -11,9 +11,10 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_installation.cmake)
 # This script handles Doxygen documentation (add a BUILD_DOCUMENTATION option)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_build_docs.cmake)
 
-find_package(Eigen3 REQUIRED)
+find_package(Eigen3 3.4 REQUIRED)
 find_package(PNG)
 find_package(JPEG)
+
 
 list(APPEND rtac_base_headers
     include/rtac_base/types/Handle.h
