@@ -56,5 +56,7 @@ if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
-rtac_install_target(rtac_cuda)
+rtac_install_target(rtac_cuda
+    HEADER_FILES ${rtac_cuda_headers}
+)
 

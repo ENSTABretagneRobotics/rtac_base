@@ -1,93 +1,89 @@
 function(rtac_install_target TARGET_NAME)
 
-	set(multiValueArgs
-        ADDITIONAL_CONFIG_FILES
-        ADDITIONAL_CONFIG_COMMANDS)
-	cmake_parse_arguments(RTAC_INSTALLATION "${options}" "${oneValueArgs}"
-	                      "${multiValueArgs}" ${ARGN} )
-    
-    # message(STATUS "=== ${RTAC_INSTALLATION_ADDITIONAL_CONFIG_COMMANDS}")
-    set(RTAC_INSTALLATION_ADDITIONAL_CONFIG_BODY "")
-    foreach(command ${RTAC_INSTALLATION_ADDITIONAL_CONFIG_COMMANDS})
-        # message(STATUS "  === ${command}")
-        set(RTAC_INSTALLATION_ADDITIONAL_CONFIG_BODY 
-            "${RTAC_INSTALLATION_ADDITIONAL_CONFIG_BODY}${command}\n")
-    endforeach()
+    set(oneValueArgs HEADERS_DIRECTORY NAMESPACE)
+	set(multiValueArgs HEADER_FILES ADDITIONAL_CONFIG_FILES)
+	cmake_parse_arguments(ARGUMENT              # parsed argument variable prefix
+                          "${options}"          # empty
+                          "${oneValueArgs}"     # HEADERS_DIRECTORY
+	                      "${multiValueArgs}"   # HEADER_FILES ADDITIONAL_CONFIG_FILES
+                          ${ARGN})
+
+    # message(STATUS "=========== HEADERS_DIRECTORY       : ${ARGUMENT_HEADERS_DIRECTORY}")
+    # message(STATUS "=========== NAMESPACE               : ${ARGUMENT_NAMESPACE}")
+    # message(STATUS "=========== HEADER_FILES            : ${ARGUMENT_HEADER_FILES}")
+    # message(STATUS "=========== ADDITIONAL_CONFIG_FILES : ${ARGUMENT_ADDITIONAL_CONFIG_FILES}")
+
+	include(GNUInstallDirs)
 
     # RPATH related configuration (see https://gitlab.kitware.com/cmake/community/-/wikis/doc/cmake/RPATH-handling for details)
     set_target_properties(${TARGET_NAME} PROPERTIES
         SKIP_BUILD_RPATH FALSE
         BUILD_WITH_INSTALL_RPATH FALSE
-        INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib"
+        INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}"
         INSTALL_RPATH_USE_LINK_PATH TRUE
     )
-    list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+    list(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_LIBDIR}" isSystemDir)
     if("${isSystemDir}" STREQUAL "-1")
         set_target_properties(${TARGET_NAME} PROPERTIES
-            INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib" # redundant with above ??
+            INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}" # redundant with above ??
         )
     endif()
 
-	include(GNUInstallDirs)
-	# Configuration
-	set(VERSION_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/generated/${TARGET_NAME}ConfigVersion.cmake")
-	set(PROJECT_CONFIG "${CMAKE_CURRENT_BINARY_DIR}/generated/${TARGET_NAME}Config.cmake")
-	set(TARGET_EXPORT_NAME "${TARGET_NAME}Targets")
-	set(CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${TARGET_NAME}")
-	
-	include(CMakePackageConfigHelpers)
-	write_basic_package_version_file(
-	    "${VERSION_CONFIG}" COMPATIBILITY SameMajorVersion
-	)
-	configure_package_config_file(
-	    "cmake/Config.cmake.in"
-	    "${PROJECT_CONFIG}"
-	    INSTALL_DESTINATION "${CONFIG_INSTALL_DIR}"
-	    PATH_VARS CMAKE_INSTALL_INCLUDEDIR
-	)
-    # get_target_property(HEADERS ${TARGET_NAME} PUBLIC_HEADER)
-    # message(STATUS "Public headers : ${HEADERS}")
-
-	
-	# Installation
-	install(
-	    TARGETS "${TARGET_NAME}"
-	    EXPORT "${TARGET_EXPORT_NAME}"
-	    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-	    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-	    RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
-	    # INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-	    # PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${INSTALLATION_HEADER_PREFIX}"
-	)
-    list(APPEND CONFIG_FILES_TO_INSTALL
-        ${PROJECT_CONFIG}
-        ${VERSION_CONFIG}
-        ${RTAC_INSTALLATION_ADDITIONAL_CONFIG_FILES}
+    set(export_name ${TARGET_NAME}Targets)
+    install(TARGETS     ${TARGET_NAME}
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            EXPORT      ${export_name}
     )
-	install(
-	    FILES ${CONFIG_FILES_TO_INSTALL}
-	    DESTINATION "${CONFIG_INSTALL_DIR}"
-	)
+    install(EXPORT ${export_name}
+            FILE ${export_name}.cmake
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${TARGET_NAME}
+    )
 
-    # Installing header files
-    get_target_property(TARGET_TYPE_VALUE ${TARGET_NAME} TYPE)
-    get_target_property(HEADER_FILES ${TARGET_NAME} RTAC_PUBLIC_HEADERS)
-    if(NOT "${HEADER_FILES}" STREQUAL "HEADER_FILES-NOTFOUND")
-        # message(STATUS "HEADER_FILES : ${HEADER_FILES}")
-        foreach(header ${HEADER_FILES})
+    foreach(config_file ${ARGUMENT_ADDITIONAL_CONFIG_FILES})
+        get_filename_component(filename ${config_file} NAME)
+        list(APPEND ADDITIONAL_CONFIG_FILES ${filename})
+    endforeach()
+
+    # Getting a version either from target or project
+    get_target_property(target_version ${TARGET_NAME} VERSION)
+    if(NOT target_version)
+        set(target_version ${CMAKE_PROJECT_VERSION})
+    endif()
+
+    include(CMakePackageConfigHelpers)
+    configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}Config.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${TARGET_NAME}
+        PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR
+    )
+    write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}ConfigVersion.cmake
+        VERSION ${target_version}
+        COMPATIBILITY AnyNewerVersion
+    )
+    install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}Config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}ConfigVersion.cmake
+        ${ARGUMENT_ADDITIONAL_CONFIG_FILES}
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${TARGET_NAME}
+    )
+    export(EXPORT ${export_name}
+           FILE ${CMAKE_CURRENT_BINARY_DIR}/${export_name}.cmake
+    )
+
+    if(ARGUMENT_HEADERS_DIRECTORY)
+        install(DIRECTORY ${ARGUMENT_HEADERS_DIRECTORY}
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        )
+    endif()
+
+    if(ARGUMENT_HEADER_FILES)
+        foreach(header ${ARGUMENT_HEADER_FILES})
             get_filename_component(header_dir ${header} DIRECTORY)
-            # message(STATUS "HEADER INSTALL : ${CMAKE_INSTALL_INCLUDEDIR}/../${header_dir}")
             install(FILES ${header}
                     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/../${header_dir}")
         endforeach()
     endif()
-
-    # Export ting target ?
-	install(
-	    EXPORT "${TARGET_EXPORT_NAME}"
-	    # NAMESPACE "${PROJECT_NAME}::"
-	    DESTINATION "${CONFIG_INSTALL_DIR}"
-	)
 
 endfunction()
 

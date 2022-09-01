@@ -4,8 +4,6 @@ project(rtac_base VERSION 0.1)
 option(WITH_CUDA   "Compile and install cuda-dependent code." ON)
 option(BUILD_TESTS "Build unit tests" ON)
 
-# This script fixes some issues related to LD_LIBRARY_PATH # DOES NOT WORK
-# include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rpath_config.cmake)
 # Loading installation script (just loading function, not calling)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_installation.cmake)
 # This script handles Doxygen documentation (add a BUILD_DOCUMENTATION option)
@@ -60,9 +58,6 @@ add_library(rtac_base SHARED
     src/external/obj_codec.cpp
     src/external/ImageCodec.cpp
 )
-set_target_properties(rtac_base PROPERTIES
-    RTAC_PUBLIC_HEADERS "${rtac_base_headers}"
-)
 target_link_libraries(rtac_base
     PUBLIC
         Eigen3::Eigen
@@ -116,6 +111,7 @@ if(BUILD_TESTS)
 endif()
 
 rtac_install_target(rtac_base
+    HEADER_FILES      ${rtac_base_headers}
     ADDITIONAL_CONFIG_FILES cmake/rtac_installation.cmake
 )
 # target_add_docs(rtac_base)
