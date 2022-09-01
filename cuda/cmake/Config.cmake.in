@@ -3,6 +3,7 @@
 include(CMakeFindDependencyMacro)
 
 find_package(rtac_base REQUIRED)
+set(CMAKE_CUDA_ARCHITECTURES @CMAKE_CUDA_ARCHITECTURES@)
 
 enable_language(CUDA)
 find_package(CUDA REQUIRED)

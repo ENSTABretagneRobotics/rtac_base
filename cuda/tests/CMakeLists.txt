@@ -14,7 +14,7 @@ foreach(filename ${test_names})
     set(target_name ${test_name}_${PROJECT_NAME})
     add_executable(${target_name} ${filename})
     target_link_libraries(${target_name} rtac_cuda)
-    set_target_properties(${target_name} PROPERTIES CUDA_ARCHITECTURES native)
+    # set_target_properties(${target_name} PROPERTIES CUDA_ARCHITECTURES native)
 endforeach()
 
 add_subdirectory(texture)

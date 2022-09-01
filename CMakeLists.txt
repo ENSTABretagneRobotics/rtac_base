@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.16)
 project(rtac_base VERSION 0.1)
 
 option(WITH_CUDA   "Compile and install cuda-dependent code." ON)
@@ -76,7 +76,7 @@ target_include_directories(rtac_base
 )
 target_compile_features(rtac_base PUBLIC cxx_std_17)
 
-if(${WITH_CUDA})
+if(WITH_CUDA)
     add_subdirectory(cuda)
 endif()
 
