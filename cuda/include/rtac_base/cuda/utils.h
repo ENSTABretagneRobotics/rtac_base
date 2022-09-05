@@ -110,4 +110,23 @@ float4 to_float4(const Eigen::MatrixBase<rtac::types::Vector4<T>>& v)
 
 #endif //RTAC_CUDACC
 
+inline std::ostream& operator<<(std::ostream& os, const float2& v)
+{
+    os << "(" << v.x << " " << v.y << ")";
+    return os;
+}
+
+inline std::ostream& operator<<(std::ostream& os, const float3& v)
+{
+    os << "(" << v.x << " " << v.y << " " << v.z << ")";
+    return os;
+}
+
+inline std::ostream& operator<<(std::ostream& os, const float4& v)
+{
+    os << "(" << v.x << " " << v.y << " " << v.z << " " << v.w << ")";
+    return os;
+}
+
+
 #endif //_DEF_RTAC_BASE_CUDA_UTILS_H_
