@@ -58,5 +58,6 @@ endif()
 
 rtac_install_target(rtac_cuda
     HEADER_FILES ${rtac_cuda_headers}
+    ADDITIONAL_CONFIG_FILES cmake/rtac_generate_ptx.cmake
 )
 

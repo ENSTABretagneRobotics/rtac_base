@@ -113,6 +113,7 @@ endif()
 rtac_install_target(rtac_base
     HEADER_FILES      ${rtac_base_headers}
     ADDITIONAL_CONFIG_FILES cmake/rtac_installation.cmake
+    ADDITIONAL_CONFIG_FILES cmake/rtac_generate_asm.cmake
 )
 # target_add_docs(rtac_base)
 
