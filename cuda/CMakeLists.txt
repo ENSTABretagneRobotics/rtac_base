@@ -22,6 +22,7 @@ list(APPEND rtac_cuda_headers
     include/rtac_base/cuda/reductions.hcu
     include/rtac_base/cuda/operators.h
     include/rtac_base/cuda/algorithm.hcu
+    include/rtac_base/cuda/vec_math.h
 )
 
 find_package(CUDA REQUIRED)
