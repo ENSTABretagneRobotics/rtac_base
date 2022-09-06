@@ -78,6 +78,8 @@ class Mesh
                               float yAperture,
                               size_t Nx,
                               size_t Ny);
+    //static Ptr icosphere(unsigned int level = 0, float scale = 1.0f);
+    static Ptr icosahedron(float scale = 1.0f);
 
     //// .ply files
     template <typename PointScalarT = float, typename FaceIndexT = uint32_t>
@@ -193,6 +195,62 @@ typename Mesh<P,F,N,U,V>::Ptr Mesh<P,F,N,U,V>::sphere_section(float  radius,
     //         nf += 2;
     //     }
     // }
+    return res;
+}
+
+template <typename P, typename F, typename N, typename U, template<typename> class V>
+typename Mesh<P,F,N,U,V>::Ptr Mesh<P,F,N,U,V>::icosahedron(float scale)
+{
+    auto res = Mesh<P,F,N,U,V>::Create();
+
+    constexpr float phi  = 0.5f*(1.0f + sqrt(5));
+    scale /= sqrt(1 + phi*phi);
+
+    std::vector<P> points(12);
+    points[0]  = P{-phi*scale, -1.0f*scale, 0.0f};
+    points[1]  = P{ phi*scale, -1.0f*scale, 0.0f};
+    points[2]  = P{ phi*scale,  1.0f*scale, 0.0f};
+    points[3]  = P{-phi*scale,  1.0f*scale, 0.0f};
+
+    points[4]  = P{-1.0f*scale, 0.0f, -phi*scale};
+    points[5]  = P{-1.0f*scale, 0.0f,  phi*scale};
+    points[6]  = P{ 1.0f*scale, 0.0f,  phi*scale};
+    points[7]  = P{ 1.0f*scale, 0.0f, -phi*scale};
+
+    points[8]  = P{0.0f, -phi*scale, -1.0f*scale};
+    points[9]  = P{0.0f,  phi*scale, -1.0f*scale};
+    points[10] = P{0.0f,  phi*scale,  1.0f*scale};
+    points[11] = P{0.0f, -phi*scale,  1.0f*scale};
+
+    std::vector<F> faces(20);
+    faces[0]  = F{1,2,6};
+    faces[1]  = F{2,1,7};
+    faces[2]  = F{3,0,5};
+    faces[3]  = F{0,3,4};
+
+    faces[4]  = F{5,6,10};
+    faces[5]  = F{6,5,11};
+    faces[6]  = F{7,4,9};
+    faces[7]  = F{4,7,8};
+
+    faces[8]  = F{9,10,2};
+    faces[9]  = F{10,9,3};
+    faces[10] = F{11,8,1};
+    faces[11] = F{8,11,0};
+
+    faces[12] = F{0,11,5};
+    faces[13] = F{1,6,11};
+    faces[14] = F{2,10,6};
+    faces[15] = F{3,5,10};
+
+    faces[16] = F{0,4,8};
+    faces[17] = F{1,8,7};
+    faces[18] = F{2,7,9};
+    faces[19] = F{3,9,4};
+
+    res->points() = points;
+    res->faces()  = faces;
+
     return res;
 }
 

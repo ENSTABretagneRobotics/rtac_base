@@ -33,7 +33,7 @@ constexpr T to_radians(T degrees)
  * @return A vector non-colinear to v.
  */
 template <typename T, int D>
-Eigen::Matrix<T,D,1> find_noncolinear(const Eigen::Matrix<T,D,1>& v)
+inline Eigen::Matrix<T,D,1> find_noncolinear(const Eigen::Matrix<T,D,1>& v)
 {
     Eigen::Matrix<T,D,1> res = v.cwiseAbs();
     int minIndex = 0;
@@ -57,7 +57,7 @@ Eigen::Matrix<T,D,1> find_noncolinear(const Eigen::Matrix<T,D,1>& v)
  * @return A vector orthogonal to v.
  */
 template <typename T, int D>
-Eigen::Matrix<T,D,1> find_orthogonal(const Eigen::Matrix<T,D,1>& v)
+inline Eigen::Matrix<T,D,1> find_orthogonal(const Eigen::Matrix<T,D,1>& v)
 {
     Eigen::Matrix<T,D,1> res = find_noncolinear(v);
     Eigen::Matrix<T,D,1> vn = v.normalized();
@@ -79,7 +79,7 @@ Eigen::Matrix<T,D,1> find_orthogonal(const Eigen::Matrix<T,D,1>& v)
  * @return A rotation matrix R closest to M in Frobenius norm.
  */
 template <typename T, int D>
-Eigen::Matrix<T,D,D> orthonormalized(const Eigen::Matrix<T,D,D>& M, T tol = 1e-6)
+inline Eigen::Matrix<T,D,D> orthonormalized(const Eigen::Matrix<T,D,D>& M, T tol = 1e-6)
 {
     using namespace rtac::types::indexing;
     // Produce a orthonormal matrix from m using SVD.
@@ -99,7 +99,7 @@ Eigen::Matrix<T,D,D> orthonormalized(const Eigen::Matrix<T,D,D>& M, T tol = 1e-6
  * See Pose::look_at for details.
  */
 template <typename T>
-Matrix3<T> look_at(const Vector3<T>& target, const Vector3<T>& position, const Vector3<T>& up)
+inline Matrix3<T> look_at(const Vector3<T>& target, const Vector3<T>& position, const Vector3<T>& up)
 {
     Matrix3<T> r;
 
