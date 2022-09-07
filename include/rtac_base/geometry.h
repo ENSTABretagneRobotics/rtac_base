@@ -81,13 +81,12 @@ inline Eigen::Matrix<T,D,1> find_orthogonal(const Eigen::Matrix<T,D,1>& v)
 template <typename T, int D>
 inline Eigen::Matrix<T,D,D> orthonormalized(const Eigen::Matrix<T,D,D>& M, T tol = 1e-6)
 {
-    using namespace rtac::types::indexing;
     // Produce a orthonormal matrix from m using SVD.
     // https://eigen.tuxfamily.org/dox/classEigen_1_1JacobiSVD.html
     // (closest orthonormal matrix in Frobenius norm ? (check it))
     Eigen::JacobiSVD<Eigen::Matrix<T,D,D>> svd(M, Eigen::ComputeFullU | Eigen::ComputeFullV);
     Eigen::Matrix<T,D,1> sv = svd.singularValues();
-    if(sv(last) < tol*sv(0)) {
+    if(sv(indexing::last) < tol*sv(0)) {
         throw std::runtime_error(
             "Orthonormalized : bad conditionned matrix. Cannot orthonormalize.");
     }
@@ -103,7 +102,7 @@ inline Matrix3<T> look_at(const Vector3<T>& target, const Vector3<T>& position, 
 {
     Matrix3<T> r;
 
-    using namespace rtac::types::indexing;
+    // using namespace rtac::types::indexing;
     // local y points towards target.
     Vector3<T> y = target - position;
     if(y.norm() < 1e-6) {
@@ -119,8 +118,11 @@ inline Matrix3<T> look_at(const Vector3<T>& target, const Vector3<T>& position, 
     }
     x.normalize();
     Vector3<T> z = x.cross(y);
-
-    r(all,0) = x; r(all,1) = y; r(all,2) = z;
+    
+    // NVCC indicates "all is ambiguous" but does not outputs full gcc output. Cannot fix.
+    r(indexing::all,0) = x;
+    r(indexing::all,1) = y;
+    r(indexing::all,2) = z;
 
     return r;
 }
