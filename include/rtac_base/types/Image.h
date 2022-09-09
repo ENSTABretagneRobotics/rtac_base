@@ -11,7 +11,7 @@
 
 namespace rtac { namespace types {
 
-template <typename PixelT, template <typename> class ContainerT = std::vector>
+template <typename PixelT, template <typename> class ContainerT>
 class Image
 {
     public:
@@ -61,8 +61,8 @@ class Image
     RTAC_HOSTDEVICE PixelT  operator()(std::size_t h, std::size_t w) const;
     RTAC_HOSTDEVICE PixelT& operator()(std::size_t h, std::size_t w);
 
-    RTAC_HOSTDEVICE Image<const PixelT, VectorView> view() const;
-    RTAC_HOSTDEVICE Image<PixelT, VectorView>       view();
+    Image<const PixelT, VectorView> view() const;
+    Image<PixelT, VectorView>       view();
 };
 
 template <typename PixelT>
@@ -101,16 +101,16 @@ RTAC_HOSTDEVICE T& Image<T,C>::operator()(std::size_t h, std::size_t w)
 }
 
 template <typename T, template<typename> class C>
-RTAC_HOSTDEVICE Image<const T, VectorView> Image<T,C>::view() const
+Image<const T, VectorView> Image<T,C>::view() const
 {
     return Image<const T,VectorView>(this->shape(),
-        VectorView<const T>(this->size(), this->data()));
+        VectorView<const T>(data_.size(), data_.data()));
 }
 
 template <typename T, template<typename> class C>
-RTAC_HOSTDEVICE Image<T, VectorView> Image<T,C>::view()
+Image<T, VectorView> Image<T,C>::view()
 {
-    return Image<T,VectorView>(this->shape(), VectorView<T>(this->size(), this->data()));
+    return Image<T,VectorView>(this->shape(), VectorView<T>(data_.size(), data_.data()));
 }
 
 }; //namespace types
