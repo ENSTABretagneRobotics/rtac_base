@@ -61,6 +61,7 @@ class Image
     RTAC_HOSTDEVICE PixelT  operator()(std::size_t h, std::size_t w) const;
     RTAC_HOSTDEVICE PixelT& operator()(std::size_t h, std::size_t w);
 
+    Image<const PixelT, VectorView> const_view() const { return this->view(); }
     Image<const PixelT, VectorView> view() const;
     Image<PixelT, VectorView>       view();
 };
