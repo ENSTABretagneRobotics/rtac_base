@@ -18,4 +18,8 @@
 #   define RTAC_KERNEL  // this is defined only for cuda kernel code
 #endif
 
+#ifndef RTAC_BLOCKSIZE
+#   define RTAC_BLOCKSIZE 512
+#endif
+
 #endif //_DEF_RTAC_BASE_CUDA_DEFINES_H_
