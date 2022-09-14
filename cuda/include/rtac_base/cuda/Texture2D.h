@@ -114,6 +114,8 @@ class Texture2D
                                float maxMipmapLevelClamp,
                                bool updateTexture = true);
     void disable_mipmap(bool updateTexture = true);
+    void set_border_color(float x, float y = 0, float z = 0, float w = 0,
+                          bool updateTexture = true);
 };
 
 // Implementation (static methods)
@@ -546,6 +548,18 @@ void Texture2D<T>::disable_mipmap(bool updateTexture)
         this->update_texture_handle();
 }
 
+template <typename T>
+void Texture2D<T>::set_border_color(float x, float y, float z, float w,
+                                    bool updateTexture)
+{
+    description_.borderColor[0] = x;
+    description_.borderColor[1] = y;
+    description_.borderColor[2] = z;
+    description_.borderColor[3] = w;
+
+    if(updateTexture)
+        this->update_texture_handle();
+}
 
 }; //namespace cuda
 }; //namespace rtac
