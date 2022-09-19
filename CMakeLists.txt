@@ -45,6 +45,8 @@ list(APPEND rtac_base_headers
     include/rtac_base/nmea_utils.h
     include/rtac_base/navigation.h
 
+    include/rtac_base/signal_helpers.h
+
     include/rtac_base/external/obj_codec.h
     include/rtac_base/external/ImageCodec.h
 )
