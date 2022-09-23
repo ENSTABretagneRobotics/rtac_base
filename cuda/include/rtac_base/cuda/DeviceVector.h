@@ -13,9 +13,9 @@
 #include <rtac_base/types/common.h>
 #endif
 
-#ifdef RTAC_CUDACC
-#include <thrust/device_ptr.h>
-#endif
+//#ifdef RTAC_CUDACC
+//#include <thrust/device_ptr.h> // thrust is causing linking issues with OptiX for unclear reasons
+//#endif
 
 
 namespace rtac { namespace cuda {
@@ -96,10 +96,10 @@ class DeviceVector
     //value_type& back();
     //const value_type& back() const;
 
-    thrust::device_ptr<T>       begin_thrust();
-    thrust::device_ptr<T>       end_thrust();
-    thrust::device_ptr<const T> begin_thrust() const;
-    thrust::device_ptr<const T> end_thrust() const;
+    //thrust::device_ptr<T>       begin_thrust();
+    //thrust::device_ptr<T>       end_thrust();
+    //thrust::device_ptr<const T> begin_thrust() const;
+    //thrust::device_ptr<const T> end_thrust() const;
     #endif
 };
 
@@ -325,29 +325,29 @@ const_iterator DeviceVector<T>::end() const
 //     return data_[this->size() - 1];
 // }
 
-template <typename T>
-thrust::device_ptr<T> DeviceVector<T>::begin_thrust()
-{
-    return thrust::device_pointer_cast(data_);
-}
-
-template <typename T>
-thrust::device_ptr<T> DeviceVector<T>::end_thrust()
-{
-    return thrust::device_pointer_cast(data_ + size_);
-}
-
-template <typename T>
-thrust::device_ptr<const T> DeviceVector<T>::begin_thrust() const
-{
-    return thrust::device_pointer_cast(data_);
-}
-
-template <typename T>
-thrust::device_ptr<const T> DeviceVector<T>::end_thrust() const
-{
-    return thrust::device_pointer_cast(data_ + size_);
-}
+//template <typename T>
+//thrust::device_ptr<T> DeviceVector<T>::begin_thrust()
+//{
+//    return thrust::device_pointer_cast(data_);
+//}
+//
+//template <typename T>
+//thrust::device_ptr<T> DeviceVector<T>::end_thrust()
+//{
+//    return thrust::device_pointer_cast(data_ + size_);
+//}
+//
+//template <typename T>
+//thrust::device_ptr<const T> DeviceVector<T>::begin_thrust() const
+//{
+//    return thrust::device_pointer_cast(data_);
+//}
+//
+//template <typename T>
+//thrust::device_ptr<const T> DeviceVector<T>::end_thrust() const
+//{
+//    return thrust::device_pointer_cast(data_ + size_);
+//}
 #endif //RTAC_CUDACC
 
 }; //namespace cuda

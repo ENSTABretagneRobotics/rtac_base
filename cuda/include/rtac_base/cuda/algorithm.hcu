@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include <thrust/device_ptr.h>
 #include <thrust/sort.h>
 #include <thrust/execution_policy.h>
 
@@ -31,8 +32,8 @@ template <typename T,
 void sort(VectorT<T>& data, ComparatorT<T> comp = ComparatorT<T>{})
 {
     thrust::sort(thrust::device,
-                 data.begin_thrust(),
-                 data.end_thrust(),
+                 thrust::device_pointer_cast(data.begin()),
+                 thrust::device_pointer_cast(data.end()),
                  comp);
 }
 
@@ -137,9 +138,9 @@ void Binning::operator()(DeviceVector<T>& data,
     // key.
     Binning::compute_keys(data, keys_, criterion);
     thrust::sort_by_key(thrust::device,
-                        keys_.begin_thrust(),
-                        keys_.end_thrust(),
-                        data.begin_thrust());
+                        thrust::device_pointer_cast(keys_.begin()),
+                        thrust::device_pointer_cast(keys_.end()),
+                        thrust::device_pointer_cast(data.begin()));
     
     // Generating the bins.
     std::vector<types::VectorView<T>> tmpBins(binCount);
@@ -192,9 +193,9 @@ void Binning::operator()(DeviceVector<T>& data,
     // key.
     Binning::compute_keys(data, keys_, criterion);
     thrust::sort_by_key(thrust::device,
-                        keys_.begin_thrust(),
-                        keys_.end_thrust(),
-                        data.begin_thrust());
+                        thrust::device_pointer_cast(keys_.begin()),
+                        thrust::device_pointer_cast(keys_.end()),
+                        thrust::device_pointer_cast(data.begin()));
     
     // Generating the bins.
     bins.resize(binCount);
