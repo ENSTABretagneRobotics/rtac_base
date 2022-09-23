@@ -38,7 +38,7 @@ int main()
 
     Texture2D<float> texture(std::move(Texture2D<float>::checkerboard(64,64,0.0f,1.0f)));
 
-    int W = 1024, H = 720;
+    unsigned int W = 1024, H = 720;
     
     HostVector<float> rendered0 = render_texture(W,H,texture);
     write_pgm("output0.pgm", W, H, rendered0.data());

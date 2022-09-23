@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
 #include <rtac_base/types/Image.h>
@@ -22,7 +23,7 @@ void print_image(const Image<T,C>& img)
 
 int main()
 {
-    Image<unsigned int> img({32,32});
+    Image<unsigned int, std::vector> img({32,32});
     cout << img << endl;
     cout << img.size() << endl;
 
