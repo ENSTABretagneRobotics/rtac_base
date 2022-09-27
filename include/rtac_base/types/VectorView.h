@@ -81,13 +81,13 @@ class VectorView<const T>
 template <class VectorT>
 auto make_view(VectorT& vector)
 {
-    return VectorView(vector.size(), vector.data());
+    return VectorView<typename VectorT::value_type>(vector.size(), vector.data());
 }
 
 template <class VectorT>
 auto make_view(const VectorT& vector)
 {
-    return VectorView(vector.size(), vector.data());
+    return VectorView<const typename VectorT::value_type>(vector.size(), vector.data());
 }
 
 }; //namespace types

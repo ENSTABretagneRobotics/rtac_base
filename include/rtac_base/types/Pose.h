@@ -158,8 +158,8 @@ typename Pose<T>::Mat4 Pose<T>::homogeneous_matrix() const
 {
     using namespace rtac::types::indexing;
     Matrix4<T> H;
-    H(seq(0,2), seq(0,2)) = orientation_.toRotationMatrix();
-    H(seq(0,2), last)     = translation_;
+    H(seqN(0,3), seqN(0,3)) = orientation_.toRotationMatrix();
+    H(seqN(0,3), last)      = translation_;
     H(3,0) = 0; H(3,1) = 0; H(3,2) = 0; H(3,3) = 1;
     return H;
 }

@@ -275,25 +275,27 @@ InterpolatorCubicSpline<T>::InterpolatorCubicSpline(const Vector& x0, const Vect
 {
     using namespace rtac::types::indexing;
 
-    Vector dx =  x0(seq(1,last)) - x0(seq(0,last-1));
-    Vector dy = (y0(seq(1,last)) - y0(seq(0,last-1))).array() / dx.array();
+    unsigned int size = x0.size();
 
-    Vector beta        =  6.0*(dy(seq(1,last)) - dy(seq(0,last-1)));
-    types::Matrix<T> A = (2.0*(x0(seq(2,last)) - x0(seq(0,last-2)))).asDiagonal();
+    Vector dx =  x0(seqN(1,size-1)) - x0(seqN(0,size-1));
+    Vector dy = (y0(seqN(1,size-1)) - y0(seqN(0,size-1))).array() / dx.array();
+
+    Vector beta        =  6.0*(dy(seqN(1,dy.size()-1)) - dy(seqN(0,dy.size()-1)));
+    types::Matrix<T> A = (2.0*(x0(seqN(2,x0.size()-2)) - x0(seqN(0,x0.size()-2)))).asDiagonal();
     for(int i = 0; i < this->size() - 3; i++) {
         A(i,i+1) = dx(i+1);
         A(i+1,i) = dx(i+1);
     }
     Vector alpha(this->size());
-    alpha(seq(1,last-1)) = A.colPivHouseholderQr().solve(beta);
+    alpha(seqN(1,alpha.size()-2)) = A.colPivHouseholderQr().solve(beta);
     alpha(0) = 0.0;
     alpha(alpha.size() - 1) = 0.0;
     
-    this->a_ = (alpha(seq(1,last)) - alpha(seq(0,last-1))).array() / (6.0*dx.array());
-    this->b_ = 0.5*alpha(seq(1,last));
+    this->a_ = (alpha(seqN(1,alpha.size()-1)) - alpha(seqN(0,alpha.size()-1))).array() / (6.0*dx.array());
+    this->b_ = 0.5*alpha(seqN(1,alpha.size()-1));
     this->c_ = dy.array()
-             + dx.array() * (2.0*alpha(seq(1,last)) + alpha(seq(0,last-1))).array() / 6.0;
-    this->d_ = y0(seq(1,last));
+             + dx.array() * (2.0*alpha(seqN(1,alpha.size()-1)) + alpha(seqN(0,alpha.size()-1))).array() / 6.0;
+    this->d_ = y0(seqN(1,y0.size()-1));
 }
 
 template <typename T>
