@@ -39,9 +39,9 @@ class MappedPointer
         unmapping_method_(unmapping_method)
     {}
 
-    // disabling copying
-    MappedPointer(const MappedPointer& other)            = delete;
-    MappedPointer& operator=(const MappedPointer& other) = delete;
+    // disabling copying, // reenabled because cuda
+    //MappedPointer(const MappedPointer& other)            = delete;
+    //MappedPointer& operator=(const MappedPointer& other) = delete;
 
     ~MappedPointer()
     {

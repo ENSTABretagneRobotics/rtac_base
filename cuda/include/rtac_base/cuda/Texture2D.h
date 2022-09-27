@@ -104,7 +104,7 @@ class Texture2D
     void set_wrap_mode(WrapMode xWrap, WrapMode yWrap, WrapMode zWrap,
                        bool updateTexture = true);
     void set_read_mode(ReadMode mode, bool updateTexture = true);
-    void use_trilinear_optimization(bool use, bool updateTexture = true);
+    //void use_trilinear_optimization(bool use, bool updateTexture = true);
     void use_normalized_coordinates(bool use, bool updateTexture = true);
     void set_max_anisotropy(unsigned int maxLevel, bool updateTexture = true);
     void perform_srgb_linear_conversion(bool doConversion, bool updateTexture = true);
@@ -475,17 +475,17 @@ void Texture2D<T>::set_read_mode(ReadMode mode, bool updateTexture)
         this->update_texture_handle();
 }
 
-template <typename T>
-void Texture2D<T>::use_trilinear_optimization(bool use, bool updateTexture)
-{
-    if(use)
-        description_.disableTrilinearOptimization = 0;
-    else
-        description_.disableTrilinearOptimization = 1;
-
-    if(updateTexture)
-        this->update_texture_handle();
-}
+//template <typename T>
+//void Texture2D<T>::use_trilinear_optimization(bool use, bool updateTexture)
+//{
+//    if(use)
+//        description_.disableTrilinearOptimization = 0;
+//    else
+//        description_.disableTrilinearOptimization = 1;
+//
+//    if(updateTexture)
+//        this->update_texture_handle();
+//}
 
 template <typename T>
 void Texture2D<T>::use_normalized_coordinates(bool use, bool updateTexture)
