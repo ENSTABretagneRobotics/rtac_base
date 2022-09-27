@@ -1,6 +1,7 @@
 #include <rtac_base/external/ImageCodec.h>
 
 #include <algorithm>
+#include <sstream>
 
 #ifdef RTAC_PNG
 #include <rtac_base/external/png_codec.h>
@@ -61,13 +62,13 @@ ImageCodecBase::Ptr ImageCodec::create_codec(ImageEncoding encoding)
     }
 
     if(encoding == JPEG) {
-        #ifdef RTAC_PNG
+        #ifdef RTAC_JPEG
             return JPGCodec::Create();
         #else
             std::ostringstream oss;
             oss << "JPEG file format is not supported. "
                    "Did you install libijpeg8-dev before compiling rtac_base ?";
-            throw std::runtime_error(oss.str);
+            throw std::runtime_error(oss.str());
         #endif
     }
 
