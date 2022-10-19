@@ -10,15 +10,10 @@ list(APPEND rtac_cuda_headers
     include/rtac_base/cuda/DeviceVector.h
     include/rtac_base/cuda/HostVector.h
     include/rtac_base/cuda/PinnedVector.h
-    include/rtac_base/cuda/VectorFloatND.h
     include/rtac_base/cuda/DeviceMesh.h
     include/rtac_base/cuda/DeviceObject.h
     include/rtac_base/cuda/Texture2D.h
     include/rtac_base/cuda/TextureView2D.h
-    include/rtac_base/cuda/functors.h
-    include/rtac_base/cuda/FunctorCompound.h
-    include/rtac_base/cuda/Mapping.h
-    include/rtac_base/cuda/mappings.h
     include/rtac_base/cuda/reductions.hcu
     include/rtac_base/cuda/operators.h
     include/rtac_base/cuda/algorithm.hcu
