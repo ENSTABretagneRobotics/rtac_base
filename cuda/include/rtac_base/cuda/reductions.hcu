@@ -9,27 +9,27 @@ namespace rtac { namespace cuda { namespace device {
 template <typename T, unsigned int BlockSize, template<typename> class OperatorT>
 __device__ void warp_reduce(volatile T* sdata, unsigned int tid)
 {
-    if constexpr (BlockSize >= 64) OperatorT<volatile T>::apply(sdata[tid], sdata[tid + 32]);
-    if constexpr (BlockSize >= 32) OperatorT<volatile T>::apply(sdata[tid], sdata[tid + 16]);
-    if constexpr (BlockSize >= 16) OperatorT<volatile T>::apply(sdata[tid], sdata[tid +  8]);
-    if constexpr (BlockSize >=  8) OperatorT<volatile T>::apply(sdata[tid], sdata[tid +  4]);
-    if constexpr (BlockSize >=  4) OperatorT<volatile T>::apply(sdata[tid], sdata[tid +  2]);
-    if constexpr (BlockSize >=  2) OperatorT<volatile T>::apply(sdata[tid], sdata[tid +  1]);
+    if (BlockSize >= 64) OperatorT<volatile T>::apply(sdata[tid], sdata[tid + 32]);
+    if (BlockSize >= 32) OperatorT<volatile T>::apply(sdata[tid], sdata[tid + 16]);
+    if (BlockSize >= 16) OperatorT<volatile T>::apply(sdata[tid], sdata[tid +  8]);
+    if (BlockSize >=  8) OperatorT<volatile T>::apply(sdata[tid], sdata[tid +  4]);
+    if (BlockSize >=  4) OperatorT<volatile T>::apply(sdata[tid], sdata[tid +  2]);
+    if (BlockSize >=  2) OperatorT<volatile T>::apply(sdata[tid], sdata[tid +  1]);
 }
 
 template <typename T, unsigned int BlockSize, template<typename> class OperatorT>
 __device__ void reduce_shared(volatile T* sdata, unsigned int tid)
 {
-    if constexpr (BlockSize >= 1024) { if(tid < 512) { 
+    if (BlockSize >= 1024) { if(tid < 512) { 
         OperatorT<volatile T>::apply(sdata[tid], sdata[tid + 512]); __syncthreads();
     }}
-    if constexpr (BlockSize >= 512) { if(tid < 256) { 
+    if (BlockSize >= 512) { if(tid < 256) { 
         OperatorT<volatile T>::apply(sdata[tid], sdata[tid + 256]); __syncthreads();
     }}
-    if constexpr (BlockSize >= 256) { if(tid < 128) { 
+    if (BlockSize >= 256) { if(tid < 128) { 
         OperatorT<volatile T>::apply(sdata[tid], sdata[tid + 128]); __syncthreads();
     }}
-    if constexpr (BlockSize >= 128) { if(tid <  64) { 
+    if (BlockSize >= 128) { if(tid <  64) { 
         OperatorT<volatile T>::apply(sdata[tid], sdata[tid +  64]); __syncthreads();
     }}
 
