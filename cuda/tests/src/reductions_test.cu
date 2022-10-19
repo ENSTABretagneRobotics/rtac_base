@@ -2,6 +2,9 @@
 #include <vector>
 using namespace std;
 
+#include <rtac_base/time.h>
+using namespace rtac::time;
+
 #include <rtac_base/cuda/reductions.hcu>
 #include <rtac_base/cuda/DeviceVector.h>
 #include <rtac_base/cuda/HostVector.h>
@@ -21,9 +24,18 @@ DeviceVector<unsigned int> image_data(unsigned int W, unsigned int H)
 int main()
 {
     unsigned int N = 123456789;
+    unsigned int L = 100;
+
+    Clock clock;
 
     DeviceVector<float> inF(std::vector<float>(N, 1));
-    device::reduce(inF.data(), inF.data(), N);
+    
+    clock.reset();
+    for(int l = 0; l < L; l++) {
+        device::reduce(inF.data(), inF.data(), N);
+    }
+    auto t0 = clock.now<double>();
+    std::cout << "Ellapsed : " << 1000.0*t0 / L << "ms" << std::endl;
     cout << inF << endl;
 
     DeviceVector<unsigned int> inU(std::vector<unsigned int>(N, 1));
