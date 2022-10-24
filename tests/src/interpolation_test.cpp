@@ -74,11 +74,13 @@ int main()
 
     auto x = linspace<Vector<float>>(data(0,0), data(last,0), 8192);
 
-    InterpolatorNearest<float> interpNN(x0, y0);
+    auto interpNN = Interpolator<float>::CreateNearest(x0, y0);
     auto ynn = interpNN(x);
-    InterpolatorLinear<float> interpLinear(x0, y0);
+
+    auto interpLinear = Interpolator<float>::CreateLinear(x0, y0);
     auto yl = interpLinear(x);
-    InterpolatorCubicSpline<float> interpCubicSpline(x0, y0);
+
+    auto interpCubicSpline = Interpolator<float>::CreateCubicSpline(x0, y0);
     auto yc = interpCubicSpline(x);
     
     plt::plot(to_vector(x0), to_vector(y0),  {{"marker", "o"},
