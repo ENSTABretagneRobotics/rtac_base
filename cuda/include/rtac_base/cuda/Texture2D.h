@@ -94,7 +94,8 @@ class Texture2D
     cudaTextureObject_t texture()  const { return textureHandle_; }
     operator cudaTextureObject_t() const { return textureHandle_; }
 
-    TextureView2D<T> view() const { return TextureView2D<T>{width_,height_,textureHandle_}; }
+    TextureView2D<T> view()   const { return TextureView2D<T>{width_, height_, textureHandle_}; }
+    TextureView1D<T> view1d() const { return TextureView1D<T>{width_, textureHandle_}; }
 
     // Setters for texture fetch configuration (the way the texture will be
     // read when used on the device.
@@ -278,7 +279,6 @@ void Texture2D<T>::update_texture_handle()
     // Creating texture object pointing to allocated data.
     auto resourceDescription = types::zero<cudaResourceDesc>();
     resourceDescription.resType = cudaResourceTypeArray;
-    // resourceDescription.array = data_; // in cuda docs but not working ?
     resourceDescription.res.array.array = data_;
 
     CUDA_CHECK( cudaCreateTextureObject(&textureHandle_, &resourceDescription,
@@ -306,10 +306,6 @@ template <typename T>
 void Texture2D<T>::set_image(uint32_t width, uint32_t height, const T* data)
 {
     this->allocate_data(width, height);
-
-    //CUDA_CHECK( cudaMemcpyToArray(data_, 0, 0, data,
-    //                              sizeof(T)*width_*height_,
-    //                              cudaMemcpyHostToDevice) );
 
     CUDA_CHECK( cudaMemcpy2DToArray(data_, 0, 0,
                                     data,

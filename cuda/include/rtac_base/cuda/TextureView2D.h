@@ -28,6 +28,19 @@ struct TextureView2D
     #endif //RTAC_KERNEL 
 };
 
+template <typename T>
+struct TextureView1D
+{
+    using value_type = T;
+
+    uint32_t            width_;
+    cudaTextureObject_t handle_;
+    
+    #ifdef RTAC_CUDACC // RTAC_KERNEL does not seem to work.
+    __device__ T operator()(float x) const { return tex1D<T>(handle_, x); }
+    #endif //RTAC_KERNEL 
+};
+
 }; //namespace cuda
 }; //namespace rtac
 

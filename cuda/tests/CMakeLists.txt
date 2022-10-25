@@ -7,6 +7,7 @@ list(APPEND test_names
     src/cuda_devicevector_test.cu
     src/reductions_test.cu
     src/pinned_vector.cu
+    src/texture1d.cu
 )
 
 foreach(filename ${test_names})
