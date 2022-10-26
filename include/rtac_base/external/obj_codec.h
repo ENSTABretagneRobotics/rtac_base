@@ -238,14 +238,16 @@ class ObjLoader
     std::string objPath_;
     std::string mtlPath_;
 
-    std::vector<Point>  points_;
-    std::vector<UV>     uvs_;
-    std::vector<Normal> normals_;
-    std::set<VertexId>  vertices_;
+    std::vector<Point>       points_;
+    std::vector<UV>          uvs_;
+    std::vector<Normal>      normals_;
+    std::vector<VertexId>    vertices_;
     std::vector<std::string> groupNames_;
     std::map<std::string,std::vector<Face>> faceGroups_;
 
     std::map<std::string,MtlMaterial> materials_;
+
+    std::map<uint32_t,uint32_t> filter_vertices(const std::string& groupName) const;
 
     public:
 
@@ -258,17 +260,18 @@ class ObjLoader
     std::string obj_path()     const { return objPath_; }
     std::string mtl_path()     const { return mtlPath_; }
 
-    const std::vector<Point>&  points()   const { return points_; }
-    const std::vector<UV>&     uvs()      const { return uvs_; }
-    const std::vector<Normal>& normals()  const { return normals_; }
-    const std::set<VertexId>&  vertices() const { return vertices_; }
+    const std::vector<Point>&     points()   const { return points_; }
+    const std::vector<UV>&        uvs()      const { return uvs_; }
+    const std::vector<Normal>&    normals()  const { return normals_; }
+    const std::vector<VertexId>&  vertices() const { return vertices_; }
     const std::map<std::string,std::vector<Face>>& faces() const { return faceGroups_; }
     const std::map<std::string,MtlMaterial>& materials() const { return materials_; }
     const MtlMaterial& material(const std::string& name) const {
         return materials_.at(name);
     }
     
-
+    template <class MeshT>
+    typename MeshT::Ptr get_mesh(const std::string& name) const;
     template <class MeshT>
     std::map<std::string, typename MeshT::Ptr> create_meshes();
     template <class MeshT>
@@ -276,55 +279,81 @@ class ObjLoader
 };
 
 template <class MeshT>
+typename MeshT::Ptr ObjLoader::get_mesh(const std::string& name) const
+{
+    if(faceGroups_.find(name) == faceGroups_.end()) {
+        std::ostringstream oss;
+        oss << "rtac::ObjLoader::fert_mesh : no face group with name '"
+            << name << "'";
+        throw std::runtime_error(oss.str());
+    }
+
+    const auto& faces = faceGroups_.at(name);
+    auto mesh = MeshT::Create();
+
+    if(faces.size() == 0) {
+        return mesh;
+    }
+
+    auto indices = this->filter_vertices(name);
+    {
+        std::vector<typename MeshT::Point> points(indices.size());
+        for(auto idx : indices) {
+            const auto& v = vertices_[idx.first];
+            points[idx.second].x = points_[v.p].x;
+            points[idx.second].y = points_[v.p].y;
+            points[idx.second].z = points_[v.p].z;
+        }
+        mesh->points() = points;
+    }
+
+    if(uvs_.size() > 0) {
+        std::vector<typename MeshT::UV> uvs(indices.size());
+        for(auto idx : indices) {
+            const auto& v = vertices_[idx.first];
+            uvs[idx.second].x = uvs_[v.u].x;
+            uvs[idx.second].y = uvs_[v.u].y;
+        }
+        mesh->uvs() = uvs;
+    }
+
+    if(normals_.size() > 0) {
+        std::vector<typename MeshT::Normal> normals(indices.size());
+        for(auto idx : indices) {
+            const auto& v = vertices_[idx.first];
+            normals[idx.second].x = normals_[v.n].x;
+            normals[idx.second].y = normals_[v.n].y;
+            normals[idx.second].z = normals_[v.n].z;
+        }
+        mesh->normals() = normals;
+    }
+
+    std::vector<typename MeshT::Face> mfaces(faces.size());
+    for(int i = 0; i < faces.size(); i++) {
+        mfaces[i].x = indices[faces[i].x];
+        mfaces[i].y = indices[faces[i].y];
+        mfaces[i].z = indices[faces[i].z];
+    }
+    mesh->faces() = mfaces;
+
+    return mesh;
+}
+
+template <class MeshT>
 std::map<std::string, typename MeshT::Ptr> ObjLoader::create_meshes()
 {
+    for(int i = 0; i < vertices_.size() - 1; i++) {
+        if(vertices_[i+1].id != vertices_[i].id + 1) {
+            std::cout << "Inconsistent vertice index" << std::endl;
+        }
+    }
+
     std::map<std::string, typename MeshT::Ptr> meshes;
+    if(groupNames_.size() == 0)
+        return meshes;
 
     for(auto name : groupNames_) {
-
-        auto mesh = MeshT::Create();
-
-        {
-            std::vector<typename MeshT::Point> points(vertices_.size());
-            for(auto v : vertices_) {
-                points[v.id].x = points_[v.p].x;
-                points[v.id].y = points_[v.p].y;
-                points[v.id].z = points_[v.p].z;
-            }
-            mesh->points() = points;
-        }
-
-        if(uvs_.size() > 0) {
-            std::vector<typename MeshT::UV> uvs(vertices_.size());
-            for(auto v : vertices_) {
-                uvs[v.id].x = uvs_[v.u].x;
-                uvs[v.id].y = uvs_[v.u].y;
-            }
-            mesh->uvs() = uvs;
-        }
-
-        if(normals_.size() > 0) {
-            std::vector<typename MeshT::Normal> normals(vertices_.size());
-            for(auto v : vertices_) {
-                normals[v.id].x = normals_[v.n].x;
-                normals[v.id].y = normals_[v.n].y;
-                normals[v.id].z = normals_[v.n].z;
-            }
-            mesh->normals() = normals;
-        }
-
-        if(faceGroups_[name].size() > 0) {
-            auto data = &faceGroups_[name];
-            std::vector<typename MeshT::Face> faces(data->size());
-            for(int i = 0; i < faces.size(); i++) {
-                faces[i].x = (*data)[i].x;
-                faces[i].y = (*data)[i].y;
-                faces[i].z = (*data)[i].z;
-            }
-            mesh->faces() = faces;
-        }
-
-        meshes[name] = mesh;
+        meshes[name] = this->get_mesh<MeshT>(name);
     }
     return meshes;
 }

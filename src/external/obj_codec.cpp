@@ -1,5 +1,7 @@
 #include <rtac_base/external/obj_codec.h>
 
+#include <algorithm>
+
 namespace rtac { namespace external {
 
 ObjLoader::ObjLoader(const std::string& datasetPath) :
@@ -117,6 +119,7 @@ void ObjLoader::load_geometry(unsigned int chunkSize)
     ChunkContainer<UV>     uvs;
     ChunkContainer<Normal> normals;
     ChunkContainer<Face>   faces;
+    std::set<VertexId>     vertices;
 
     std::string currentMaterial = "";
     
@@ -152,12 +155,12 @@ void ObjLoader::load_geometry(unsigned int chunkSize)
 
             Face f;
             
-            auto it0 = vertices_.insert(v[0]);
-            if(it0.second) it0.first->id = vertices_.size() - 1;
-            auto it1 = vertices_.insert(v[1]);
-            if(it1.second) it1.first->id = vertices_.size() - 1;
-            auto it2 = vertices_.insert(v[2]);
-            if(it2.second) it2.first->id = vertices_.size() - 1;
+            auto it0 = vertices.insert(v[0]);
+            if(it0.second) it0.first->id = vertices.size() - 1;
+            auto it1 = vertices.insert(v[1]);
+            if(it1.second) it1.first->id = vertices.size() - 1;
+            auto it2 = vertices.insert(v[2]);
+            if(it2.second) it2.first->id = vertices.size() - 1;
 
             f.x = it0.first->id;
             f.y = it1.first->id;
@@ -165,6 +168,7 @@ void ObjLoader::load_geometry(unsigned int chunkSize)
             
             faces.push_back(f);
         }
+
         else if(token == "usemtl") {
             rtac::files::getline(iss, token);
             if(currentMaterial.size() != 0) {
@@ -193,6 +197,10 @@ void ObjLoader::load_geometry(unsigned int chunkSize)
     points_  = points.to_vector();
     uvs_     = uvs.to_vector();
     normals_ = normals.to_vector();
+
+    vertices_ = std::move(std::vector<VertexId>(vertices.begin(), vertices.end()));
+    std::sort(vertices_.begin(), vertices_.end(),
+              [](const VertexId& a, const VertexId& b) { return a.id < b.id; });
 
     this->parse_mtl();
 }
@@ -287,6 +295,28 @@ void ObjLoader::parse_mtl()
     // for(const auto& mat : materials_) {
     //     std::cout << mat.second << std::endl;
     // }
+}
+
+std::map<uint32_t,uint32_t> ObjLoader::filter_vertices(const std::string& groupName) const
+{
+    const std::vector<Face>& faces = faceGroups_.at(groupName);
+    std::map<uint32_t, uint32_t> indices;
+
+    uint32_t count = 0;
+    auto insert_index = [&](uint32_t idx) {
+        if(indices.find(idx) == indices.end()) {
+            indices[idx] = count;
+            count++;
+        }
+    };
+
+    for(const auto& f : faces) {
+        insert_index(f.x);
+        insert_index(f.y);
+        insert_index(f.z);
+    }
+
+    return indices;
 }
 
 }; //namespace display
