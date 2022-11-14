@@ -38,7 +38,7 @@ void PNGCodec::clear()
     channels_ = 0;
 }
 
-void PNGCodec::reset()
+void PNGCodec::reset_read()
 {
     this->clear();
     handle_ = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
@@ -48,6 +48,34 @@ void PNGCodec::reset()
         throw std::runtime_error(oss.str());
     }
     png_set_read_user_chunk_fn(handle_, this, &PNGCodec::read_chunk_callback_stub);
+    png_set_error_fn(handle_, this,
+                     &PNGCodec::png_error_callback,
+                     &PNGCodec::png_warning_callback);
+
+    info_ = png_create_info_struct(handle_);
+    if(!info_) {
+        std::ostringstream oss;
+        oss << "PNG error : could not allocate png_info";
+        throw std::runtime_error(oss.str());
+    }
+    endInfo_ = png_create_info_struct(handle_);
+    if(!endInfo_) {
+        std::ostringstream oss;
+        oss << "PNG error : could not allocate png_info";
+        throw std::runtime_error(oss.str());
+    }
+}
+
+void PNGCodec::reset_write()
+{
+    this->clear();
+    handle_ = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+    if(!handle_) {
+        std::ostringstream oss;
+        oss << "PNG error : could not allocate png_struct.";
+        throw std::runtime_error(oss.str());
+    }
+    //png_set_read_user_chunk_fn(handle_, this, &PNGCodec::read_chunk_callback_stub);
     png_set_error_fn(handle_, this,
                      &PNGCodec::png_error_callback,
                      &PNGCodec::png_warning_callback);
@@ -117,7 +145,7 @@ void PNGCodec::read_image(const std::string& path, bool invertRows)
 {
     // Have to reset entirely for reading multiple images because libpng not
     // clear on handle_ internal state.
-    this->reset();
+    this->reset_read();
 
     file_ = fopen(path.c_str(), "rb");
     if(!file_) {
@@ -127,11 +155,11 @@ void PNGCodec::read_image(const std::string& path, bool invertRows)
     }
 
     // ugly
-    //if(setjmp(png_jmpbuf(handle_))) {
-    //    std::ostringstream oss;
-    //    oss << "PNG error occured.";
-    //    throw std::runtime_error(oss.str());
-    //}
+    if(setjmp(png_jmpbuf(handle_))) {
+        std::ostringstream oss;
+        oss << "PNG error occured.";
+        throw std::runtime_error(oss.str());
+    }
 
     std::array<unsigned char, 8> header;
     if(fread(header.data(), 1, 8, file_) != 8) {
@@ -184,6 +212,79 @@ void PNGCodec::read_image(const std::string& path, bool invertRows)
 }
 
 
+void PNGCodec::write_image(const std::string& path,
+                           const ImageCodec::ImageInfo& info,
+                           const unsigned char* data,
+                           bool invertRows)
+{
+    // Have to reset entirely for reading multiple images because libpng not
+    // clear on handle_ internal state.
+    this->reset_write();
+
+    file_ = fopen(path.c_str(), "wb");
+    if(!file_) {
+        std::ostringstream oss;
+        oss << "Could not open .png file for reading : " << path;
+        throw std::runtime_error(oss.str());
+    }
+
+    if(setjmp(png_jmpbuf(handle_))) {
+        throw std::runtime_error("png_init_io error");
+    }
+    png_init_io(handle_, file_);
+
+
+    ///* write header */
+    if(setjmp(png_jmpbuf(handle_))) {
+        throw std::runtime_error("Could not write png header");   
+    }
+
+    png_byte colorType;
+    switch(info.channels) {
+        case 1:  colorType = PNG_COLOR_TYPE_GRAY;       break;
+        case 2:  colorType = PNG_COLOR_TYPE_GRAY_ALPHA; break;
+        case 3:  colorType = PNG_COLOR_TYPE_RGB;        break;
+        case 4:  colorType = PNG_COLOR_TYPE_RGBA;       break;
+        default: colorType = PNG_COLOR_TYPE_PALETTE;    break;
+    }
+    if(colorType == PNG_COLOR_TYPE_PALETTE) {
+        std::ostringstream oss;
+        oss << "PNGCodec::write_image : unhandled channel count ("
+            << info.channels << ")";
+        throw std::runtime_error(oss.str());
+    }
+
+    png_set_IHDR(handle_, info_, info.width, info.height,
+           info.bitdepth, colorType, PNG_INTERLACE_NONE,
+           PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+
+    png_write_info(handle_, info_);
+
+
+    if(setjmp(png_jmpbuf(handle_))) {
+        throw std::runtime_error("Error writing png bytes.");
+    }
+
+    std::vector<const png_byte*> rows(info.height);
+    if(invertRows) {
+        for(int h = 0; h < rows.size(); h++) 
+            rows[h] = (data + info.step*(info.height - 1 - h));
+    }
+    else {
+        for(int h = 0; h < rows.size(); h++) 
+            rows[h] = (data + info.step*h);
+    }
+    png_write_image(handle_, const_cast<unsigned char**>(rows.data()));
+
+
+    if(setjmp(png_jmpbuf(handle_))) {
+        throw std::runtime_error("PNG : error at end of write");
+    }
+    png_write_end(handle_, NULL);
+
+    fclose(file_);
+    file_ = nullptr;
+}
 
 }; // namespace external
 }; // namespace rtac

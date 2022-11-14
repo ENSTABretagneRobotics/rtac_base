@@ -60,7 +60,8 @@ class PNGCodec : public ImageCodecBase
     static void png_warning_callback(png_struct* handle, png_const_charp msg);
 
     void clear();
-    void reset();
+    void reset_read();
+    void reset_write();
 
     public:
 
@@ -70,6 +71,10 @@ class PNGCodec : public ImageCodecBase
     static Ptr Create() { return Ptr(new PNGCodec()); }
 
     virtual void read_image(const std::string& path, bool invertRows = false);
+    virtual void write_image(const std::string& path,
+                             const ImageCodec::ImageInfo& info,
+                             const unsigned char* data,
+                             bool invertRows);
 
     const png_struct* handle()   const { return handle_;  }
     const png_info*   info()     const { return info_;    }

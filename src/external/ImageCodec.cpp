@@ -43,7 +43,7 @@ ImageCodec::ImageEncoding ImageCodec::find_encoding(const std::string& path)
     return encoding_from_extension(path);
 }
 
-ImageCodecBase::Ptr ImageCodec::create_codec(ImageEncoding encoding)
+std::shared_ptr<ImageCodecBase> ImageCodec::create_codec(ImageEncoding encoding)
 {
     if(encoding == UNKNOWN_ENCODING) {
         std::cerr << "Unknown image encoding. Cannot create codec." << std::endl;
@@ -75,7 +75,8 @@ ImageCodecBase::Ptr ImageCodec::create_codec(ImageEncoding encoding)
     return nullptr;
 }
 
-ImageCodecBase::ConstPtr ImageCodec::read_image(const std::string& path, bool invertRows) const
+std::shared_ptr<ImageCodecBase> 
+    ImageCodec::read_image(const std::string& path, bool invertRows) const
 {
     auto encoding = ImageCodec::find_encoding(path);
     if(encoding == UNKNOWN_ENCODING) {
