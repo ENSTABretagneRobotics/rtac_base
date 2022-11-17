@@ -10,8 +10,7 @@
 
 #include <rtac_base/files.h>
 #include <rtac_base/types/Point.h>
-
-//#include <rtac_display/GLMesh.h>
+#include <rtac_base/types/Bounds.h>
 
 namespace rtac { namespace external {
 
@@ -269,6 +268,8 @@ class ObjLoader
     const MtlMaterial& material(const std::string& name) const {
         return materials_.at(name);
     }
+
+    rtac::types::Bounds<float,3> bounding_box() const;
     
     template <class MeshT>
     typename MeshT::Ptr get_mesh(const std::string& name) const;
@@ -417,5 +418,7 @@ inline std::ostream& operator<<(std::ostream& os, const rtac::external::MtlMater
 
     return os;
 }
+
+std::ostream& operator<<(std::ostream& os, const rtac::external::ObjLoader& loader);
 
 #endif //_DEF_RTAC_BASE_EXTERNAL_OBJ_LOADER_H_

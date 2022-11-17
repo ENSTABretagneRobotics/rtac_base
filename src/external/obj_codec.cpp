@@ -213,7 +213,8 @@ void ObjLoader::parse_mtl()
     if(path == rtac::files::NotFound) {
         std::cerr << "OBJ file " << objPath_ << " indicates a mtl file "
                   << mtlPath_ << " but none was found." << std::endl;
-        mtlPath_ = "";
+        mtlPath_ += "_NOT_FOUND";
+        return;
     }
     else {
         std::cout << "Found .mtl file :\n- " << mtlPath_ << std::endl;
@@ -319,6 +320,62 @@ std::map<uint32_t,uint32_t> ObjLoader::filter_vertices(const std::string& groupN
     return indices;
 }
 
+rtac::types::Bounds<float,3> ObjLoader::bounding_box() const
+{
+    rtac::types::Bounds<float,3> bounds{{{0,0},{0,0},{0,0}}};
+    if(points_.size() == 0) {
+        return bounds;
+    }
+    bounds[0].lower = points_[0].x;
+    bounds[0].upper = points_[0].x;
+    bounds[1].lower = points_[0].y;
+    bounds[1].upper = points_[0].y;
+    bounds[2].lower = points_[0].z;
+    bounds[2].upper = points_[0].z;
+
+    for(const auto& p : points_) {
+        bounds[0].update(p.x);
+        bounds[1].update(p.y);
+        bounds[2].update(p.z);
+    }
+
+    return bounds;
+}
+
 }; //namespace display
 }; //namespace rtac
+
+std::ostream& operator<<(std::ostream& os, const rtac::external::ObjLoader& loader)
+{
+    std::size_t faceCount = 0;
+    for(const auto& fGroup : loader.faces()) {
+        faceCount += fGroup.second.size();
+    }
+    os << "ObjLoader :"
+       << "\n- dataset path  : " << loader.dataset_path()
+       << "\n- .obj path     : " << loader.obj_path()
+       << "\n- .mtl path     : " << loader.mtl_path()
+       << "\n- point   count : " << loader.points().size()
+       << "\n- uv      count : " << loader.uvs().size()
+       << "\n- normal  count : " << loader.normals().size()
+       << "\n- vertice count : " << loader.vertices().size()
+       << "\n- face    count : " << faceCount
+       << "\n- Groups :";
+
+    for(const auto& group : loader.faces()) {
+        auto groupName = group.first;
+        os << "\n  - " << groupName << " :"
+           << "\n    - face count : " << group.second.size()
+           << "\n    - material   : ";
+        if(loader.materials().find(groupName) != loader.materials().end()) {
+            os << loader.materials().at(groupName);
+        }
+        else {
+            os << "Undefined";
+        }
+    } 
+
+    return os;
+}
+
 

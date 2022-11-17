@@ -23,3 +23,10 @@ if(${JPEG_FOUND} AND ${PNG_FOUND})
     )
     target_link_libraries(${target_name} PRIVATE rtac_base)
 endif()
+
+
+set(target_name obj_codec_${PROJECT_NAME})
+add_executable(${target_name}
+    src/obj_codec.cpp
+)
+target_link_libraries(${target_name} PRIVATE rtac_base)
