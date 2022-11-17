@@ -62,16 +62,16 @@ struct Bounds<T,1>
     }
 
     RTAC_HOSTDEVICE void update(T value) {
-        lower = min(lower, value);
-        upper = max(upper, value);
+        lower = std::min(lower, value);
+        upper = std::max(upper, value);
     }
     RTAC_HOSTDEVICE void init(T value) {
         lower = value;
         upper = value;
     }
     RTAC_HOSTDEVICE void update(const Bounds<T>& other) {
-        lower = min(lower, other.lower);
-        upper = max(upper, other.upper);
+        lower = std::min(lower, other.lower);
+        upper = std::max(upper, other.upper);
     }
 
     RTAC_HOSTDEVICE static Bounds<T> oo() {
