@@ -38,6 +38,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/type_utils.h
     include/rtac_base/geometry.h
     include/rtac_base/interpolation.h
+    include/rtac_base/interpolation_impl.h
     include/rtac_base/cuda_defines.h
     include/rtac_base/nmea_utils.h
     include/rtac_base/navigation.h
