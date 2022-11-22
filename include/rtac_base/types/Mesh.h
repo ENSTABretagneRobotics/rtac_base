@@ -10,7 +10,7 @@
 #include <rtac_base/types/PointCloud.h>
 #include <rtac_base/happly.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 template <typename P = Point3<float>,
           typename F = Point3<uint32_t>,
@@ -59,7 +59,7 @@ class Mesh
     MeshType& operator=(const Mesh<P,F,N,U,OtherVect>& other);
 
     template <typename T>
-    MeshType& operator=(const rtac::types::PointCloud<T>& pointcloud);
+    MeshType& operator=(const rtac::PointCloud<T>& pointcloud);
 
     Vector<Point>&  points()  { return points_;  } 
     Vector<Face>&   faces()   { return faces_;   } 
@@ -345,12 +345,10 @@ void Mesh<P,F,N,U,V>::export_ply(const std::string& path, bool ascii) const
         data.write(path, happly::DataFormat::Binary);
 }
 
-
-}; //namespace types
 }; //namespace rtac
 
 template <typename P, typename F, typename N, typename U, template<typename> class V>
-std::ostream& operator<<(std::ostream& os, const rtac::types::Mesh<P,F,N,U,V>& mesh)
+std::ostream& operator<<(std::ostream& os, const rtac::Mesh<P,F,N,U,V>& mesh)
                          
 {
     const char* prefix = "\n- ";

@@ -6,7 +6,7 @@
 
 #include <rtac_base/types/Handle.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 // This files defines some generic types which aims at representing a very
 // crude but very general build system. The goal is to define build targets
@@ -98,7 +98,7 @@ class BuildTarget
     virtual void clean() const {} // no cleanup by default;
 };
 
-}; //namespace types
+
 }; //namespace rtac
 
 #endif //_DEF_RTAC_BASE_TYPES_BUILD_TARGET_H_

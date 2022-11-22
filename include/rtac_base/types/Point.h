@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 template <typename T>
 struct Point2
@@ -29,25 +29,24 @@ struct Point4
     T w;
 };
 
-}; //namespace types
 }; //namespace rtac
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const rtac::types::Point2<T>& p)
+std::ostream& operator<<(std::ostream& os, const rtac::Point2<T>& p)
 {
     os << p.x << " " << p.y;
     return os;
 }
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const rtac::types::Point3<T>& p)
+std::ostream& operator<<(std::ostream& os, const rtac::Point3<T>& p)
 {
     os << p.x << " " << p.y << " " << p.z;
     return os;
 }
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const rtac::types::Point4<T>& p)
+std::ostream& operator<<(std::ostream& os, const rtac::Point4<T>& p)
 {
     os << p.x << " " << p.y << " " << p.z << " " << p.w;
     return os;

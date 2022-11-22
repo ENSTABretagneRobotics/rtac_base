@@ -5,7 +5,7 @@
 #include <array>
 #include <tuple>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 namespace details {
 
@@ -41,11 +41,10 @@ struct NDPoint : public std::array<T,SizeV>
     }
 };
 
-}; //namespace types
 }; //namespace rtac
 
 template <typename T, std::size_t S>
-inline std::ostream& operator<<(std::ostream& os, const rtac::types::NDPoint<T,S>& p)
+inline std::ostream& operator<<(std::ostream& os, const rtac::NDPoint<T,S>& p)
 {
     for(int i = 0; i < p.size(); i++) {
         os << " " << p[i];

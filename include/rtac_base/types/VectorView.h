@@ -5,7 +5,7 @@
 #include <rtac_base/type_utils.h>
 #include <rtac_base/cuda_defines.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 template <typename T>
 class VectorView
@@ -90,7 +90,6 @@ auto make_view(const VectorT& vector)
     return VectorView<const typename VectorT::value_type>(vector.size(), vector.data());
 }
 
-}; //namespace types
 }; //namespace rtac
 
 #endif  //_DEF_RTAC_BASE_TYPES_VECTOR_VIEW_H_

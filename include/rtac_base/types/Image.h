@@ -9,7 +9,7 @@
 #include <rtac_base/types/Shape.h>
 #include <rtac_base/types/VectorView.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 template <typename PixelT, template <typename> class ContainerT>
 class Image
@@ -18,7 +18,7 @@ class Image
 
     using value_type = PixelT;
     using Container  = ContainerT<PixelT>;
-    using Shape      = rtac::types::Shape<uint32_t>;
+    using Shape      = rtac::Shape<uint32_t>;
 
     protected:
 
@@ -73,7 +73,7 @@ template <typename T, template<typename> class C>
 RTAC_HOSTDEVICE T Image<T,C>::operator[](std::size_t idx) const
 {
     static_assert(is_subscriptable<Container>::value,
-                  "rtac::types::Image : container is not subscriptable.");
+                  "rtac::Image : container is not subscriptable.");
     return data_[idx];
 }
 
@@ -81,7 +81,7 @@ template <typename T, template<typename> class C>
 RTAC_HOSTDEVICE T& Image<T,C>::operator[](std::size_t idx)
 {
     static_assert(is_subscriptable<Container>::value,
-                  "rtac::types::Image : container is not subscriptable.");
+                  "rtac::Image : container is not subscriptable.");
     return data_[idx];
 }
 
@@ -89,7 +89,7 @@ template <typename T, template<typename> class C>
 RTAC_HOSTDEVICE T Image<T,C>::operator()(std::size_t h, std::size_t w) const
 {
     static_assert(is_subscriptable<Container>::value,
-                  "rtac::types::Image : container is not subscriptable.");
+                  "rtac::Image : container is not subscriptable.");
     return data_[shape_.width*h + w];
 }
 
@@ -97,7 +97,7 @@ template <typename T, template<typename> class C>
 RTAC_HOSTDEVICE T& Image<T,C>::operator()(std::size_t h, std::size_t w)
 {
     static_assert(is_subscriptable<Container>::value,
-                  "rtac::types::Image : container is not subscriptable.");
+                  "rtac::Image : container is not subscriptable.");
     return data_[shape_.width*h + w];
 }
 
@@ -114,11 +114,10 @@ Image<T, VectorView> Image<T,C>::view()
     return Image<T,VectorView>(this->shape(), VectorView<T>(data_.size(), data_.data()));
 }
 
-}; //namespace types
 }; //namespace rtac
 
 template <typename T, template<typename> class C>
-inline std::ostream& operator<<(std::ostream& os, const rtac::types::Image<T,C>& img)
+inline std::ostream& operator<<(std::ostream& os, const rtac::Image<T,C>& img)
 {
     os << "Image (" << img.width() << 'x' << img.height() << ')';
     return os;

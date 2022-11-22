@@ -2,7 +2,7 @@
 using namespace std;
 
 #include <rtac_base/navigation.h>
-using namespace rtac::types;
+using namespace rtac;
 using namespace rtac::navigation;
 
 using Mat3 = Matrix3<double>;

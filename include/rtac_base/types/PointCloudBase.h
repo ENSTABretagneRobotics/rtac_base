@@ -8,13 +8,13 @@
 #include <rtac_base/types/Point.h>
 #include <rtac_base/types/common.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 /**
  * Default PointCloud template parameter. 
  * 
  * PointCloudBase implements the minimal interface to be used as template type
- * in rtac::types::PointCloud. The interface of this type is a subset of the
+ * in PointCloud. The interface of this type is a subset of the
  * interface of the
  * [PCL::PointCloud](https://pointclouds.org/documentation/index.html) type.
  */
@@ -222,11 +222,10 @@ bool PointCloudBase<PointT>::empty() const
     return this->size() == 0;
 }
 
-}; //namespace types
 }; //namespace rtac
 
 template <typename PointT>
-std::ostream& operator<<(std::ostream& os, const rtac::types::PointCloudBase<PointT>& pc)
+std::ostream& operator<<(std::ostream& os, const rtac::PointCloudBase<PointT>& pc)
 {
     auto precision = os.precision();
     os.precision(2);

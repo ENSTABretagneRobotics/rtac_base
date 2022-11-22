@@ -320,9 +320,9 @@ std::map<uint32_t,uint32_t> ObjLoader::filter_vertices(const std::string& groupN
     return indices;
 }
 
-rtac::types::Bounds<float,3> ObjLoader::bounding_box() const
+rtac::Bounds<float,3> ObjLoader::bounding_box() const
 {
-    rtac::types::Bounds<float,3> bounds{{{0,0},{0,0},{0,0}}};
+    rtac::Bounds<float,3> bounds{{{0,0},{0,0},{0,0}}};
     if(points_.size() == 0) {
         return bounds;
     }

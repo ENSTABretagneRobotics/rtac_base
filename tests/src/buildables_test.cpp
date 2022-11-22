@@ -2,7 +2,7 @@
 using namespace std;
 
 #include <rtac_base/types/Buildable.h>
-using namespace rtac::types;
+using namespace rtac;
 
 class Buildable0 : public Buildable
 {

@@ -3,7 +3,7 @@
 using namespace std;
 
 #include <rtac_base/types/SharedVector.h>
-using namespace rtac::types;
+using namespace rtac;
 using Vector = SharedVector<float>;
 
 constexpr const auto t0 = ensure_shared_vector<Vector>();

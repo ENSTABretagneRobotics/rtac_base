@@ -1,6 +1,6 @@
 #include <rtac_base/types/BuildTarget.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 // BuildTargetHandle implementation ////////////////////////////////////////
 BuildTargetHandle::BuildTargetHandle(const TargetPtr& target) :
@@ -112,5 +112,4 @@ void BuildTarget::build() const
 }
 
 
-}; //namespace types
 }; //namespace rtac

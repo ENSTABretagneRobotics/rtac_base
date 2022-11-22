@@ -5,7 +5,7 @@
 
 #include <rtac_base/cuda_defines.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 /**
  * Represent the dimension of an image or another 2 dimensional buffer.
@@ -44,11 +44,10 @@ struct Shape
     }
 };
 
-}; //namespace types
 }; //namespace rtac
 
 template <typename T>
-inline std::ostream& operator<<(std::ostream& os, const rtac::types::Shape<T>& shape)
+inline std::ostream& operator<<(std::ostream& os, const rtac::Shape<T>& shape)
 {
     os << "width : " << shape.width << ", height : " << shape.height;
     return os;

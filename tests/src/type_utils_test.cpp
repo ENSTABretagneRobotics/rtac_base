@@ -2,7 +2,7 @@
 using namespace std;
 
 #include <rtac_base/type_utils.h>
-using namespace rtac::types;
+using namespace rtac;
 
 using Tuple = std::tuple<float, int, double>;
 

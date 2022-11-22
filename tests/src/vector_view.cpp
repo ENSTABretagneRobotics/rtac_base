@@ -3,7 +3,7 @@
 using namespace std;
 
 #include <rtac_base/types/VectorView.h>
-using namespace rtac::types;
+using namespace rtac;
 
 template <typename T>
 void print_vector(const std::vector<T>& data)

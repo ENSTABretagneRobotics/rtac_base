@@ -1,5 +1,5 @@
 #include <rtac_base/types/NDPoint.h>
-using namespace rtac::types;
+using namespace rtac;
 
 void add_ndpoint(NDPoint<float,4>& p0, const NDPoint<float,4>& p1)
 {

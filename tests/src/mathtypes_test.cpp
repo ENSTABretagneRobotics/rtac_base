@@ -3,19 +3,19 @@
 
 #include <iostream>
 using namespace std;
-using namespace rtac::types::indexing;
+using namespace rtac::indexing;
 
 int main()
 {
-    rtac::types::Pose<float> pose;
+    rtac::Pose<float> pose;
     cout << pose << endl;
     cout << pose.rotation_matrix() << endl << endl;
     cout << pose.homogeneous_matrix() << endl << endl;
     cout << endl;
     
-    rtac::types::Matrix3<float> m = rtac::types::Matrix3<float>::Random();
-    auto pose2 = rtac::types::Pose<float>::from_rotation_matrix(
-        m, rtac::types::Vector3<float>());
+    rtac::Matrix3<float> m = rtac::Matrix3<float>::Random();
+    auto pose2 = rtac::Pose<float>::from_rotation_matrix(
+        m, rtac::Vector3<float>());
     cout << "Random :\n" << m << endl;
     cout << "Pose :\n" << pose2 << endl;
     cout << "Check :\n" << pose2.rotation_matrix()*pose2.rotation_matrix().transpose() << endl;
@@ -23,7 +23,7 @@ int main()
     cout << "Inverse : " << pose2.inverse() << endl;
     cout << "Product : " << pose2*pose2.inverse() << endl;
 
-    rtac::types::Matrix<float> A(3,3);
+    rtac::Matrix<float> A(3,3);
     cout << A << endl << endl;
     A << 1,2,3,
          4,5,6,

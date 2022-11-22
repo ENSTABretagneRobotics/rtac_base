@@ -13,14 +13,14 @@
 #include <rtac_base/types/Pose.h>
 #include <rtac_base/types/PointCloudBase.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 /**
  * Interface template for manipulating pointclouds in the RTAC framework.
  *
  * This template is made to be a soft interface to
  * [PCL](https://pointclouds.org/documentation/index.html). The
- * rtac::types::PointCloudBase type is provided to enable the use of this
+ * rtac::PointCloudBase type is provided to enable the use of this
  * template without linking with PCL.
  *
  * @tparam PointCloudT a pointcloud type holding the point data. Compatible
@@ -38,8 +38,8 @@ class PointCloud
     using PointType      = typename PointCloudT::PointType;
     using iterator       = typename PointCloudT::VectorType::iterator;
     using const_iterator = typename PointCloudT::VectorType::const_iterator;
-    using Pose           = rtac::types::Pose<float>;
-    using Shape          = rtac::types::Shape<uint32_t>;
+    using Pose           = rtac::Pose<float>;
+    using Shape          = rtac::Shape<uint32_t>;
 
     protected:
     
@@ -330,7 +330,7 @@ typename PointCloud<PointCloudT>::iterator PointCloud<PointCloudT>::end()
 template <typename PointCloudT>
 typename PointCloud<PointCloudT>::Pose PointCloud<PointCloudT>::pose() const
 {
-    using namespace rtac::types::indexing;
+    using namespace rtac::indexing;
     return Pose(pointCloud_->sensor_origin_(seqN(0,3)),
                 pointCloud_->sensor_orientation_);
 }
@@ -540,11 +540,10 @@ happly::PLYData PointCloud<PointCloudT>::export_ply() const
     return data;
 }
 
-}; //namespace types
 }; //namespace rtac
 
 template <typename PointCloudT>
-std::ostream& operator<<(std::ostream& os, rtac::types::PointCloud<PointCloudT>& pc)
+std::ostream& operator<<(std::ostream& os, rtac::PointCloud<PointCloudT>& pc)
 {
     
     auto precision = os.precision();

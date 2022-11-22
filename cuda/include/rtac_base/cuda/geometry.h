@@ -251,7 +251,7 @@ struct DevicePose {
         R_ = rtac::geometry::orthonormalized(tmp); 
     }
 
-    DevicePose<T>& operator=(const rtac::types::Pose<T>& other) {
+    DevicePose<T>& operator=(const rtac::Pose<T>& other) {
         this->rotation_matrix() = other.rotation_matrix();
         T_.x = other.x();
         T_.y = other.y();

@@ -3,9 +3,9 @@
 
 #include <iostream>
 using namespace std;
-using namespace rtac::types;
+using namespace rtac;
 using namespace rtac::geometry;
-using namespace rtac::types::indexing;
+using namespace rtac::indexing;
 
 int main()
 {

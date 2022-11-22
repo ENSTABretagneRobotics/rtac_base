@@ -28,9 +28,9 @@ template <unsigned int Channels, typename T>
 struct PNGColorType {
     static_assert(PNGPixelError<Channels>::value, "Unhandled bit depth (must be 1,2,3,4)");
 };
-template<typename T> struct PNGColorType<2,T> { using type = types::Point2<T>; };
-template<typename T> struct PNGColorType<3,T> { using type = types::Point3<T>; };
-template<typename T> struct PNGColorType<4,T> { using type = types::Point4<T>; };
+template<typename T> struct PNGColorType<2,T> { using type = Point2<T>; };
+template<typename T> struct PNGColorType<3,T> { using type = Point3<T>; };
+template<typename T> struct PNGColorType<4,T> { using type = Point4<T>; };
 
 template <unsigned int ChannelCount, unsigned int ChannelDepth>
 struct PNGPixelType {

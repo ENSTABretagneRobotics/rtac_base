@@ -2,7 +2,7 @@
 using namespace std;
 
 #include <rtac_base/types/BuildTarget.h>
-using namespace rtac::types;
+using namespace rtac;
 
 class TargetBase : public BuildTarget
 {

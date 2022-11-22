@@ -7,7 +7,7 @@
 
 #include <rtac_base/cuda_defines.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 template <typename T, uint32_t SizeV = 1>
 struct Bounds
@@ -95,14 +95,13 @@ struct Bounds<T,1>
 
 //template <typename T>
 //struct Bounds<T,0> {
-//    static_assert(false, "rtac::types::Bounds : invalid number of dimentions");
+//    static_assert(false, "rtac::Bounds : invalid number of dimentions");
 //};
 
-}; //namespace types
 }; //namespace rtac
 
 template <typename T>
-inline std::ostream& operator<<(std::ostream& os, const rtac::types::Bounds<T>& interval)
+inline std::ostream& operator<<(std::ostream& os, const rtac::Bounds<T>& interval)
 {
     os << '[' << interval.lower << ", " << interval.upper << ']'
        << ", L : " << interval.length();
@@ -110,7 +109,7 @@ inline std::ostream& operator<<(std::ostream& os, const rtac::types::Bounds<T>& 
 }
 
 template <typename T, uint32_t N>
-inline std::ostream& operator<<(std::ostream& os, const rtac::types::Bounds<T,N>& bounds)
+inline std::ostream& operator<<(std::ostream& os, const rtac::Bounds<T,N>& bounds)
 {
     for(int i = 0; i < bounds.size(); i++) {
         os << "- " << i << " : " << bounds[i] << std::endl;

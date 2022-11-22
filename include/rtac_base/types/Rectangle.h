@@ -5,7 +5,7 @@
 
 #include <rtac_base/types/Shape.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 /**
  * Represent an Area Of Interest on a 2D surface (screen, image...)
@@ -43,11 +43,10 @@ Shape<T> Rectangle<T>::shape() const
     return Shape<T>({this->width(), this->height()});
 }
 
-}; //namespace types
 }; //namespace rtac
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const rtac::types::Rectangle<T>& rect)
+std::ostream& operator<<(std::ostream& os, const rtac::Rectangle<T>& rect)
 {
     os << "l,r : [" << rect.left << ", " << rect.right
        << "], b,t : [" << rect.bottom << ", " << rect.top << "]";

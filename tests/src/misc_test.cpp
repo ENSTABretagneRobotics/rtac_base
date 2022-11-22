@@ -9,12 +9,12 @@ using FrameCounter = rtac::time::FrameCounter;
 
 int main()
 {
-    rtac::types::Shape<size_t> shape({800,600});
+    rtac::Shape<size_t> shape({800,600});
     cout << "Shape : " << shape << endl;
     cout << "Shape.ratio<float>() : " << shape.ratio<float>() << endl;
     cout << "Shape.area()         : " << shape.area() << endl;
 
-    rtac::types::Rectangle<size_t> rect({0,2,3,6});
+    rtac::Rectangle<size_t> rect({0,2,3,6});
     cout << "Rectangle : " << rect << endl;
     cout << "Rectangle.shape() " << rect.shape() << endl;
 

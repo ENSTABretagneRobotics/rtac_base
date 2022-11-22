@@ -11,22 +11,22 @@ namespace rtac { namespace cuda {
 // These are function that can only be compiled from NVCC but must be usable by
 // another compiler. Templates cannot work here so explicit instanciation must
 // be made.
-void render_texture(const Texture2D<float>&  tex, rtac::types::ImageView<float>  out);
-void render_texture(const Texture2D<float2>& tex, rtac::types::ImageView<float2> out);
-void render_texture(const Texture2D<float4>& tex, rtac::types::ImageView<float4> out);
+void render_texture(const Texture2D<float>&  tex, rtac::ImageView<float>  out);
+void render_texture(const Texture2D<float2>& tex, rtac::ImageView<float2> out);
+void render_texture(const Texture2D<float4>& tex, rtac::ImageView<float4> out);
 
 
 template <typename T>
-void render_texture(const Texture2D<T>& tex, rtac::types::Image<T,DeviceVector>& out)
+void render_texture(const Texture2D<T>& tex, rtac::Image<T,DeviceVector>& out)
 {
     out.resize({tex.width(),tex.height()});
     render_texture(tex, out.view());
 }
 
 template <typename T>
-rtac::types::Image<T,DeviceVector> render_texture(const Texture2D<T>& tex)
+rtac::Image<T,DeviceVector> render_texture(const Texture2D<T>& tex)
 {
-    rtac::types::Image<T,DeviceVector> out;
+    rtac::Image<T,DeviceVector> out;
     render_texture(tex, out);
     return out;
 }

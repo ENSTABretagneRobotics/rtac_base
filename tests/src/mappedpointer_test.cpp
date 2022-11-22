@@ -10,8 +10,8 @@ class Resource
 
     using value_type = float;
 
-    using MappedPointer      = rtac::types::MappedPointer<Resource>;
-    using ConstMappedPointer = rtac::types::MappedPointer<const Resource>;
+    using MappedPointer      = rtac::MappedPointer<Resource>;
+    using ConstMappedPointer = rtac::MappedPointer<const Resource>;
 
     friend MappedPointer;
 

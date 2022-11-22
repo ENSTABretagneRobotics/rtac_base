@@ -55,10 +55,10 @@ Eigen::Vector3<T> ned_to_enu(const Eigen::Vector3<T>& v)
 }
 
 template <typename T>
-types::Pose<T> ned_to_enu(const types::Pose<T>& p)
+Pose<T> ned_to_enu(const Pose<T>& p)
 {
-    return types::Pose<T>(ned_to_enu<T>(p.translation()),
-                          ned_to_enu<T>(p.orientation()));
+    return Pose<T>(ned_to_enu<T>(p.translation()),
+                   ned_to_enu<T>(p.orientation()));
 }
 
 template <typename T>
@@ -83,9 +83,9 @@ Eigen::Vector3<T> enu_to_ned(const Eigen::Vector3<T>& v)
 }
 
 template <typename T>
-types::Pose<T> enu_to_ned(const types::Pose<T>& p)
+Pose<T> enu_to_ned(const Pose<T>& p)
 {
-    return types::Pose<T>(enu_to_ned(p.translation()),
+    return Pose<T>(enu_to_ned(p.translation()),
                           enu_to_ned(p.orientation()));
 }
 

@@ -23,22 +23,22 @@ happly::PLYData read(std::istream& is);
 
 // collection of functions to export/import rtac types to/from ply files.
 template <typename T>
-types::Pose<T> get_pose(happly::PLYData& data, const::std::string& name = "pose");
+Pose<T> get_pose(happly::PLYData& data, const::std::string& name = "pose");
 template <typename T>
-void add_pose(happly::PLYData& data, const types::Pose<T>& pose, 
+void add_pose(happly::PLYData& data, const Pose<T>& pose, 
               const std::string& name = "pose", bool overwrite = false);
 
 template <typename T>
-types::Shape<T> get_shape(happly::PLYData& data, const::std::string& name = "shape");
+Shape<T> get_shape(happly::PLYData& data, const::std::string& name = "shape");
 template <typename T>
-void add_shape(happly::PLYData& data, const types::Shape<T>& shape, 
+void add_shape(happly::PLYData& data, const Shape<T>& shape, 
                const std::string& name = "shape", bool overwrite = false);
 
 template <typename T>
-types::Rectangle<T> get_rectangle(happly::PLYData& data,
+Rectangle<T> get_rectangle(happly::PLYData& data,
                                   const::std::string& name = "rectangle");
 template <typename T>
-void add_rectangle(happly::PLYData& data, const types::Rectangle<T>& rectangle, 
+void add_rectangle(happly::PLYData& data, const Rectangle<T>& rectangle, 
                    const std::string& name = "rectangle", bool overwrite = false);
 
 }; //namespace ply
@@ -51,10 +51,10 @@ std::ostream& operator<<(std::ostream& os, happly::PLYData& data);
 namespace rtac { namespace ply {
 
 template <typename T>
-types::Pose<T> get_pose(happly::PLYData& data, const std::string& name)
+Pose<T> get_pose(happly::PLYData& data, const std::string& name)
 {
     auto& element = data.getElement(name);
-    types::Pose<T> res;
+    Pose<T> res;
     res.translation()(0)  = element.getProperty<T>("x")[0];
     res.translation()(1)  = element.getProperty<T>("y")[0];
     res.translation()(2)  = element.getProperty<T>("z")[0];
@@ -66,7 +66,7 @@ types::Pose<T> get_pose(happly::PLYData& data, const std::string& name)
 }
 
 template <typename T>
-void add_pose(happly::PLYData& data, const types::Pose<T>& pose, 
+void add_pose(happly::PLYData& data, const Pose<T>& pose, 
               const std::string& name, bool overwrite)
 {
     auto& element = new_element(data, name, overwrite);
@@ -89,15 +89,15 @@ void add_pose(happly::PLYData& data, const types::Pose<T>& pose,
 }
 
 template <typename T>
-types::Shape<T> get_shape(happly::PLYData& data, const::std::string& name)
+Shape<T> get_shape(happly::PLYData& data, const::std::string& name)
 {
     auto& element = data.getElement(name);
-    return types::Shape<T>({element.getProperty<T>("w")[0],
+    return Shape<T>({element.getProperty<T>("w")[0],
                             element.getProperty<T>("h")[0]});
 }
 
 template <typename T>
-void add_shape(happly::PLYData& data, const types::Shape<T>& shape, 
+void add_shape(happly::PLYData& data, const Shape<T>& shape, 
                const std::string& name, bool overwrite)
 {
     auto& element = new_element(data, name, overwrite);
@@ -109,17 +109,17 @@ void add_shape(happly::PLYData& data, const types::Shape<T>& shape,
 }
 
 template <typename T>
-types::Rectangle<T> get_rectangle(happly::PLYData& data, const::std::string& name)
+Rectangle<T> get_rectangle(happly::PLYData& data, const::std::string& name)
 {
     auto& element = data.getElement(name);
-    return types::Rectangle<T>({element.getProperty<T>("left")[0],
+    return Rectangle<T>({element.getProperty<T>("left")[0],
                                 element.getProperty<T>("right")[0],
                                 element.getProperty<T>("bottom")[0],
                                 element.getProperty<T>("top")[0]});
 }
 
 template <typename T>
-void add_rectangle(happly::PLYData& data, const types::Rectangle<T>& rectangle, 
+void add_rectangle(happly::PLYData& data, const Rectangle<T>& rectangle, 
                    const std::string& name, bool overwrite)
 {
     auto& element = new_element(data, name, overwrite);

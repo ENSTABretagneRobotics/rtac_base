@@ -7,9 +7,9 @@ namespace plt = matplotlibcpp;
 #include <rtac_base/types/common.h>
 #include <rtac_base/interpolation.h>
 template <typename T>
-using Vector = rtac::types::Vector<T>;
+using Vector = rtac::Vector<T>;
 using namespace rtac::algorithm;
-using namespace rtac::types::indexing;
+using namespace rtac::indexing;
 
 
 
@@ -57,7 +57,7 @@ const std::vector<float>& to_vector(const std::vector<float>& v)
     return v;
 }
 
-std::vector<float> to_vector(const rtac::types::Vector<float>& v)
+std::vector<float> to_vector(const rtac::Vector<float>& v)
 {
     std::vector<float> out(v.size());
     for(int i = 0; i < out.size(); i++) {

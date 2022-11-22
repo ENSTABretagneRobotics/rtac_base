@@ -7,7 +7,7 @@ using namespace std;
 using namespace rtac::cuda;
 
 template <typename T>
-__global__ void fill_vector(rtac::types::VectorView<T> vect, T offset = 0)
+__global__ void fill_vector(rtac::VectorView<T> vect, T offset = 0)
 {
     for(auto idx = threadIdx.x; idx < vect.size(); idx += blockDim.x) {
         vect[idx] = idx + offset;

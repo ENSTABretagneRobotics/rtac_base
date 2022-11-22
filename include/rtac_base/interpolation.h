@@ -21,9 +21,9 @@ class Interpolator
     };
 
     template <class VectorT>
-    static rtac::types::VectorView<T> make_view(VectorT& v);
+    static VectorView<T> make_view(VectorT& v);
     template <class VectorT>
-    static rtac::types::VectorView<const T> make_view(const VectorT& v);
+    static VectorView<const T> make_view(const VectorT& v);
 
     protected:
 
@@ -31,8 +31,8 @@ class Interpolator
 
     public:
 
-    Interpolator(rtac::types::VectorView<const T> x0,
-                 rtac::types::VectorView<const T> y0,
+    Interpolator(VectorView<const T> x0,
+                 VectorView<const T> y0,
                  Type type = Nearest);
 
     const Vector& x0() const { return interpolator_->x0(); }
@@ -40,8 +40,8 @@ class Interpolator
     
     unsigned int size() const { return interpolator_->size(); }
     
-    void interpolate(rtac::types::VectorView<const T> x,
-                     rtac::types::VectorView<T> y) const;
+    void interpolate(VectorView<const T> x,
+                     VectorView<T> y) const;
 
     template <typename VectorT>
     static Interpolator<T> CreateNearest(const VectorT& x0, const VectorT& y0);
@@ -60,20 +60,20 @@ class Interpolator
 
 
 template <typename T> template <class VectorT>
-rtac::types::VectorView<T> Interpolator<T>::make_view(VectorT& v)
+VectorView<T> Interpolator<T>::make_view(VectorT& v)
 {
-    return rtac::types::VectorView<T>(v.size(), v.data());
+    return VectorView<T>(v.size(), v.data());
 }
 
 template <typename T> template <class VectorT>
-rtac::types::VectorView<const T> Interpolator<T>::make_view(const VectorT& v)
+VectorView<const T> Interpolator<T>::make_view(const VectorT& v)
 {
-    return rtac::types::VectorView<const T>(v.size(), v.data());
+    return VectorView<const T>(v.size(), v.data());
 }
 
 template <typename T> 
-Interpolator<T>::Interpolator(rtac::types::VectorView<const T> x0,
-                              rtac::types::VectorView<const T> y0,
+Interpolator<T>::Interpolator(VectorView<const T> x0,
+                              VectorView<const T> y0,
                               Type type) :
     interpolator_(nullptr)
 {
@@ -112,8 +112,8 @@ Interpolator<T> Interpolator<T>::CreateCubicSpline(const VectorT& x0, const Vect
 }
     
 template <typename T> 
-void Interpolator<T>::interpolate(rtac::types::VectorView<const T> x,
-                                  rtac::types::VectorView<T> y) const
+void Interpolator<T>::interpolate(VectorView<const T> x,
+                                  VectorView<T> y) const
 {
     interpolator_->interpolate(x, y);
 }

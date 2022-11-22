@@ -55,7 +55,7 @@ namespace rtac { namespace cuda {
 //#endif //RTAC_CUDACC
 
 template <class T>
-using Complex = rtac::types::Complex<T>;
+using Complex = rtac::Complex<T>;
 
 inline void init_cuda()
 {
@@ -79,35 +79,35 @@ inline void set_device(int deviceOrdinal)
 #include <rtac_base/types/common.h>
 
 //template <typename T>
-//float2 to_float2(const rtac::types::Vector2<T>& v)
+//float2 to_float2(const rtac::Vector2<T>& v)
 //{
 //    return float2({v[0], v[1]});
 //}
 //template <typename T>
-//float3 to_float3(const rtac::types::Vector3<T>& v)
+//float3 to_float3(const rtac::Vector3<T>& v)
 //{
 //    return float3({v[0], v[1], v[2]});
 //}
 //template <typename T>
-//float4 to_float4(const rtac::types::Vector4<T>& v)
+//float4 to_float4(const rtac::Vector4<T>& v)
 //{
 //    return float4({v[0], v[1], v[2], v[3]});
 //}
 
 template <typename T>
-float2 to_float2(const Eigen::MatrixBase<rtac::types::Vector2<T>>& v)
+float2 to_float2(const Eigen::MatrixBase<rtac::Vector2<T>>& v)
 {
     return float2({v[0], v[1]});
 }
 
 template <typename T>
-float3 to_float3(const Eigen::MatrixBase<rtac::types::Vector3<T>>& v)
+float3 to_float3(const Eigen::MatrixBase<rtac::Vector3<T>>& v)
 {
     return float3({v[0], v[1], v[2]});
 }
 
 template <typename T>
-float4 to_float4(const Eigen::MatrixBase<rtac::types::Vector4<T>>& v)
+float4 to_float4(const Eigen::MatrixBase<rtac::Vector4<T>>& v)
 {
     return float4({v[0], v[1], v[2], v[3]});
 }

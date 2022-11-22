@@ -29,8 +29,8 @@ class InterpolatorInterface
     Vector x0_;
     Vector y0_;
 
-    InterpolatorInterface(rtac::types::VectorView<const T> x0,
-                          rtac::types::VectorView<const T> y0);
+    InterpolatorInterface(VectorView<const T> x0,
+                          VectorView<const T> y0);
 
     public:
 
@@ -40,7 +40,7 @@ class InterpolatorInterface
     unsigned int size() const;
     
     Xconst_iterator lower_bound(T x) const;
-    Indexes lower_bound_indexes(rtac::types::VectorView<const T> x) const;
+    Indexes lower_bound_indexes(VectorView<const T> x) const;
     
     /**
      * Core interpolating method. To be reimplemented in subclasses.
@@ -48,13 +48,13 @@ class InterpolatorInterface
      * @param x      values where to interpolate.
      * @param output matrix where to write the interpolated values.
      */
-    virtual void interpolate(rtac::types::VectorView<const T> x,
-                             rtac::types::VectorView<T> y) const = 0;
+    virtual void interpolate(VectorView<const T> x,
+                             VectorView<T> y) const = 0;
 };
 
 template <typename T>
-InterpolatorInterface<T>::InterpolatorInterface(rtac::types::VectorView<const T> x0,
-                                                rtac::types::VectorView<const T> y0) :
+InterpolatorInterface<T>::InterpolatorInterface(VectorView<const T> x0,
+                                                VectorView<const T> y0) :
     x0_(Eigen::Map<const Vector>(x0.data(), x0.size())),
     y0_(Eigen::Map<const Vector>(y0.data(), y0.size()))
 {
@@ -113,7 +113,7 @@ typename InterpolatorInterface<T>::Xconst_iterator InterpolatorInterface<T>::low
  */
 template <typename T>
 typename InterpolatorInterface<T>::Indexes
-    InterpolatorInterface<T>::lower_bound_indexes(rtac::types::VectorView<const T> x) const
+    InterpolatorInterface<T>::lower_bound_indexes(VectorView<const T> x) const
 {
     Indexes output(x.size());
     for(int i = 0; i < output.size(); i++) {
@@ -138,20 +138,20 @@ class InterpolatorNearest : public InterpolatorInterface<T>
     using Indexes = typename InterpolatorInterface<T>::Indexes;
     using Vector  = typename InterpolatorInterface<T>::Vector;
 
-    InterpolatorNearest(rtac::types::VectorView<const T> x0,
-                        rtac::types::VectorView<const T> y0) :
+    InterpolatorNearest(VectorView<const T> x0,
+                        VectorView<const T> y0) :
         InterpolatorInterface<T>(x0, y0)
     {}
 
-    virtual void interpolate(rtac::types::VectorView<const T> x,
-                             rtac::types::VectorView<T> y) const;
+    virtual void interpolate(VectorView<const T> x,
+                             VectorView<T> y) const;
 };
 
 template <typename T>
-void InterpolatorNearest<T>::interpolate(rtac::types::VectorView<const T> x,
-                                         rtac::types::VectorView<T> y) const
+void InterpolatorNearest<T>::interpolate(VectorView<const T> x,
+                                         VectorView<T> y) const
 {
-    using namespace rtac::types::indexing;
+    using namespace indexing;
 
     Indexes idx = this->lower_bound_indexes(x);
     for(int i = 0; i < x.size(); i++) {
@@ -178,20 +178,20 @@ class InterpolatorLinear : public InterpolatorInterface<T>
     using Indexes = typename InterpolatorInterface<T>::Indexes;
     using Vector  = typename InterpolatorInterface<T>::Vector;
 
-    InterpolatorLinear(rtac::types::VectorView<const T> x0,
-                       rtac::types::VectorView<const T> y0) :
+    InterpolatorLinear(VectorView<const T> x0,
+                       VectorView<const T> y0) :
         InterpolatorInterface<T>(x0, y0)
     {}
 
-    virtual void interpolate(rtac::types::VectorView<const T> x,
-                             rtac::types::VectorView<T> y) const;
+    virtual void interpolate(VectorView<const T> x,
+                             VectorView<T> y) const;
 };
 
 template <typename T>
-void InterpolatorLinear<T>::interpolate(rtac::types::VectorView<const T> x,
-                                        rtac::types::VectorView<T> y) const
+void InterpolatorLinear<T>::interpolate(VectorView<const T> x,
+                                        VectorView<T> y) const
 {
-    using namespace rtac::types::indexing;
+    using namespace indexing;
     Indexes idx = this->lower_bound_indexes(x);
     for(int i = 0; i < x.size(); i++) {
         if(idx[i] == this->x0_.size() - 1) {
@@ -229,21 +229,21 @@ class InterpolatorCubicSpline : public InterpolatorInterface<T>
 
     public:
 
-    InterpolatorCubicSpline(rtac::types::VectorView<const T> x0,
-                            rtac::types::VectorView<const T> y0) :
+    InterpolatorCubicSpline(VectorView<const T> x0,
+                            VectorView<const T> y0) :
         InterpolatorInterface<T>(x0, y0)
     {
         this->load_coefs();
     }
 
-    virtual void interpolate(rtac::types::VectorView<const T> x,
-                             rtac::types::VectorView<T>       y) const;
+    virtual void interpolate(VectorView<const T> x,
+                             VectorView<T>       y) const;
 };
 
 template <typename T>
 void InterpolatorCubicSpline<T>::load_coefs()
 {
-    using namespace rtac::types::indexing;
+    using namespace indexing;
 
     Eigen::Map<const Vector> x0(this->x0().data(), this->x0().size());
     Eigen::Map<const Vector> y0(this->y0().data(), this->y0().size());
@@ -254,7 +254,7 @@ void InterpolatorCubicSpline<T>::load_coefs()
     Vector dy = (y0(seqN(1,size-1)) - y0(seqN(0,size-1))).array() / dx.array();
 
     Vector beta        =  6.0*(dy(seqN(1,dy.size()-1)) - dy(seqN(0,dy.size()-1)));
-    types::Matrix<T> A = (2.0*(x0(seqN(2,x0.size()-2)) - x0(seqN(0,x0.size()-2)))).asDiagonal();
+    rtac::Matrix<T> A = (2.0*(x0(seqN(2,x0.size()-2)) - x0(seqN(0,x0.size()-2)))).asDiagonal();
     for(int i = 0; i < this->size() - 3; i++) {
         A(i,i+1) = dx(i+1);
         A(i+1,i) = dx(i+1);
@@ -272,10 +272,10 @@ void InterpolatorCubicSpline<T>::load_coefs()
 }
 
 template <typename T>
-void InterpolatorCubicSpline<T>::interpolate(rtac::types::VectorView<const T> x,
-                                             rtac::types::VectorView<T> y) const
+void InterpolatorCubicSpline<T>::interpolate(VectorView<const T> x,
+                                             VectorView<T> y) const
 {
-    using namespace rtac::types::indexing;
+    using namespace indexing;
     Indexes idx = this->lower_bound_indexes(x);
     for(int i = 0; i < x.size(); i++) {
         if(idx[i] == this->x0_.size() - 1) {

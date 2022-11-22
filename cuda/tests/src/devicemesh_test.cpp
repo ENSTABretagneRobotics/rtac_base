@@ -5,7 +5,7 @@ using namespace std;
 using namespace rtac::cuda;
 
 #include <rtac_base/types/Mesh.h>
-using namespace rtac::types;
+using namespace rtac;
 
 int main()
 {

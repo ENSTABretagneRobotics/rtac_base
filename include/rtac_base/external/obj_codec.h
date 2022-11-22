@@ -199,7 +199,7 @@ struct VertexId
 
 struct MtlMaterial {
 
-    using Color = rtac::types::Point3<float>;
+    using Color = Point3<float>;
     
     std::string name;
     Color Ka;           // ambient  color
@@ -226,10 +226,10 @@ class ObjLoader
 {
     public:
 
-    using Point  = rtac::types::Point3<float>;
-    using Face   = rtac::types::Point3<uint32_t>;
-    using UV     = rtac::types::Point2<float>;
-    using Normal = rtac::types::Point3<float>;
+    using Point  = Point3<float>;
+    using Face   = Point3<uint32_t>;
+    using UV     = Point2<float>;
+    using Normal = Point3<float>;
 
     protected:
 
@@ -269,7 +269,7 @@ class ObjLoader
         return materials_.at(name);
     }
 
-    rtac::types::Bounds<float,3> bounding_box() const;
+    Bounds<float,3> bounding_box() const;
     
     template <class MeshT>
     typename MeshT::Ptr get_mesh(const std::string& name) const;

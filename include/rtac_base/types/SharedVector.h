@@ -6,7 +6,7 @@
 
 #include <rtac_base/types/Handle.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 template <typename VectorT>
 class SharedVectorBase
@@ -195,11 +195,10 @@ typename SharedVectorBase<VectorT>::const_iterator SharedVectorBase<VectorT>::en
     return this->data() + this->size();
 }
 
-}; //namespace types
 }; //namespace rtac
 
 template <typename VectorT>
-std::ostream& operator<<(std::ostream& os, const rtac::types::SharedVectorBase<VectorT>& v)
+std::ostream& operator<<(std::ostream& os, const rtac::SharedVectorBase<VectorT>& v)
 {
     os << *v.ptr();
     return os;

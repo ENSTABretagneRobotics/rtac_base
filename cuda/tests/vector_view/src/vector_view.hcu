@@ -1,7 +1,7 @@
 #pragma once
 
 #include <rtac_base/types/VectorView.h>
-using namespace rtac::types;
+using namespace rtac;
 
 template <typename T>
 __global__ void copy(VectorView<const T> in, VectorView<T> out)

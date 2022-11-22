@@ -8,7 +8,7 @@
 
 #include <thread>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 template <class ...ArgTypes>
 class CallbackQueue
@@ -128,7 +128,7 @@ void CallbackQueue<ArgTypes...>::call(ArgTypes... args)
     sShotsCv_.notify_all();
 }
 
-}; //namespace types
+
 }; //namespace rtac
 
 #endif //_DEF_RTAC_TYPES_CALLBACK_QUEUE_H_

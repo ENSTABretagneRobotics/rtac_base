@@ -5,7 +5,7 @@
 
 #include <rtac_base/types/Handle.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 template <class VectorT>
 class MappedPointerImpl
@@ -129,7 +129,6 @@ class MappedPointer<const VectorT>
     const value_type& operator[](std::size_t idx) const { return ptr_->ptr()[idx]; }
 };
 
-}; //namespace types
 }; //namespace rtac
 
 #endif //_DEF_RTAC_BASE_TYPES_MAPPED_POINTER_H_

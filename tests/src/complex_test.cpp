@@ -3,7 +3,7 @@
 using namespace std;
 
 #include <rtac_base/types/Complex.h>
-using namespace rtac::types;
+using namespace rtac;
 
 int main()
 {

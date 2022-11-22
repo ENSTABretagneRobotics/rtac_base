@@ -4,7 +4,7 @@ using namespace std;
 
 #include <rtac_base/types/Pose.h>
 #include <rtac_base/types/Shape.h>
-using namespace rtac::types;
+using namespace rtac;
 
 #include <rtac_base/ply_files.h>
 using namespace rtac;

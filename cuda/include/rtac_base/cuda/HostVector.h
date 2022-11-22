@@ -62,8 +62,8 @@ class HostVector
     HostVector& operator=(const std::vector<T>& other);
 
     #ifndef RTAC_CUDACC
-    HostVector(const types::Vector<T>& other);
-    HostVector& operator=(const types::Vector<T>& other);
+    HostVector(const rtac::Vector<T>& other);
+    HostVector& operator=(const rtac::Vector<T>& other);
     #endif
 
     void resize(size_t size);
@@ -79,8 +79,8 @@ class HostVector
     const_iterator begin() const;
     const_iterator end() const;
 
-    auto view() const { return types::make_view(*this); }
-    auto view()       { return types::make_view(*this); }
+    auto view() const { return rtac::make_view(*this); }
+    auto view()       { return rtac::make_view(*this); }
 
     value_type& operator[](size_t idx);
     const value_type& operator[](size_t idx) const;
@@ -189,14 +189,14 @@ HostVector<T>& HostVector<T>::operator=(const std::vector<T>& other)
 
 #ifndef RTAC_CUDACC
 template <typename T>
-HostVector<T>::HostVector(const types::Vector<T>& other) :
+HostVector<T>::HostVector(const rtac::Vector<T>& other) :
     HostVector(other.size())
 {
     *this = other;
 }
 
 template <typename T>
-HostVector<T>& HostVector<T>::operator=(const types::Vector<T>& other)
+HostVector<T>& HostVector<T>::operator=(const rtac::Vector<T>& other)
 {
     this->copy_from_host(other.size(), other.data());
     return *this;

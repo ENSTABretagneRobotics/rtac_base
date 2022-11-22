@@ -5,7 +5,7 @@
 #include <type_traits>
 #include <tuple>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 template<class ...Ts>
 struct voider {
@@ -99,8 +99,6 @@ inline T zero()
     return res;
 }
 
-
-}; //namespace types
 }; //namespace rtac
 
 #endif //_DEF_RTAC_BASE_TYPE_UTILS_H_

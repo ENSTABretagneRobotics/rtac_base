@@ -3,7 +3,7 @@
 using namespace std;
 
 #include <rtac_base/types/Array2D.h>
-using namespace rtac::types;
+using namespace rtac;
 
 template <typename T>
 void print_view(Array2D<T,VectorView> view)

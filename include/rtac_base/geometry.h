@@ -9,8 +9,6 @@
 
 namespace rtac { namespace geometry {
 
-using namespace rtac::types;
-
 template <typename T>
 constexpr T to_degrees(T radians)
 {
@@ -102,7 +100,7 @@ inline Matrix3<T> look_at(const Vector3<T>& target, const Vector3<T>& position, 
 {
     Matrix3<T> r;
 
-    // using namespace rtac::types::indexing;
+    // using namespace rtac::indexing;
     // local y points towards target.
     Vector3<T> y = target - position;
     if(y.norm() < 1e-6) {

@@ -8,7 +8,7 @@
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 template <class ... Types>
 using MatrixBase = Eigen::MatrixBase<Types ...>;
@@ -40,17 +40,17 @@ template <typename T>
 using Quaternion  = Eigen::Quaternion<T>;
 
 // Indexing and slicing aliases
-// The namespace is to be able to use a 'using namespace rtac::types::indexing'
+// The namespace is to be able to use a 'using namespace rtac::indexing'
 // without including all of the types.
 namespace indexing {
     using namespace Eigen::indexing;
 }
 
-}; // namespace types
+
 }; // namespace rtac
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const rtac::types::Quaternion<T>& q) {
+std::ostream& operator<<(std::ostream& os, const rtac::Quaternion<T>& q) {
     os << "(" << q.w() << " " << q.x() << " " << q.y() << " " << q.z() << ")";
     return os;
 }

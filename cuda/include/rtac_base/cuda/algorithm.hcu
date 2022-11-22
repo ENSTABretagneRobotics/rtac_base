@@ -72,7 +72,7 @@ class Binning
     void operator()(DeviceVector<T>& data,
                     std::size_t binCount,
                     const Criterion& criterion,
-                    DeviceVector<types::VectorView<T>>& bins,
+                    DeviceVector<rtac::VectorView<T>>& bins,
                     int binOverlap = 0) const;
 
     template <typename T, class Criterion,
@@ -80,7 +80,7 @@ class Binning
     void operator()(DeviceVector<T>& data,
                     std::size_t binCount,
                     const Criterion& criterion,
-                    PinnedVector<types::VectorView<T>>& bins,
+                    PinnedVector<rtac::VectorView<T>>& bins,
                     int binOverlap = 0) const;
 };
 
@@ -91,12 +91,12 @@ class Binning
  * object and reuse it instead.
  */ 
 template <typename T, class Criterion, unsigned int BlockSize = 1024>
-inline DeviceVector<types::VectorView<T>> binning(DeviceVector<T>& data,
+inline DeviceVector<rtac::VectorView<T>> binning(DeviceVector<T>& data,
                                                   std::size_t binCount,
                                                   Criterion criterion,
                                                   int binOverlap = 0)
 {
-    DeviceVector<types::VectorView<T>> bins;
+    DeviceVector<rtac::VectorView<T>> bins;
     Binning().operator()(data, binCount, criterion, bins, binOverlap);
     return bins;
 }
@@ -104,8 +104,8 @@ inline DeviceVector<types::VectorView<T>> binning(DeviceVector<T>& data,
 namespace details {
 
 template <typename T, class Criterion>
-__global__ void compute_keys(types::VectorView<const T> data,
-                             types::VectorView<int> keys,
+__global__ void compute_keys(rtac::VectorView<const T> data,
+                             rtac::VectorView<int> keys,
                              Criterion keyGenerator)
 {
     auto tid = blockDim.x*blockIdx.x + threadIdx.x;
@@ -131,7 +131,7 @@ template <typename T, class Criterion, unsigned int BlockSize>
 void Binning::operator()(DeviceVector<T>& data,
                          std::size_t binCount,
                          const Criterion& criterion,
-                         DeviceVector<types::VectorView<T>>& bins,
+                         DeviceVector<rtac::VectorView<T>>& bins,
                          int binOverlap) const
 {
     // Generating key for each data element and sorting data according to this
@@ -143,7 +143,7 @@ void Binning::operator()(DeviceVector<T>& data,
                         thrust::device_pointer_cast(data.begin()));
     
     // Generating the bins.
-    std::vector<types::VectorView<T>> tmpBins(binCount);
+    std::vector<rtac::VectorView<T>> tmpBins(binCount);
     int currentBin = -1;
     int currentBinStart = 0;
     int i = 0;
@@ -151,7 +151,7 @@ void Binning::operator()(DeviceVector<T>& data,
         if(keys_[i] < 0) continue;
         if(keys_[i] != currentBin) {
             if(currentBin >= 0) {
-                tmpBins[currentBin] = types::VectorView{i - currentBinStart,
+                tmpBins[currentBin] = rtac::VectorView{i - currentBinStart,
                                                         data.data() + currentBinStart};
             }
             currentBin      = keys_[i];
@@ -159,11 +159,11 @@ void Binning::operator()(DeviceVector<T>& data,
         }
     }
     if(currentBin >= 0) {
-        tmpBins[currentBin] = types::VectorView{i - currentBinStart,
+        tmpBins[currentBin] = rtac::VectorView{i - currentBinStart,
                                                 data.data() + currentBinStart};
     }
     if(binOverlap > 0) {
-        std::vector<types::VectorView<T>> overlapped(binCount);
+        std::vector<rtac::VectorView<T>> overlapped(binCount);
         for(int i = 0; i < tmpBins.size(); i++) {
             auto jstart = std::max(0, i - binOverlap);
             auto jend   = std::min(tmpBins.size() - 1, (std::size_t)(i + binOverlap));
@@ -173,7 +173,7 @@ void Binning::operator()(DeviceVector<T>& data,
                 size += tmpBins[j].size();
                 if(!p) p = tmpBins[j].data();
             }
-            overlapped[i] = types::VectorView<T>(size, p);
+            overlapped[i] = rtac::VectorView<T>(size, p);
         }
         bins = overlapped;
     }
@@ -186,7 +186,7 @@ template <typename T, class Criterion, unsigned int BlockSize>
 void Binning::operator()(DeviceVector<T>& data,
                          std::size_t binCount,
                          const Criterion& criterion,
-                         PinnedVector<types::VectorView<T>>& bins,
+                         PinnedVector<rtac::VectorView<T>>& bins,
                          int binOverlap) const
 {
     // Generating key for each data element and sorting data according to this
@@ -206,7 +206,7 @@ void Binning::operator()(DeviceVector<T>& data,
         if(keys_[i] < 0) continue;
         if(keys_[i] != currentBin) {
             if(currentBin >= 0) {
-                bins[currentBin] = types::VectorView{i - currentBinStart,
+                bins[currentBin] = rtac::VectorView{i - currentBinStart,
                                                      data.data() + currentBinStart};
             }
             currentBin      = keys_[i];
@@ -214,7 +214,7 @@ void Binning::operator()(DeviceVector<T>& data,
         }
     }
     if(currentBin >= 0) {
-        bins[currentBin] = types::VectorView{i - currentBinStart,
+        bins[currentBin] = rtac::VectorView{i - currentBinStart,
                                              data.data() + currentBinStart};
     }
 }

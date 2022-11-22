@@ -5,7 +5,7 @@
 
 #include <rtac_base/cuda_defines.h>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 /**
  * Have to make a Complex class because cuda does not implement functions for
@@ -69,46 +69,46 @@ class Complex
     }
 };
 
-} //namespace types
+
 } //namespace rtac
 
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator+(const rtac::types::Complex<T>& lhs, const rtac::types::Complex<T>& rhs) { return rtac::types::Complex<T>(lhs) += rhs; }
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator+(const rtac::types::Complex<T>& lhs, const T& rhs)                       { return rtac::types::Complex<T>(lhs) += rhs; }
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator+(const T& lhs,                       const rtac::types::Complex<T>& rhs) { return rtac::types::Complex<T>(rhs) += lhs; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator+(const rtac::Complex<T>& lhs, const rtac::Complex<T>& rhs) { return rtac::Complex<T>(lhs) += rhs; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator+(const rtac::Complex<T>& lhs, const T& rhs)                { return rtac::Complex<T>(lhs) += rhs; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator+(const T& lhs,                const rtac::Complex<T>& rhs) { return rtac::Complex<T>(rhs) += lhs; }
 
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator-(const rtac::types::Complex<T>& lhs, const rtac::types::Complex<T>& rhs) { return rtac::types::Complex<T>(lhs)    -= rhs; }
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator-(const rtac::types::Complex<T>& lhs, const T& rhs)                       { return rtac::types::Complex<T>(lhs)    -= rhs; }
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator-(const T& lhs,                       const rtac::types::Complex<T>& rhs) { return rtac::types::Complex<T>(lhs, 0) -= rhs; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator-(const rtac::Complex<T>& lhs, const rtac::Complex<T>& rhs) { return rtac::Complex<T>(lhs)    -= rhs; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator-(const rtac::Complex<T>& lhs, const T& rhs)                { return rtac::Complex<T>(lhs)    -= rhs; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator-(const T& lhs,                const rtac::Complex<T>& rhs) { return rtac::Complex<T>(lhs, 0) -= rhs; }
 
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator*(const rtac::types::Complex<T>& lhs, const rtac::types::Complex<T>& rhs) { return rtac::types::Complex<T>(lhs) *= rhs; }
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator*(const rtac::types::Complex<T>& lhs, const T& rhs)                       { return rtac::types::Complex<T>(lhs) *= rhs; }
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator*(const T& lhs,                       const rtac::types::Complex<T>& rhs) { return rtac::types::Complex<T>(rhs) *= lhs; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator*(const rtac::Complex<T>& lhs, const rtac::Complex<T>& rhs) { return rtac::Complex<T>(lhs) *= rhs; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator*(const rtac::Complex<T>& lhs, const T& rhs)                { return rtac::Complex<T>(lhs) *= rhs; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator*(const T& lhs,                const rtac::Complex<T>& rhs) { return rtac::Complex<T>(rhs) *= lhs; }
 
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator/(const rtac::types::Complex<T>& lhs, const rtac::types::Complex<T>& rhs) { return rtac::types::Complex<T>(lhs)    /= rhs; }
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator/(const rtac::types::Complex<T>& lhs, const T& rhs)                       { return rtac::types::Complex<T>(lhs)    /= rhs; }
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator/(const T& lhs,                       const rtac::types::Complex<T>& rhs) { return rtac::types::Complex<T>(lhs, 0) /= rhs; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator/(const rtac::Complex<T>& lhs, const rtac::Complex<T>& rhs) { return rtac::Complex<T>(lhs)    /= rhs; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator/(const rtac::Complex<T>& lhs, const T& rhs)                { return rtac::Complex<T>(lhs)    /= rhs; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator/(const T& lhs,                const rtac::Complex<T>& rhs) { return rtac::Complex<T>(lhs, 0) /= rhs; }
 
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator+(const rtac::types::Complex<T>& value) { return value; }
-template <class T> RTAC_HOSTDEVICE inline rtac::types::Complex<T> operator-(const rtac::types::Complex<T>& value) { return rtac::types::Complex<T>(-value.real(), -value.imag()); }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator+(const rtac::Complex<T>& value) { return value; }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> operator-(const rtac::Complex<T>& value) { return rtac::Complex<T>(-value.real(), -value.imag()); }
 
-template <class T> RTAC_HOSTDEVICE inline bool operator==(const rtac::types::Complex<T>& lhs, const rtac::types::Complex<T>& rhs) { return lhs.real() == rhs.real() && lhs.imag() == lhs.imag(); }
-template <class T> RTAC_HOSTDEVICE inline bool operator==(const rtac::types::Complex<T>& lhs, const T& rhs)                       { return lhs.real() == rhs        && lhs.imag() == 0; }
-template <class T> RTAC_HOSTDEVICE inline bool operator==(const T& lhs,                       const rtac::types::Complex<T>& rhs) { return rhs.real() == lhs        && rhs.imag() == 0; }
+template <class T> RTAC_HOSTDEVICE inline bool operator==(const rtac::Complex<T>& lhs, const rtac::Complex<T>& rhs) { return lhs.real() == rhs.real() && lhs.imag() == lhs.imag(); }
+template <class T> RTAC_HOSTDEVICE inline bool operator==(const rtac::Complex<T>& lhs, const T& rhs)                { return lhs.real() == rhs        && lhs.imag() == 0; }
+template <class T> RTAC_HOSTDEVICE inline bool operator==(const T& lhs,                const rtac::Complex<T>& rhs) { return rhs.real() == lhs        && rhs.imag() == 0; }
 
-template <class T> RTAC_HOSTDEVICE inline bool operator!=(const rtac::types::Complex<T>& lhs, const rtac::types::Complex<T>& rhs) { return !(lhs == rhs); }
-template <class T> RTAC_HOSTDEVICE inline bool operator!=(const rtac::types::Complex<T>& lhs, const T& rhs)                       { return !(lhs == rhs); }
-template <class T> RTAC_HOSTDEVICE inline bool operator!=(const T& lhs,                       const rtac::types::Complex<T>& rhs) { return !(lhs == rhs); }
+template <class T> RTAC_HOSTDEVICE inline bool operator!=(const rtac::Complex<T>& lhs, const rtac::Complex<T>& rhs) { return !(lhs == rhs); }
+template <class T> RTAC_HOSTDEVICE inline bool operator!=(const rtac::Complex<T>& lhs, const T& rhs)                { return !(lhs == rhs); }
+template <class T> RTAC_HOSTDEVICE inline bool operator!=(const T& lhs,                const rtac::Complex<T>& rhs) { return !(lhs == rhs); }
 
-template <class T> RTAC_HOSTDEVICE inline T real(const rtac::types::Complex<T>& value) { return value.real(); }
-template <class T> RTAC_HOSTDEVICE inline T imag(const rtac::types::Complex<T>& value) { return value.imag(); }
-template <class T> RTAC_HOSTDEVICE inline T norm(const rtac::types::Complex<T>& value) { return value.real()*value.real() + value.imag()*value.imag(); }
-template <class T> RTAC_HOSTDEVICE inline T abs (const rtac::types::Complex<T>& value) { return sqrt(norm(value)); }
-template <class T> RTAC_HOSTDEVICE inline T arg (const rtac::types::Complex<T>& value) { return atan2(value.imag(), value.real()); }
-template <class T> RTAC_HOSTDEVICE inline T conj(const rtac::types::Complex<T>& value) { return rtac::types::Complex<T>(value.real(), -value.imag()); }
+template <class T> RTAC_HOSTDEVICE inline T real(const rtac::Complex<T>& value) { return value.real(); }
+template <class T> RTAC_HOSTDEVICE inline T imag(const rtac::Complex<T>& value) { return value.imag(); }
+template <class T> RTAC_HOSTDEVICE inline T norm(const rtac::Complex<T>& value) { return value.real()*value.real() + value.imag()*value.imag(); }
+template <class T> RTAC_HOSTDEVICE inline T abs (const rtac::Complex<T>& value) { return sqrt(norm(value)); }
+template <class T> RTAC_HOSTDEVICE inline T arg (const rtac::Complex<T>& value) { return atan2(value.imag(), value.real()); }
+template <class T> RTAC_HOSTDEVICE inline T conj(const rtac::Complex<T>& value) { return rtac::Complex<T>(value.real(), -value.imag()); }
 
-template <class T> RTAC_HOSTDEVICE inline T polar(const T& r, const T& theta = T()) { return rtac::types::Complex<T>(r*cos(theta), r*sin(theta)); }
+template <class T> RTAC_HOSTDEVICE inline T polar(const T& r, const T& theta = T()) { return rtac::Complex<T>(r*cos(theta), r*sin(theta)); }
 
-template <class T> inline std::ostream& operator<<(std::ostream& os, const rtac::types::Complex<T>& value) {
+template <class T> inline std::ostream& operator<<(std::ostream& os, const rtac::Complex<T>& value) {
     os << '(' << value.real() << ',' << value.imag() << ')';
     return os;
 }

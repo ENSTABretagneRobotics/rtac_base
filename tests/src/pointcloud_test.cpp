@@ -2,7 +2,7 @@
 using namespace std;
 
 #include <rtac_base/types/PointCloud.h>
-using namespace rtac::types;
+using namespace rtac;
 
 void print_ref(const PointCloud<>::PointCloudType& pc)
 {

@@ -4,8 +4,6 @@
 
 namespace rtac { namespace cuda {
 
-using namespace rtac::types;
-
 template <typename T>
 __global__ void render_texture_kernel(TextureView2D<T> tex, ImageView<T> out)
 {
@@ -17,24 +15,24 @@ __global__ void render_texture_kernel(TextureView2D<T> tex, ImageView<T> out)
 
 
 template <typename T>
-void do_render_texture(const Texture2D<T>& tex, rtac::types::ImageView<T> out)
+void do_render_texture(const Texture2D<T>& tex, rtac::ImageView<T> out)
 {
     render_texture_kernel<<<{out.width() / RTAC_BLOCKSIZE + 1, out.height()}, RTAC_BLOCKSIZE>>>(
         tex.view(), out);
     cudaDeviceSynchronize();
 }
 
-void render_texture(const Texture2D<float>& tex, rtac::types::ImageView<float> out)
+void render_texture(const Texture2D<float>& tex, rtac::ImageView<float> out)
 {
     do_render_texture(tex, out);
 }
 
-void render_texture(const Texture2D<float2>& tex, rtac::types::ImageView<float2> out)
+void render_texture(const Texture2D<float2>& tex, rtac::ImageView<float2> out)
 {
     do_render_texture(tex, out);
 }
 
-void render_texture(const Texture2D<float4>& tex, rtac::types::ImageView<float4>& out)
+void render_texture(const Texture2D<float4>& tex, rtac::ImageView<float4>& out)
 {
     do_render_texture(tex, out);
 }

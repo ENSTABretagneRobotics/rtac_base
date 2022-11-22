@@ -3,7 +3,7 @@
 using namespace std;
 
 #include <rtac_base/types/Image.h>
-using namespace rtac::types;
+using namespace rtac;
 
 #include <rtac_base/cuda/HostVector.h>
 #include <rtac_base/cuda/DeviceVector.h>

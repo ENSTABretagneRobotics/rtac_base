@@ -67,8 +67,8 @@ class DeviceVector
     DeviceVector& operator=(const std::vector<T>& other);
     
     #ifndef RTAC_CUDACC
-    DeviceVector(const types::Vector<T>& other);
-    DeviceVector& operator=(const types::Vector<T>& other);
+    DeviceVector(const rtac::Vector<T>& other);
+    DeviceVector& operator=(const rtac::Vector<T>& other);
     #endif
 
     void resize(size_t size);
@@ -84,8 +84,8 @@ class DeviceVector
     const_iterator begin() const;
     const_iterator end() const;
 
-    auto view() const { return types::make_view(*this); }
-    auto view()       { return types::make_view(*this); }
+    auto view() const { return rtac::make_view(*this); }
+    auto view()       { return rtac::make_view(*this); }
 
     #ifdef RTAC_CUDACC  // the following methods are only usable in CUDA code.
     //value_type& operator[](size_t idx);
@@ -202,14 +202,14 @@ DeviceVector<T>& DeviceVector<T>::operator=(const std::vector<T>& other)
 
 #ifndef RTAC_CUDACC
 template <typename T>
-DeviceVector<T>::DeviceVector(const types::Vector<T>& other) :
+DeviceVector<T>::DeviceVector(const rtac::Vector<T>& other) :
     DeviceVector(other.size())
 {
     *this = other;
 }
 
 template <typename T>
-DeviceVector<T>& DeviceVector<T>::operator=(const types::Vector<T>& other)
+DeviceVector<T>& DeviceVector<T>::operator=(const rtac::Vector<T>& other)
 {
     this->copy_from_host(other.size(), other.data());
     return *this;

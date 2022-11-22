@@ -49,6 +49,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/external/ImageCodec.h
 
     include/rtac_base/types/Complex.h
+    include/rtac_base/types/SonarPing2D.h
 )
 
 add_library(rtac_base SHARED

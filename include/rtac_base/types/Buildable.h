@@ -4,7 +4,7 @@
 #include <memory>
 #include <type_traits>
 
-namespace rtac { namespace types {
+namespace rtac {
 
 struct Buildable
 {
@@ -130,7 +130,6 @@ BuildableHandle<BuildableT,PointerT>::operator bool() const
 }
 
 
-}; //namespace types
 }; //namespace rtac
 
 #endif //_DEF_RTAC_BASE_BUILDABLE_H_

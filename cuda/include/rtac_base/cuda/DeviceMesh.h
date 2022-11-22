@@ -12,17 +12,17 @@ template <typename P = float3,
           typename F = uint3,
           typename N = float3,
           typename U = float2>
-using DeviceMesh = rtac::types::Mesh<P,F,N,U,DeviceVector>;
+using DeviceMesh = rtac::Mesh<P,F,N,U,DeviceVector>;
 
 template <typename P = float3,
           typename F = uint3,
           typename N = float3,
           typename U = float2>
-using HostMesh = rtac::types::Mesh<P,F,N,U,HostVector>;
+using HostMesh = rtac::Mesh<P,F,N,U,HostVector>;
 
-//template <typename PointT = rtac::types::Point3<float>,
-//          typename FaceT  = rtac::types::Point3<uint32_t>>
-//class DeviceMesh : public rtac::types::Mesh<PointT, FaceT, DeviceVector>
+//template <typename PointT = rtac::Point3<float>,
+//          typename FaceT  = rtac::Point3<uint32_t>>
+//class DeviceMesh : public rtac::Mesh<PointT, FaceT, DeviceVector>
 //{
 //    public:
 //
@@ -32,15 +32,15 @@ using HostMesh = rtac::types::Mesh<P,F,N,U,HostVector>;
 //    using FaceVector  = DeviceVector<Face>;
 //    template <typename T>
 //    using Vector      = DeviceVector<T>;
-//    using MeshBase    = rtac::types::Mesh<Point, Face, Vector>;
+//    using MeshBase    = rtac::Mesh<Point, Face, Vector>;
 //
 //    DeviceMesh();
 //    DeviceMesh(size_t numPoints, size_t numFaces);
 //    template< template<typename> class VectorT>
-//    DeviceMesh(const rtac::types::Mesh<PointT,FaceT,VectorT>& other);
+//    DeviceMesh(const rtac::Mesh<PointT,FaceT,VectorT>& other);
 //
 //    template< template<typename> class VectorT>
-//    DeviceMesh& operator=(const rtac::types::Mesh<PointT,FaceT,VectorT>& other);
+//    DeviceMesh& operator=(const rtac::Mesh<PointT,FaceT,VectorT>& other);
 //
 //    // Some helpful builder functions
 //    static DeviceMesh<PointT,FaceT> cube(float scale = 1.0);
@@ -65,7 +65,7 @@ using HostMesh = rtac::types::Mesh<P,F,N,U,HostVector>;
 //
 //template <typename PointT, typename FaceT>
 //template <template<typename> class VectorT>
-//DeviceMesh<PointT,FaceT>::DeviceMesh(const rtac::types::Mesh<PointT,FaceT,VectorT>& other) :
+//DeviceMesh<PointT,FaceT>::DeviceMesh(const rtac::Mesh<PointT,FaceT,VectorT>& other) :
 //    DeviceMesh<PointT,FaceT>(other.num_points(), other.num_faces())
 //{
 //    this->points_ = other.points();
@@ -75,7 +75,7 @@ using HostMesh = rtac::types::Mesh<P,F,N,U,HostVector>;
 //template <typename PointT, typename FaceT>
 //template <template<typename> class VectorT>
 //DeviceMesh<PointT,FaceT>&
-//DeviceMesh<PointT,FaceT>::operator=(const rtac::types::Mesh<PointT,FaceT,VectorT>& other)
+//DeviceMesh<PointT,FaceT>::operator=(const rtac::Mesh<PointT,FaceT,VectorT>& other)
 //{
 //    this->points_ = other.points();
 //    this->faces_  = other.faces();
@@ -85,7 +85,7 @@ using HostMesh = rtac::types::Mesh<P,F,N,U,HostVector>;
 //template <typename PointT, typename FaceT>
 //DeviceMesh<PointT,FaceT> DeviceMesh<PointT, FaceT>::cube(float scale)
 //{
-//    auto hostMesh = rtac::types::Mesh<PointT,FaceT,std::vector>::cube();
+//    auto hostMesh = rtac::Mesh<PointT,FaceT,std::vector>::cube();
 //    return DeviceMesh<PointT,FaceT>(hostMesh);
 //}
 //
@@ -93,7 +93,7 @@ using HostMesh = rtac::types::Mesh<P,F,N,U,HostVector>;
 //template <typename PointScalarT, typename FaceIndexT>
 //DeviceMesh<PointT,FaceT> DeviceMesh<PointT, FaceT>::from_ply(const std::string& path)
 //{
-//    auto tmp = rtac::types::Mesh<PointT,FaceT,std::vector>::template
+//    auto tmp = rtac::Mesh<PointT,FaceT,std::vector>::template
 //        from_ply<PointScalarT,FaceIndexT>(path);
 //    return DeviceMesh<PointT,FaceT>(tmp);
 //}
@@ -102,7 +102,7 @@ using HostMesh = rtac::types::Mesh<P,F,N,U,HostVector>;
 //template <typename PointScalarT, typename FaceIndexT>
 //void DeviceMesh<PointT,FaceT>::export_ply(const std::string& path, bool ascii) const
 //{
-//    auto tmp = rtac::types::Mesh<PointT,FaceT,HostVector>(*this);
+//    auto tmp = rtac::Mesh<PointT,FaceT,HostVector>(*this);
 //    tmp.template export_ply<PointScalarT,FaceIndexT>(path, ascii);
 //}
 
@@ -112,7 +112,7 @@ using HostMesh = rtac::types::Mesh<P,F,N,U,HostVector>;
 //template <typename PointT, typename FaceT>
 //std::ostream& operator<<(std::ostream& os, const rtac::cuda::DeviceMesh<PointT, FaceT>& mesh)
 //{
-//    rtac::types::Mesh<PointT, FaceT, rtac::cuda::HostVector> tmp(mesh);
+//    rtac::Mesh<PointT, FaceT, rtac::cuda::HostVector> tmp(mesh);
 //    os << "Device" << tmp;
 //    return os;
 //}
