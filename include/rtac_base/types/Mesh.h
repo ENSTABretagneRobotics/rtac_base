@@ -5,7 +5,6 @@
 #include <vector>
 #include <cmath>
 
-#include <rtac_base/types/Handle.h>
 #include <rtac_base/types/Point.h>
 #include <rtac_base/types/PointCloud.h>
 #include <rtac_base/happly.h>
@@ -30,8 +29,8 @@ class Mesh
 
     using MeshType = Mesh<P,F,N,U,V>;
 
-    using Ptr      = Handle<Mesh<P,F,N,U,V>>;
-    using ConstPtr = Handle<const Mesh<P,F,N,U,V>>;
+    using Ptr      = std::shared_ptr<Mesh<P,F,N,U,V>>;
+    using ConstPtr = std::shared_ptr<const Mesh<P,F,N,U,V>>;
 
     protected:
 

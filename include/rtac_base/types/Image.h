@@ -5,7 +5,6 @@
 #include <vector>
 
 #include <rtac_base/cuda_defines.h>
-#include <rtac_base/type_utils.h>
 #include <rtac_base/types/Shape.h>
 #include <rtac_base/types/VectorView.h>
 
@@ -72,32 +71,32 @@ using ImageView = Image<PixelT, VectorView>;
 template <typename T, template<typename> class C>
 RTAC_HOSTDEVICE T Image<T,C>::operator[](std::size_t idx) const
 {
-    static_assert(is_subscriptable<Container>::value,
-                  "rtac::Image : container is not subscriptable.");
+    //static_assert(is_subscriptable<Container>::value,
+    //              "rtac::Image : container is not subscriptable.");
     return data_[idx];
 }
 
 template <typename T, template<typename> class C>
 RTAC_HOSTDEVICE T& Image<T,C>::operator[](std::size_t idx)
 {
-    static_assert(is_subscriptable<Container>::value,
-                  "rtac::Image : container is not subscriptable.");
+    //static_assert(is_subscriptable<Container>::value,
+    //              "rtac::Image : container is not subscriptable.");
     return data_[idx];
 }
 
 template <typename T, template<typename> class C>
 RTAC_HOSTDEVICE T Image<T,C>::operator()(std::size_t h, std::size_t w) const
 {
-    static_assert(is_subscriptable<Container>::value,
-                  "rtac::Image : container is not subscriptable.");
+    //static_assert(is_subscriptable<Container>::value,
+    //              "rtac::Image : container is not subscriptable.");
     return data_[shape_.width*h + w];
 }
 
 template <typename T, template<typename> class C>
 RTAC_HOSTDEVICE T& Image<T,C>::operator()(std::size_t h, std::size_t w)
 {
-    static_assert(is_subscriptable<Container>::value,
-                  "rtac::Image : container is not subscriptable.");
+    //static_assert(is_subscriptable<Container>::value,
+    //              "rtac::Image : container is not subscriptable.");
     return data_[shape_.width*h + w];
 }
 

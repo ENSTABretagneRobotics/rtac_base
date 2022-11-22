@@ -15,41 +15,43 @@ find_package(JPEG)
 
 
 list(APPEND rtac_base_headers
-    include/rtac_base/types/Handle.h
+    include/rtac_base/cuda_defines.h
+
     include/rtac_base/types/Shape.h
     include/rtac_base/types/Rectangle.h
     include/rtac_base/types/Bounds.h
-    include/rtac_base/types/common.h
-    include/rtac_base/types/Pose.h
     include/rtac_base/types/Point.h
+    include/rtac_base/types/Complex.h
+
+    include/rtac_base/type_utils.h
+    include/rtac_base/types/VectorView.h
+    include/rtac_base/types/MappedPointer.h
+    include/rtac_base/types/BuildTarget.h
+    include/rtac_base/types/CallbackQueue.h
+
     include/rtac_base/types/Image.h
     include/rtac_base/types/PointCloudBase.h
     include/rtac_base/types/PointCloud.h
     include/rtac_base/types/Mesh.h
-    include/rtac_base/types/MappedPointer.h
-    include/rtac_base/types/Buildable.h
-    include/rtac_base/types/BuildTarget.h
-    include/rtac_base/types/CallbackQueue.h
-    include/rtac_base/types/VectorView.h
-    include/rtac_base/files.h
-    include/rtac_base/time.h
-    include/rtac_base/ply_files.h
-    include/rtac_base/happly.h
-    include/rtac_base/type_utils.h
+    include/rtac_base/types/SonarPing2D.h
+
+    include/rtac_base/types/common.h
+    include/rtac_base/types/Pose.h
     include/rtac_base/geometry.h
     include/rtac_base/interpolation.h
     include/rtac_base/interpolation_impl.h
-    include/rtac_base/cuda_defines.h
-    include/rtac_base/nmea_utils.h
-    include/rtac_base/navigation.h
-
     include/rtac_base/signal_helpers.h
 
+    include/rtac_base/files.h
+    include/rtac_base/time.h
+
+    include/rtac_base/ply_files.h
+    include/rtac_base/happly.h
     include/rtac_base/external/obj_codec.h
     include/rtac_base/external/ImageCodec.h
 
-    include/rtac_base/types/Complex.h
-    include/rtac_base/types/SonarPing2D.h
+    include/rtac_base/nmea_utils.h
+    include/rtac_base/navigation.h
 )
 
 add_library(rtac_base SHARED

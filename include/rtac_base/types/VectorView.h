@@ -2,7 +2,6 @@
 #define _DEF_RTAC_BASE_TYPES_VECTOR_VIEW_H_
 
 #include <type_traits>
-#include <rtac_base/type_utils.h>
 #include <rtac_base/cuda_defines.h>
 
 namespace rtac {

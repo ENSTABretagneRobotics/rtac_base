@@ -7,7 +7,6 @@
 
 #include <cuda_runtime.h>
 
-#include <rtac_base/type_utils.h>
 #include <rtac_base/cuda/utils.h>
 #include <rtac_base/cuda/HostVector.h>
 #include <rtac_base/cuda/DeviceVector.h>
@@ -174,7 +173,7 @@ Texture2D<T> Texture2D<T>::checkerboard(uint32_t width, uint32_t height,
 template <typename T>
 cudaTextureDesc Texture2D<T>::default_texture_description()
 {
-    auto res = zero<cudaTextureDesc>();
+    cudaTextureDesc res = {}; // zero initialization
 
     res.addressMode[0]   = WrapRepeat;
     res.addressMode[1]   = WrapRepeat;
@@ -277,7 +276,7 @@ void Texture2D<T>::update_texture_handle()
     this->destroy_texture_handle();
 
     // Creating texture object pointing to allocated data.
-    auto resourceDescription = zero<cudaResourceDesc>();
+    cudaResourceDesc resourceDescription = {}; // zero initialization
     resourceDescription.resType = cudaResourceTypeArray;
     resourceDescription.res.array.array = data_;
 

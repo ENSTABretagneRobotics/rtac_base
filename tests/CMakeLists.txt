@@ -1,17 +1,13 @@
-
 list(APPEND test_names
     misc_test.cpp
     files_test.cpp
     mathtypes_test.cpp
     geometry_test.cpp
-    type_utils_test.cpp
     ply_files_test.cpp
     image_test.cpp
     mesh.cpp
     pointcloud_test.cpp
-    sharedvector_test.cpp
     mappedpointer_test.cpp
-    buildables_test.cpp
     buildtarget_test.cpp
     vector_view.cpp
     complex_test.cpp
@@ -53,4 +49,3 @@ foreach(name ${test_names})
 endforeach(name)
 
 add_subdirectory(external)
-add_subdirectory(ndpoint)

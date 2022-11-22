@@ -3,8 +3,6 @@
 
 #include <memory>
 
-#include <rtac_base/types/Handle.h>
-
 namespace rtac {
 
 template <class VectorT>

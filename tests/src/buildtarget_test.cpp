@@ -8,8 +8,8 @@ class TargetBase : public BuildTarget
 {
     public:
 
-    using Ptr     = Handle<TargetBase>;
-    using ConsPtr = Handle<const TargetBase>;
+    using Ptr     = std::shared_ptr<TargetBase>;
+    using ConsPtr = std::shared_ptr<const TargetBase>;
 
     public:
 
@@ -49,8 +49,8 @@ class TargetChild0 : public TargetBase
 {
     public:
 
-    using Ptr     = Handle<TargetChild0>;
-    using ConsPtr = Handle<const TargetChild0>;
+    using Ptr     = std::shared_ptr<TargetChild0>;
+    using ConsPtr = std::shared_ptr<const TargetChild0>;
 
     virtual void do_build() const {
         cout << "Building TargetChild0 : " << id_ << endl;

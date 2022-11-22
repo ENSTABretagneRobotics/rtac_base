@@ -3,8 +3,7 @@
 
 #include <iostream>
 #include <vector>
-
-#include <rtac_base/types/Handle.h>
+#include <memory>
 
 namespace rtac {
 
@@ -36,7 +35,7 @@ class BuildTargetHandle
 {
     public:
 
-    using TargetPtr = Handle<const BuildTarget>;
+    using TargetPtr = std::shared_ptr<const BuildTarget>;
 
     protected:
 
@@ -58,8 +57,8 @@ class BuildTarget
 {
     public:
 
-    using Ptr          = Handle<BuildTarget>;
-    using ConstPtr     = Handle<const BuildTarget>;
+    using Ptr          = std::shared_ptr<BuildTarget>;
+    using ConstPtr     = std::shared_ptr<const BuildTarget>;
     using Dependencies = std::vector<BuildTargetHandle>;
 
     struct CircularDependencyError : std::runtime_error {
