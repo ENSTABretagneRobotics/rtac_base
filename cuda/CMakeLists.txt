@@ -50,6 +50,7 @@ target_link_libraries(rtac_cuda PUBLIC
     ${CUDA_LIBRARIES}
     rtac_base
 )
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_generate_ptx.cmake)
 
 if(BUILD_TESTS)
     add_subdirectory(tests)
