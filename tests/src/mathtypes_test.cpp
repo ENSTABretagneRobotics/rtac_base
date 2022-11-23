@@ -7,15 +7,15 @@ using namespace rtac::indexing;
 
 int main()
 {
-    rtac::Pose<float> pose;
+    rtac::Pose<float> pose = rtac::Pose<float>::Identity();
     cout << pose << endl;
     cout << pose.rotation_matrix() << endl << endl;
     cout << pose.homogeneous_matrix() << endl << endl;
     cout << endl;
     
     rtac::Matrix3<float> m = rtac::Matrix3<float>::Random();
-    auto pose2 = rtac::Pose<float>::from_rotation_matrix(
-        m, rtac::Vector3<float>());
+    auto pose2 = rtac::Pose<float>::make(m, rtac::Vector3<float>());
+    pose2.normalize();
     cout << "Random :\n" << m << endl;
     cout << "Pose :\n" << pose2 << endl;
     cout << "Check :\n" << pose2.rotation_matrix()*pose2.rotation_matrix().transpose() << endl;

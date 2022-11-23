@@ -50,7 +50,7 @@ int main()
     cout << pc2;
     
     cout << pc0.pose() << endl;
-    pc0.set_pose(Pose<float>({1,2,3}, {0,1,0,0}));
+    pc0.set_pose(Pose<float>::make(Pose<float>::Vec3{1,2,3}));
     cout << pc0.pose() << endl;
 
     return 0;

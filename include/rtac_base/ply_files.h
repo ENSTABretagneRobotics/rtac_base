@@ -58,10 +58,12 @@ Pose<T> get_pose(happly::PLYData& data, const std::string& name)
     res.translation()(0)  = element.getProperty<T>("x")[0];
     res.translation()(1)  = element.getProperty<T>("y")[0];
     res.translation()(2)  = element.getProperty<T>("z")[0];
-    res.orientation().w() = element.getProperty<T>("qw")[0];
-    res.orientation().x() = element.getProperty<T>("qx")[0];
-    res.orientation().y() = element.getProperty<T>("qy")[0];
-    res.orientation().z() = element.getProperty<T>("qz")[0];
+    typename Pose<T>::Quat q;
+    q.w() = element.getProperty<T>("qw")[0];
+    q.x() = element.getProperty<T>("qx")[0];
+    q.y() = element.getProperty<T>("qy")[0];
+    q.z() = element.getProperty<T>("qz")[0];
+    res.set_orientation(q);
     return res;
 }
 
@@ -75,10 +77,12 @@ void add_pose(happly::PLYData& data, const Pose<T>& pose,
     std::vector<T> px({pose.translation()(0)});
     std::vector<T> py({pose.translation()(1)});
     std::vector<T> pz({pose.translation()(2)});
-    std::vector<T> pqw({pose.orientation().w()});
-    std::vector<T> pqx({pose.orientation().x()});
-    std::vector<T> pqy({pose.orientation().y()});
-    std::vector<T> pqz({pose.orientation().z()});
+
+    auto q = pose.quaternion();
+    std::vector<T> pqw({q.w()});
+    std::vector<T> pqx({q.x()});
+    std::vector<T> pqy({q.y()});
+    std::vector<T> pqz({q.z()});
     element.addProperty("x", px);
     element.addProperty("y", py);
     element.addProperty("z", pz);

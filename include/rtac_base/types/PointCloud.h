@@ -331,8 +331,8 @@ template <typename PointCloudT>
 typename PointCloud<PointCloudT>::Pose PointCloud<PointCloudT>::pose() const
 {
     using namespace rtac::indexing;
-    return Pose(pointCloud_->sensor_origin_(seqN(0,3)),
-                pointCloud_->sensor_orientation_);
+    return Pose::make(pointCloud_->sensor_orientation_,
+                      pointCloud_->sensor_origin_(seqN(0,3)));
 }
 
 template <typename PointCloudT>

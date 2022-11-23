@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include <rtac_base/cuda_defines.h>
 #include <rtac_base/types/common.h>
 #include <rtac_base/geometry.h>
 
@@ -11,11 +12,7 @@ namespace rtac {
 /**
  * Represent a full 3D pose (position and orientation).
  *
- * The pose is represented with a 3D vector and a Quaternion.  Can be inverted,
- * composed with another Pose, built from and converted to a 4D homogeneous
- * matrix... Usefull to represent position of a sensor or of a robot while not
- * using a full flegded robotics Framework. Built on
- * [Eigen](https://eigen.tuxfamily.org/) types.
+ * The Pose is represented by a 3D rotation matrix and a translation. 
  *
  * In this class (and in the RTAC framework in general), the right-hand
  * convension is used for homogeneous coordinates and matrices.
@@ -28,166 +25,120 @@ namespace rtac {
  * @tparam T Base scalar type (float, double, ...)
 */
 template <typename T>
-class Pose
+struct Pose
 {
-    public:
-
-    using Vec3       = Vector3<T>;
+    using Mat3 = Matrix3<T>;
+    using Vec3 = Vector3<T>;
+    using Mat4 = Matrix4<T>;
+    using Vec4 = Vector4<T>;
     using Quat = Quaternion<T>;
-    using Mat3       = Matrix3<T>;
-    using Mat4       = Matrix4<T>;
 
-    protected:
-    
-    Vec3 translation_;
-    Quat orientation_;
+    Mat3 r_;
+    Vec3 t_;
 
-    public:
+    RTAC_HOSTDEVICE static Pose make(const Mat3& r, const Vec3& t = Vec3(0,0,0));
+    RTAC_HOSTDEVICE static Pose make(const Vec3& t);
+    RTAC_HOSTDEVICE static Pose make(const Mat4& homogeneousMatrix);
+    RTAC_HOSTDEVICE static Pose make(const Quat& q, const Vec3& t = Vec3(0,0,0));
+    RTAC_HOSTDEVICE static Pose Identity();
 
-    static Pose<T> from_homogeneous_matrix(const Mat4& h);
-    static Pose<T> from_rotation_matrix(const Mat3& r,
-                                        const Vec3& t = {0,0,0});
-    
-    Pose(const Vec3& translation = Vec3(0,0,0),
-         const Quat& orientation = Quat(1,0,0,0));
+    RTAC_HOSTDEVICE Pose& normalize(T tol = 1.0e-6) {
+        r_ = geometry::orthonormalized(r_);
+        return *this;
+    }
 
-    void set_translation(const Vec3& t);
-    void set_orientation(const Quat& q);
-    void set_orientation(const Mat3& r);
+    RTAC_HOSTDEVICE const Mat3& orientation() const { return r_; }
+    RTAC_HOSTDEVICE const Vec3& translation() const { return t_; }
+    RTAC_HOSTDEVICE Mat3&       orientation()       { return r_; }
+    RTAC_HOSTDEVICE Vec3&       translation()       { return t_; }
 
-    const Vec3&       translation() const;
-    const Quat& orientation() const;
+    RTAC_HOSTDEVICE T  x() const { return t_(0); }
+    RTAC_HOSTDEVICE T  y() const { return t_(1); }
+    RTAC_HOSTDEVICE T  z() const { return t_(2); }
+    RTAC_HOSTDEVICE T& x()       { return t_(0); }
+    T& y()       { return t_(1); }
+    T& z()       { return t_(2); }
 
-    Vec3&       translation();
-    Quat& orientation();
+    RTAC_HOSTDEVICE void set_orientation(const Mat3& r) { r_ = r; }
+    RTAC_HOSTDEVICE void set_orientation(const Quat& q) { r_ = q.toRotationMatrix(); }
+    RTAC_HOSTDEVICE void set_translation(const Vec3& t) { t_ = t; }
 
-    Matrix3<T> rotation_matrix()    const;
-    Matrix4<T> homogeneous_matrix() const;
+    RTAC_HOSTDEVICE Mat3 rotation_matrix()    const { return r_;  }
+    RTAC_HOSTDEVICE Quat quaternion()         const { return Quat(r_); }
+    RTAC_HOSTDEVICE Mat4 homogeneous_matrix() const {
+        Mat4 res;
+        res(Eigen::seqN(0,3), Eigen::seqN(0,3)) = r_;
+        res(Eigen::seqN(0,3), 3)                = t_;
+        res(3, Eigen::seqN(0,4)) << 0,0,0,1;
+        return res;
+    }
 
-    Pose<T>& operator*=(const Pose<T>& rhs);
-    Pose<T>  inverse() const;
+    RTAC_HOSTDEVICE Pose& invert() {
+        t_ = r_.transpose()*t_;
+        r_.transposeInPlace();
+        return *this;
+    }
+    RTAC_HOSTDEVICE Pose inverse() const { 
+        Pose inv;
+        inv.t_ = r_.transpose()*t_;
+        inv.r_ = r_.transpose();
+        return inv;
+    }
 
-    Pose<T>& look_at(const Vector3<T>& target,
-                     const Vector3<T>& position,
-                     const Vector3<T>& up = Vector3<T>({0,0,1}));
+    RTAC_HOSTDEVICE Pose& operator*=(const Pose& rhs) {
+        t_ = r_*rhs.t_ + t_;
+        r_ = r_ * rhs.r_;
+        return *this;
+    }
 
-    T angle() const;
+    RTAC_HOSTDEVICE Pose operator*(const Pose& rhs) const { 
+        Pose res = *this;
+        return res *= rhs;
+    }
+    RTAC_HOSTDEVICE Mat3 operator*(const Mat3& rhs) const { return r_ * rhs;      }
+    RTAC_HOSTDEVICE Vec3 operator*(const Vec3& rhs) const { return r_ * rhs + t_; }
+    RTAC_HOSTDEVICE Vec4 operator*(const Vec4& rhs) const {
+        Vec4 res;
+        res(Eigen::seqN(0,3)) = r_*rhs(Eigen::seqN(0,3)) + rhs(3)*t_;
+        return res;
+    }
 
-    T x() const { return translation_(0); }
-    T y() const { return translation_(1); }
-    T z() const { return translation_(2); }
-
-    T qw() const { return orientation_.w(); }
-    T qx() const { return orientation_.x(); }
-    T qy() const { return orientation_.y(); }
-    T qz() const { return orientation_.z(); }
+    RTAC_HOSTDEVICE Pose& look_at(const Vec3& target,
+                                  const Vec3& position,
+                                  const Vec3& up = Vec3({0,0,1}));
+    RTAC_HOSTDEVICE T angle() const { return Eigen::AngleAxis<T>(r_).angle(); }
 };
 
-// class definition
-template <typename T>
-Pose<T>::Pose(const Vec3& translation, const Quat& orientation) :
-    translation_(translation),
-    orientation_(orientation)
-{}
-
-template <typename T>
-Pose<T> Pose<T>::from_rotation_matrix(const Mat3& r,
-                                      const Vec3& t)
-{
-    return Pose<T>(t, Quat(rtac::geometry::orthonormalized(r)));
+template <typename T> RTAC_HOSTDEVICE
+Pose<T> Pose<T>::make(const Mat3& r, const Vec3& t)
+{ 
+    return Pose<T>{r,t};
 }
 
-template <typename T>
-Pose<T> Pose<T>::from_homogeneous_matrix(const Mat4& h)
+template <typename T> RTAC_HOSTDEVICE Pose<T> Pose<T>::make(const Vec3& t)
 {
-    return from_rotation_matrix(h.block(0,0,3,3),
-                                h(indexing::seqN(0,3), 3));
+    return Pose<T>{Mat3::Identity(), t};
 }
 
-template <typename T>
-void Pose<T>::set_translation(const Vec3& t)
+template <typename T> RTAC_HOSTDEVICE
+Pose<T> Pose<T>::make(const Mat4& homogeneousMatrix)
 {
-    translation_ = t;
+    Pose res;
+    res.r_ = homogeneousMatrix(Eigen::seqN(0,3), Eigen::seqN(0,3));
+    res.t_ = homogeneousMatrix(Eigen::seqN(0,3), 3);
+    return res;
 }
 
-template <typename T>
-void Pose<T>::set_orientation(const Quat& q)
+template <typename T> RTAC_HOSTDEVICE
+Pose<T> Pose<T>::make(const Quat& q, const Vec3& t)
 {
-    orientation_ = q.normalized();
+    return Pose{Mat3(q), t};
 }
 
-template <typename T>
-void Pose<T>::set_orientation(const Mat3& r)
+template <typename T> RTAC_HOSTDEVICE
+Pose<T> Pose<T>::Identity()
 {
-    orientation_ = rtac::geometry::orthonormalized(r);
-}
-
-template <typename T>
-const typename Pose<T>::Vec3& Pose<T>::translation() const
-{
-    return translation_;
-}
-
-template <typename T>
-const typename Pose<T>::Quat& Pose<T>::orientation() const
-{
-    return orientation_;
-}
-
-template <typename T>
-typename Pose<T>::Vec3& Pose<T>::translation()
-{
-    return translation_;
-}
-
-template <typename T>
-typename Pose<T>::Quat& Pose<T>::orientation()
-{
-    return orientation_;
-}
-
-
-template <typename T>
-typename Pose<T>::Mat3 Pose<T>::rotation_matrix() const
-{
-    return orientation_.toRotationMatrix();
-}
-
-template <typename T>
-typename Pose<T>::Mat4 Pose<T>::homogeneous_matrix() const
-{
-    using namespace rtac::indexing;
-    Matrix4<T> H;
-    H(seqN(0,3), seqN(0,3)) = orientation_.toRotationMatrix();
-    H(seqN(0,3), last)      = translation_;
-    H(3,0) = 0; H(3,1) = 0; H(3,2) = 0; H(3,3) = 1;
-    return H;
-}
-
-/**
- * Pose composition.
- * 
- * This Pose is right multiplied by rhs.
- *
- * \f[ H_{this} = H_{this} . H_{rhs}\f]
- *
- * @param A Pose for this to be right multiplied with.
- *
- * @return A reference to this after multiplication.
- */
-template <typename T>
-Pose<T>& Pose<T>::operator*=(const Pose<T>& rhs)
-{
-    this->set_translation(this->orientation()*rhs.translation() + this->translation());
-    this->set_orientation(this->orientation()*rhs.orientation());
-    return *this;
-}
-
-template <typename T>
-Pose<T> Pose<T>::inverse() const
-{
-    Quat qinv = orientation_.inverse();
-    return Pose<T>(-(qinv*translation_), qinv);
+    return Pose{Mat3::Identity(), Vec3(0,0,0)};
 }
 
 /**
@@ -207,54 +158,21 @@ Pose<T> Pose<T>::inverse() const
  * @param position The new position of this Pose.
  * @param up       The top direction (top of screen for 3D rendering).
  */
-template <typename T>
-Pose<T>& Pose<T>::look_at(const Vector3<T>& target,
-                          const Vector3<T>& position,
-                          const Vector3<T>& up)
+template <typename T> RTAC_HOSTDEVICE
+Pose<T>& Pose<T>::look_at(const Pose<T>::Vec3& target,
+                          const Pose<T>::Vec3& position,
+                          const Pose<T>::Vec3& up)
 {
-    *this = Pose<T>::from_rotation_matrix(geometry::look_at(target, position, up),
-                                          position);
+    *this = Pose<T>::make(geometry::look_at(target, position, up), position);
     return *this;
 }
 
-template <typename T>
-T Pose<T>::angle() const
-{
-    return std::asin(Vec3({orientation_.x(),
-                           orientation_.y(),
-                           orientation_.z()}).norm());
-}
-
-using Posef = Pose<float>;
-using Posed = Pose<double>;
-
 }; // namespace rtac
-
-template<typename T>
-rtac::Pose<T> operator*(const rtac::Pose<T>& lhs, const rtac::Pose<T>& rhs)
-{
-    return rtac::Pose<T>(lhs.translation() + lhs.orientation() * rhs.translation(),
-                         lhs.orientation() * rhs.orientation());
-}
-
-template<typename T>
-rtac::Pose<T> operator*(const rtac::Pose<T>& lhs,
-                        const typename rtac::Pose<T>::Quat& q)
-{
-    return rtac::Pose<T>(lhs.translation(), lhs.orientation() * q);
-}
-
-template<typename T>
-rtac::Pose<T> operator*(const typename rtac::Pose<T>::Quat& q,
-                        const rtac::Pose<T>& rhs)
-{
-    return rtac::Pose<T>(q*rhs.translation(), q*rhs.orientation());
-}
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const rtac::Pose<T>& pose) {
     os <<   "t : (" << pose.translation().transpose() << ")"
-       << ", r : " << pose.orientation();
+       << ", r : " << pose.quaternion();
     return os;
 }
 

@@ -14,7 +14,7 @@ int main()
     auto data = ply::New();
     cout << data << endl;
 
-    ply::add_pose(data, Pose<float>({1,2,3},{1,2,3,4}));
+    ply::add_pose(data, Pose<float>::Identity());
     ply::add_shape(data, Shape<uint32_t>({256,480}));
     ply::add_rectangle(data, Rectangle<double>({1,2,3,4}));
     std::ostringstream oss;
