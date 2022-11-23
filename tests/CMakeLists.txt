@@ -1,51 +1,40 @@
-list(APPEND test_names
-    misc_test.cpp
-    files_test.cpp
-    mathtypes_test.cpp
-    geometry_test.cpp
-    ply_files_test.cpp
-    image_test.cpp
-    mesh.cpp
-    pointcloud_test.cpp
-    mappedpointer_test.cpp
-    buildtarget_test.cpp
-    vector_view.cpp
-    complex_test.cpp
-    bounds_test.cpp
-
-    ppmformat_test.cpp
-    nmea_utils.cpp
-    navigation_test.cpp
+list(APPEND test_files
+    src/misc_test.cpp
+    src/files_test.cpp
+    src/mathtypes_test.cpp
+    src/geometry_test.cpp
+    src/ply_files_test.cpp
+    src/image_test.cpp
+    src/mesh.cpp
+    src/pointcloud_test.cpp
+    src/mappedpointer_test.cpp
+    src/buildtarget_test.cpp
+    src/vector_view.cpp
+    src/complex_test.cpp
+    src/bounds_test.cpp
+    src/ppmformat_test.cpp
+    src/nmea_utils.cpp
+    src/navigation_test.cpp
 )
 
 list(APPEND test_deps
     rtac_base
 )
 
-find_package(matplotlib_cpp)
+find_package(matplotlib_cpp QUIET)
 if(TARGET matplotlib_cpp::matplotlib_cpp)
-    list(APPEND test_names
-        interpolation_test.cpp
-    )
-    
-    list(APPEND test_deps
-        matplotlib_cpp::matplotlib_cpp
-    )
+    list(APPEND test_files src/interpolation_test.cpp )
+    list(APPEND test_deps matplotlib_cpp::matplotlib_cpp)
 else()
     message(WARNING "matplotlib_cpp not found : cannot build interpolation_test")
 endif()
 
-foreach(name ${test_names})
+foreach(filename ${test_files})
+    get_filename_component(name ${filename} NAME_WE)
+    set(target_name ${name}_${PROJECT_NAME})
 
-    # Generating a unique target name to avoid name colision with other rtac
-    # packages.
-    get_filename_component(executable_name ${name} NAME_WE)
-    set(test_target_name ${PROJECT_NAME}_test_${executable_name})
-
-    add_executable(${test_target_name} src/${name})
-    target_link_libraries(${test_target_name} ${test_deps})
-    set_target_properties(${test_target_name} PROPERTIES OUTPUT_NAME ${executable_name})
-
-endforeach(name)
+    add_executable(${target_name} ${filename})
+    target_link_libraries(${target_name} ${test_deps})
+endforeach()
 
 add_subdirectory(external)
