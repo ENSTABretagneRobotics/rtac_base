@@ -27,30 +27,34 @@ namespace rtac {
 template <typename T>
 struct Pose
 {
-    using Mat3 = Matrix3<T>;
-    using Vec3 = Vector3<T>;
-    using Mat4 = Matrix4<T>;
-    using Vec4 = Vector4<T>;
-    using Quat = Quaternion<T>;
+    using Mat3 = Eigen::Matrix3<T>;
+    using Vec3 = Eigen::Vector3<T>;
+    using Mat4 = Eigen::Matrix4<T>;
+    using Vec4 = Eigen::Vector4<T>;
+    using Quat = Eigen::Quaternion<T>;
 
     Mat3 r_;
     Vec3 t_;
 
-    RTAC_HOSTDEVICE static Pose make(const Mat3& r, const Vec3& t = Vec3(0,0,0));
-    RTAC_HOSTDEVICE static Pose make(const Vec3& t);
-    RTAC_HOSTDEVICE static Pose make(const Mat4& homogeneousMatrix);
-    RTAC_HOSTDEVICE static Pose make(const Quat& q, const Vec3& t = Vec3(0,0,0));
-    RTAC_HOSTDEVICE static Pose Identity();
+    RTAC_HOSTDEVICE Pose() : r_(Mat3::Identity()), t_(0,0,0) {}
+
+    template <class D0, class D1> RTAC_HOSTDEVICE 
+    Pose(const Eigen::DenseBase<D0>& r, const Eigen::DenseBase<D1>& t) : r_(r), t_(t) {}
+
+    RTAC_HOSTDEVICE static Pose Identity() { return Pose(); }
 
     RTAC_HOSTDEVICE Pose& normalize(T tol = 1.0e-6) {
         r_ = geometry::orthonormalized(r_);
         return *this;
     }
 
-    RTAC_HOSTDEVICE const Mat3& orientation() const { return r_; }
-    RTAC_HOSTDEVICE const Vec3& translation() const { return t_; }
-    RTAC_HOSTDEVICE Mat3&       orientation()       { return r_; }
-    RTAC_HOSTDEVICE Vec3&       translation()       { return t_; }
+    RTAC_HOSTDEVICE const Mat3& orientation()     const { return r_; }
+    RTAC_HOSTDEVICE const Vec3& translation()     const { return t_; }
+    RTAC_HOSTDEVICE const Mat3& rotation_matrix() const { return r_;  }
+    RTAC_HOSTDEVICE Mat3&       orientation()           { return r_; }
+    RTAC_HOSTDEVICE Vec3&       translation()           { return t_; }
+    RTAC_HOSTDEVICE Mat3&       rotation_matrix()       { return r_;  }
+
 
     RTAC_HOSTDEVICE T  x() const { return t_(0); }
     RTAC_HOSTDEVICE T  y() const { return t_(1); }
@@ -63,7 +67,6 @@ struct Pose
     RTAC_HOSTDEVICE void set_orientation(const Quat& q) { r_ = q.toRotationMatrix(); }
     RTAC_HOSTDEVICE void set_translation(const Vec3& t) { t_ = t; }
 
-    RTAC_HOSTDEVICE Mat3 rotation_matrix()    const { return r_;  }
     RTAC_HOSTDEVICE Quat quaternion()         const { return Quat(r_); }
     RTAC_HOSTDEVICE Mat4 homogeneous_matrix() const {
         Mat4 res;
@@ -107,21 +110,38 @@ struct Pose
                                   const Vec3& position,
                                   const Vec3& up = Vec3({0,0,1}));
     RTAC_HOSTDEVICE T angle() const { return Eigen::AngleAxis<T>(r_).angle(); }
+    
+
+    // below a creation helpers
+    template <class D0, class D1 = Vec3> RTAC_HOSTDEVICE 
+    static Pose from_rotation_matrix(const Eigen::DenseBase<D0>& r,
+                                     const Eigen::DenseBase<D1>& t = Vec3(0,0,0));
+
+    template <class D> RTAC_HOSTDEVICE
+    static Pose from_translation(const Eigen::DenseBase<D>& t);
+
+    template <class D> RTAC_HOSTDEVICE
+    static Pose from_homogeneous_matrix(const Eigen::DenseBase<D>& homogeneousMatrix);
+
+    template <class D = Vec3> RTAC_HOSTDEVICE
+    static Pose from_quaternion(const Quat& q, const Eigen::DenseBase<D>& t = Vec3(0,0,0));
 };
 
-template <typename T> RTAC_HOSTDEVICE
-Pose<T> Pose<T>::make(const Mat3& r, const Vec3& t)
+template<typename T>template <class D0, class D1> RTAC_HOSTDEVICE 
+Pose<T> Pose<T>::from_rotation_matrix(const Eigen::DenseBase<D0>& r,
+                                      const Eigen::DenseBase<D1>& t)
 { 
     return Pose<T>{r,t};
 }
 
-template <typename T> RTAC_HOSTDEVICE Pose<T> Pose<T>::make(const Vec3& t)
+template <typename T> template <class D> RTAC_HOSTDEVICE
+Pose<T> Pose<T>::from_translation(const Eigen::DenseBase<D>& t)
 {
     return Pose<T>{Mat3::Identity(), t};
 }
 
-template <typename T> RTAC_HOSTDEVICE
-Pose<T> Pose<T>::make(const Mat4& homogeneousMatrix)
+template <typename T> template <class D> RTAC_HOSTDEVICE
+Pose<T> Pose<T>::from_homogeneous_matrix(const Eigen::DenseBase<D>& homogeneousMatrix)
 {
     Pose res;
     res.r_ = homogeneousMatrix(Eigen::seqN(0,3), Eigen::seqN(0,3));
@@ -129,16 +149,10 @@ Pose<T> Pose<T>::make(const Mat4& homogeneousMatrix)
     return res;
 }
 
-template <typename T> RTAC_HOSTDEVICE
-Pose<T> Pose<T>::make(const Quat& q, const Vec3& t)
+template <typename T> template <class D> RTAC_HOSTDEVICE
+Pose<T> Pose<T>::from_quaternion(const Quat& q, const Eigen::DenseBase<D>& t)
 {
     return Pose{Mat3(q), t};
-}
-
-template <typename T> RTAC_HOSTDEVICE
-Pose<T> Pose<T>::Identity()
-{
-    return Pose{Mat3::Identity(), Vec3(0,0,0)};
 }
 
 /**
@@ -163,7 +177,8 @@ Pose<T>& Pose<T>::look_at(const Pose<T>::Vec3& target,
                           const Pose<T>::Vec3& position,
                           const Pose<T>::Vec3& up)
 {
-    *this = Pose<T>::make(geometry::look_at(target, position, up), position);
+    *this = Pose<T>::from_rotation_matrix(geometry::look_at(target, position, up),
+                                          position);
     return *this;
 }
 

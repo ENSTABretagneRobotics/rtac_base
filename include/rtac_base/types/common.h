@@ -8,6 +8,8 @@
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 
+#include <rtac_base/cuda_defines.h>
+
 namespace rtac {
 
 template <class ... Types>
@@ -46,6 +48,77 @@ namespace indexing {
     using namespace Eigen::indexing;
 }
 
+
+namespace details {
+
+template <int Rows, int Cols>
+struct EigenFetchVectorElement {
+    static_assert(Rows == 1 || Cols == 1, "Not an Eigen vector expression");
+    //template <typename Derived> RTAC_HOSTDEVICE constexpr static
+    //auto fetch(const Eigen::DenseBase<Derived>& m, int index) {
+    //    return m(index,0);
+    //}
+    //template <typename Derived> RTAC_HOSTDEVICE constexpr static
+    //auto& fetch(Eigen::DenseBase<Derived>& m, int index) {
+    //    return m(index,0);
+    //}
+};
+
+template <int Cols>
+struct EigenFetchVectorElement<1,Cols> {
+    template <typename Derived> RTAC_HOSTDEVICE constexpr static
+    auto  fetch(const Eigen::DenseBase<Derived>& m, int index) {
+        return m(0,index);
+    }
+    template <typename Derived> RTAC_HOSTDEVICE constexpr static
+    auto& fetch(Eigen::DenseBase<Derived>& m, int index) {
+        return m(0,index);
+    }
+};
+
+template <int Rows>
+struct EigenFetchVectorElement<Rows,1> {
+    template <typename Derived> RTAC_HOSTDEVICE constexpr static
+    auto  fetch(const Eigen::DenseBase<Derived>& m, int index) {
+        return m(index,0);
+    }
+    template <typename Derived> RTAC_HOSTDEVICE constexpr static
+    auto& fetch(Eigen::DenseBase<Derived>& m, int index) {
+        return m(index,0);
+    }
+};
+
+//template <>
+//struct EigenFetchVectorElement<-1,-1> {
+//    template <typename Derived> RTAC_HOSTDEVICE constexpr static
+//    auto  fetch(const Eigen::DenseBase<Derived>& m, int index) {
+//        if(m.cols() == 1) {
+//        }
+//        else if(m.rows() == 1) {
+//        }
+//        return m(index,0);
+//    }
+//    template <typename Derived> RTAC_HOSTDEVICE constexpr static
+//    auto& fetch(Eigen::DenseBase<Derived>& m, int index) {
+//        return m(index,0);
+//    }
+//};
+
+}
+
+template <typename Derived> RTAC_HOSTDEVICE constexpr
+auto vector_get(const Eigen::DenseBase<Derived>& m, int index) {
+    using Fetcher = details::EigenFetchVectorElement<Derived::RowsAtCompileTime,
+                                                     Derived::ColsAtCompileTime>;
+    return Fetcher::fetch(m, index);
+}
+
+template <typename Derived> RTAC_HOSTDEVICE constexpr
+auto& vector_get(Eigen::DenseBase<Derived>& m, int index) {
+    using Fetcher = details::EigenFetchVectorElement<Derived::RowsAtCompileTime,
+                                                     Derived::ColsAtCompileTime>;
+    return Fetcher::fetch(m, index);
+}
 
 }; // namespace rtac
 

@@ -1,390 +1,178 @@
 #ifndef _DEF_RTAC_CUDA_GEOMETRY_H_
 #define _DEF_RTAC_CUDA_GEOMETRY_H_
 
-#include <iostream>
-#include <iomanip>
-#include <array>
-
-#include <rtac_base/types/Pose.h>
-#include <rtac_base/geometry.h>
-#include <rtac_base/cuda_defines.h>
-#include <rtac_base/cuda/utils.h>
 #include <rtac_base/cuda/vec_math.h>
+#include <Eigen/Dense>
 
-namespace rtac { namespace cuda {
+#include <rtac_base/types/common.h>
+#include <rtac_base/geometry.h>
+#include <rtac_base/types/Pose.h>
 
-/**
- * Column-major encoded 2x2 matrix (for ease of use in CUDA device code).
- */
-template <typename T>
-struct Matrix2 {
-
-    std::array<T,4> data_;
-
-    static Matrix2<T> Identity() {
-        return Matrix2<T>{1,0,
-                          0,1};
-    }
-
-    T*       data()       { return data_.data(); }
-    const T* data() const { return data_.data(); }
-    
-    // This should enable compile-time computation of linear array index from
-    // pair of matrix indexes.
-    RTAC_HOSTDEVICE static constexpr uint32_t linear_index(uint32_t row, uint32_t col) {
-        return row + 2*col;
-    }
-    RTAC_HOSTDEVICE T& operator()(uint32_t row, uint32_t col) { 
-        return data_[linear_index(row, col)];
-    }
-    RTAC_HOSTDEVICE T  operator()(uint32_t row, uint32_t col) const { 
-        return data_[linear_index(row, col)];
-    }
-
-    RTAC_HOSTDEVICE Matrix2<T>& operator*=(T a) {
-        data_[0] *= a;
-        data_[1] *= a;
-        data_[2] *= a;
-        data_[3] *= a;
-        return *this;
-    }
-    RTAC_HOSTDEVICE Matrix2<T>& operator*=(const Matrix2<T>& rhs) {
-        T tmp0, tmp1;
-
-        tmp0 = (*this)(0,0); tmp1 = (*this)(0,1);
-        (*this)(0,0) = tmp0*rhs(0,0) + tmp1*rhs(1,0);
-        (*this)(0,1) = tmp0*rhs(0,1) + tmp1*rhs(1,1);
-
-        tmp0 = (*this)(1,0); tmp1 = (*this)(1,1);
-        (*this)(1,0) = tmp0*rhs(0,0) + tmp1*rhs(1,0);
-        (*this)(1,1) = tmp0*rhs(0,1) + tmp1*rhs(1,1);
-
-        return *this;
-    }
-
-    RTAC_HOSTDEVICE Matrix2<T> operator*(const Matrix2<T>& B) const {
-        const Matrix2<T>& A = *this;
-        Matrix2<T> C;
-
-        C(0,0) = A(0,0)*B(0,0) + A(0,0)*B(0,1);
-        C(0,1) = A(0,1)*B(1,0) + A(0,1)*B(1,1);
-
-        C(1,0) = A(1,0)*B(0,0) + A(1,0)*B(0,1);
-        C(1,1) = A(1,1)*B(1,0) + A(1,1)*B(1,1);
-
-        return C;
-    }
-    RTAC_HOSTDEVICE float2 operator*(const float2& v) const {
-        const Matrix2<T>& A = *this;
-        return float2{A(0,0)*v.x + A(0,1)*v.y,
-                      A(1,0)*v.x + A(1,1)*v.y};
-    }
-    RTAC_HOSTDEVICE Matrix2<T> operator*(T a) const {
-        return Matrix2<T>(*this) *= a;
-    }
-    
-    RTAC_HOSTDEVICE Matrix2<T>& transpose() {
-        std::swap((*this)(1,0), (*this)(0,1));
-        return *this;
-    }
-    
-    RTAC_HOSTDEVICE Matrix2<T> transposed() const {
-        return Matrix2<T>{(*this)(0,0), (*this)(0,1),
-                          (*this)(1,0), (*this)(1,1)};
-    }
-
-    Matrix2<T>& operator=(const Eigen::Matrix2<T>& mat) {
-        Eigen::Map<Eigen::Matrix2<T>>(this->data()) = mat;
-        return *this;
-    }
-};
-
-template <typename T>
-struct DevicePose2 {
-
-    Matrix2<T> R_;
-    float2     T_;
-
-    static RTAC_HOSTDEVICE DevicePose2 Identity() { 
-        return DevicePose2<T>{Matrix2<T>::Identity(), {0,0}}; }
-
-    RTAC_HOSTDEVICE Matrix2<T>  rotation_matrix() const { return R_; }
-    RTAC_HOSTDEVICE Matrix2<T>& rotation_matrix()       { return R_; }
-    RTAC_HOSTDEVICE float2      translation() const     { return T_; }
-    RTAC_HOSTDEVICE float2&     translation()           { return T_; }
-
-    RTAC_HOSTDEVICE DevicePose2<T>& operator*=(const DevicePose2<T>& rhs) {
-        this->translation()     += this->rotation_matrix()*rhs.translation();
-        this->rotation_matrix() *= rhs.rotation_matrix();
-        return *this;
-    }
-    RTAC_HOSTDEVICE DevicePose2<T> inverse() const {
-        // Rotation matrix inversion is transposition
-        DevicePose2<T> res;
-        res.rotation_matrix() = this->rotation_matrix().transpose();
-        res.translation() = -(res.rotation_matrix() * this->translation());
-        return res;
-    }
-    RTAC_HOSTDEVICE float2 operator*(const float2& v) const {
-        return this->to_world_frame(v);
-    }
-    RTAC_HOSTDEVICE DevicePose2 operator*(const DevicePose2& other) const {
-        return DevicePose2(*this) *= other;
-    }
-    RTAC_HOSTDEVICE float2 to_world_frame(const float2& v) const {
-        return this->rotation_matrix()*v + this->translation();
-    }
-    RTAC_HOSTDEVICE float2 to_local_frame(const float2& v) const {
-        return this->rotation_matrix().transposed()*(v - this->translation());
-    }
-    
-    // This finds an othonormal matrix close to R_
-    void sanities() {
-        Eigen::Matrix2<T> tmp = Eigen::Map<Eigen::Matrix2<T>>(R_.data());
-        R_ = rtac::geometry::orthonormalized(tmp); 
-    }
-};
-
-/**
- * Column-major encoded 3x3 matrix (for ease of use in CUDA device code).
- */
-template <typename T>
-struct Matrix3 {
-
-    std::array<T,9> data_;
-
-    static Matrix3<T> Identity() {
-        return Matrix3<T>{1,0,0,
-                          0,1,0,
-                          0,0,1};
-    }
-
-    T*       data()       { return data_.data(); }
-    const T* data() const { return data_.data(); }
-    
-    // This should enable compile-time computation of linear array index from
-    // pair of matrix indexes.
-    RTAC_HOSTDEVICE static constexpr uint32_t linear_index(uint32_t row, uint32_t col) {
-        return row + 3*col;
-    }
-    RTAC_HOSTDEVICE T& operator()(uint32_t row, uint32_t col) { 
-        return data_[linear_index(row, col)];
-    }
-    RTAC_HOSTDEVICE T  operator()(uint32_t row, uint32_t col) const { 
-        return data_[linear_index(row, col)];
-    }
-
-    RTAC_HOSTDEVICE Matrix3<T>& operator*=(const Matrix3<T>& rhs) {
-        T tmp0, tmp1; // only two temp needed for processing;
-
-        tmp0 = (*this)(0,0); tmp1 = (*this)(0,1);
-        (*this)(0,0) = tmp0*rhs(0,0) + tmp1*rhs(1,0) + (*this)(0,2)*rhs(2,0);
-        (*this)(0,1) = tmp0*rhs(0,1) + tmp1*rhs(1,1) + (*this)(0,2)*rhs(2,1);
-        (*this)(0,2) = tmp0*rhs(0,2) + tmp1*rhs(1,2) + (*this)(0,2)*rhs(2,2);
-
-        tmp0 = (*this)(1,0); tmp1 = (*this)(1,1);
-        (*this)(1,0) = tmp0*rhs(0,0) + tmp1*rhs(1,0) + (*this)(1,2)*rhs(2,0);
-        (*this)(1,1) = tmp0*rhs(0,1) + tmp1*rhs(1,1) + (*this)(1,2)*rhs(2,1);
-        (*this)(1,2) = tmp0*rhs(0,2) + tmp1*rhs(1,2) + (*this)(1,2)*rhs(2,2);
-
-        tmp0 = (*this)(2,0); tmp1 = (*this)(2,1);
-        (*this)(2,0) = tmp0*rhs(0,0) + tmp1*rhs(1,0) + (*this)(2,2)*rhs(2,0);
-        (*this)(2,1) = tmp0*rhs(0,1) + tmp1*rhs(1,1) + (*this)(2,2)*rhs(2,1);
-        (*this)(2,2) = tmp0*rhs(0,2) + tmp1*rhs(1,2) + (*this)(2,2)*rhs(2,2);
-
-        return *this;
-    }
-    
-    RTAC_HOSTDEVICE Matrix3<T>& transpose() {
-        std::swap((*this)(1,0), (*this)(0,1));
-        std::swap((*this)(2,0), (*this)(0,2));
-        std::swap((*this)(2,1), (*this)(1,2));
-        return *this;
-    }
-    
-    RTAC_HOSTDEVICE Matrix3<T> transposed() const {
-        return Matrix3<T>{(*this)(0,0), (*this)(0,1), (*this)(0,2),
-                          (*this)(1,0), (*this)(1,1), (*this)(1,2),
-                          (*this)(2,0), (*this)(2,1), (*this)(2,2)};
-    }
-
-    Matrix3<T>& operator=(const Eigen::Matrix3<T>& mat) {
-        Eigen::Map<Eigen::Matrix3<T>>(this->data()) = mat;
-        return *this;
-    }
-};
-
-/**
- * This is a small type to ease frame changes for vectors on device side.
- *
- * The rotation matrix in encoded in column-major order to be consistent with
- * the Eigen library (it is also consistent with OpenGL)
- *
- * This type intentionally does not use CUDA specific types to be compatible
- * with a pure C++ file compiled with a regular C++ compiler.
- *
- * R_ and T_ attributes are the rotation matrix and translation vector you
- * would find in an homogeneous 4x4 transformation matrix.
- */
-template <typename T>
-struct DevicePose {
-
-    Matrix3<T> R_;
-    float3 T_;
-
-    static RTAC_HOSTDEVICE DevicePose Identity() { return DevicePose<T>{Matrix3<T>::Identity(), {0,0,0}}; }
-
-    RTAC_HOSTDEVICE Matrix3<T>  rotation_matrix() const { return R_; }
-    RTAC_HOSTDEVICE Matrix3<T>& rotation_matrix()       { return R_; }
-    RTAC_HOSTDEVICE float3      translation() const     { return T_; }
-    RTAC_HOSTDEVICE float3&     translation()           { return T_; }
-
-    RTAC_HOSTDEVICE DevicePose<T>& operator*=(const DevicePose<T>& rhs);
-    RTAC_HOSTDEVICE DevicePose<T> inverse() const;
-
-    RTAC_HOSTDEVICE float3 to_world_frame(const float3& v) const;
-    RTAC_HOSTDEVICE float3 to_local_frame(const float3& v) const;
-    
-    // This finds an othonormal matrix close to R_
-    void sanities() {
-        Eigen::Matrix3<T> tmp = Eigen::Map<Eigen::Matrix3<T>>(R_.data());
-        R_ = rtac::geometry::orthonormalized(tmp); 
-    }
-
-    DevicePose<T>& operator=(const rtac::Pose<T>& other) {
-        this->rotation_matrix() = other.rotation_matrix();
-        T_.x = other.x();
-        T_.y = other.y();
-        T_.z = other.z();
-        return *this;
-    }
-};
-
-template <typename T> RTAC_HOSTDEVICE
-inline DevicePose<T>& DevicePose<T>::operator*=(const DevicePose<T>& rhs)
-{
-    this->translation()     += this->rotation_matrix()*rhs.translation();
-    this->rotation_matrix() *= rhs.rotation_matrix();
-    return *this;
+template <typename Derived> RTAC_HOSTDEVICE inline
+float2 make_float2(const Eigen::MatrixBase<Derived>& other) {
+    return float2{rtac::vector_get(other, 0),
+                  rtac::vector_get(other, 1)};
 }
 
-template <typename T> RTAC_HOSTDEVICE
-inline DevicePose<T> DevicePose<T>::inverse() const
-{
-    // Rotation matrix inversion is transposition
-    DevicePose<T> res;
-    res.rotation_matrix() = this->rotation_matrix().transpose();
-    res.translation() = -(res.rotation_matrix() * this->translation());
-    return res;
+template <typename Derived> RTAC_HOSTDEVICE inline
+float3 make_float3(const Eigen::MatrixBase<Derived>& other) {
+    return float3{rtac::vector_get(other, 0),
+                  rtac::vector_get(other, 1),
+                  rtac::vector_get(other, 2)};
 }
 
-template <typename T> RTAC_HOSTDEVICE 
-inline float3 DevicePose<T>::to_world_frame(const float3& rhs) const
-{
-    return this->rotation_matrix()*rhs + this->translation();
+template <typename Derived> RTAC_HOSTDEVICE inline
+float4 make_float4(const Eigen::MatrixBase<Derived>& other) {
+    return float4{rtac::vector_get(other, 0),
+                  rtac::vector_get(other, 1),
+                  rtac::vector_get(other, 2),
+                  rtac::vector_get(other, 3)};
 }
 
-template <typename T> RTAC_HOSTDEVICE
-inline float3 DevicePose<T>::to_local_frame(const float3& rhs) const
-{
-    return this->rotation_matrix().transposed()*(rhs - this->translation());
+
+// These define common matrix operations between cuda vector types (float2/3/4)
+// and corresponding Eigen fixed size matrices.
+template <typename Derived> RTAC_HOSTDEVICE inline
+float2 operator*(const Eigen::MatrixBase<Derived>& lhs, const float2& rhs) {
+    EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+    EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 2 && Derived::ColsAtCompileTime == 2,
+                        THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+    return float2{(float)(lhs(0,0)*rhs.x + lhs(0,1)*rhs.y),
+                  (float)(lhs(1,0)*rhs.x + lhs(1,1)*rhs.y)};
+}
+template <typename Derived> RTAC_HOSTDEVICE inline
+float3 operator*(const Eigen::MatrixBase<Derived>& lhs, const float3& rhs) {
+    EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+    EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 3 && Derived::ColsAtCompileTime == 3,
+                        THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+    return float3{(float)(lhs(0,0)*rhs.x + lhs(0,1)*rhs.y + lhs(0,2)*rhs.z),
+                  (float)(lhs(1,0)*rhs.x + lhs(1,1)*rhs.y + lhs(1,2)*rhs.z),
+                  (float)(lhs(2,0)*rhs.x + lhs(2,1)*rhs.y + lhs(2,2)*rhs.z)};
+}
+template <typename Derived> RTAC_HOSTDEVICE inline
+float4 operator*(const Eigen::MatrixBase<Derived>& lhs, const float4& rhs) {
+    EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+    EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 4 && Derived::ColsAtCompileTime == 4,
+                        THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+    return float4{(float)(lhs(0,0)*rhs.x + lhs(0,1)*rhs.y + lhs(0,2)*rhs.z + lhs(0,3)*rhs.w),
+                  (float)(lhs(1,0)*rhs.x + lhs(1,1)*rhs.y + lhs(1,2)*rhs.z + lhs(1,3)*rhs.w),
+                  (float)(lhs(2,0)*rhs.x + lhs(2,1)*rhs.y + lhs(2,2)*rhs.z + lhs(2,3)*rhs.w),
+                  (float)(lhs(3,0)*rhs.x + lhs(3,1)*rhs.y + lhs(3,2)*rhs.z + lhs(3,3)*rhs.w)};
+}
+// vector*matrix multiplications are defined by transposition of the matrix*vector product
+template <typename Derived> RTAC_HOSTDEVICE inline
+float2 operator*(const float2& lhs, const Eigen::MatrixBase<Derived>& rhs) { return rhs.transpose()*lhs; }
+template <typename Derived> RTAC_HOSTDEVICE inline
+float3 operator*(const float3& lhs, const Eigen::MatrixBase<Derived>& rhs) { return rhs.transpose()*lhs; }
+template <typename Derived> RTAC_HOSTDEVICE inline
+float4 operator*(const float4& lhs, const Eigen::MatrixBase<Derived>& rhs) { return rhs.transpose()*lhs; }
+
+// operator+ between eigen and cuda vector types
+template <typename Derived> RTAC_HOSTDEVICE inline
+float2 operator+(const Eigen::MatrixBase<Derived>& lhs, const float2& rhs) {
+    EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+    EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 2 && Derived::ColsAtCompileTime == 1, 
+                    ||  Derived::RowsAtCompileTime == 1 && Derived::ColsAtCompileTime == 2
+                        THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+    return float2{(float)(lhs(0) + rhs.x),
+                  (float)(lhs(1) + rhs.y)};
+}
+template <typename Derived> RTAC_HOSTDEVICE inline
+float3 operator+(const Eigen::MatrixBase<Derived>& lhs, const float3& rhs) {
+    EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+    EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 3 && Derived::ColsAtCompileTime == 1, 
+                    ||  Derived::RowsAtCompileTime == 1 && Derived::ColsAtCompileTime == 3
+                        THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+    return float3{(float)(lhs(0) + rhs.x),
+                  (float)(lhs(1) + rhs.y),
+                  (float)(lhs(2) + rhs.z)};
+}
+template <typename Derived> RTAC_HOSTDEVICE inline
+float4 operator+(const Eigen::MatrixBase<Derived>& lhs, const float4& rhs) {
+    EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+    EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 4 && Derived::ColsAtCompileTime == 1, 
+                    ||  Derived::RowsAtCompileTime == 1 && Derived::ColsAtCompileTime == 4
+                        THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+    return float4{(float)(lhs(0) + rhs.x),
+                  (float)(lhs(1) + rhs.y),
+                  (float)(lhs(2) + rhs.z),
+                  (float)(lhs(3) + rhs.w)};
+}
+template <typename Derived> RTAC_HOSTDEVICE inline
+float2 operator+(const float2& lhs, const Eigen::MatrixBase<Derived>& rhs) { return rhs + lhs; }
+template <typename Derived> RTAC_HOSTDEVICE inline
+float3 operator+(const float3& lhs, const Eigen::MatrixBase<Derived>& rhs) { return rhs + lhs; }
+template <typename Derived> RTAC_HOSTDEVICE inline
+float4 operator+(const float4& lhs, const Eigen::MatrixBase<Derived>& rhs) { return rhs + lhs; }
+
+// operator- between eigen and cuda vector types
+template <typename Derived> RTAC_HOSTDEVICE inline
+float2 operator-(const Eigen::MatrixBase<Derived>& lhs, const float2& rhs) {
+    EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+    EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 2 && Derived::ColsAtCompileTime == 1, 
+                    ||  Derived::RowsAtCompileTime == 1 && Derived::ColsAtCompileTime == 2
+                        THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+    return float2{(float)(lhs(0) - rhs.x),
+                  (float)(lhs(1) - rhs.y)};
+}
+template <typename Derived> RTAC_HOSTDEVICE inline
+float3 operator-(const Eigen::MatrixBase<Derived>& lhs, const float3& rhs) {
+    EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+    EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 3 && Derived::ColsAtCompileTime == 1, 
+                    ||  Derived::RowsAtCompileTime == 1 && Derived::ColsAtCompileTime == 3
+                        THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+    return float3{(float)(lhs(0) - rhs.x),
+                  (float)(lhs(1) - rhs.y),
+                  (float)(lhs(2) - rhs.z)};
+}
+template <typename Derived> RTAC_HOSTDEVICE inline
+float4 operator-(const Eigen::MatrixBase<Derived>& lhs, const float4& rhs) {
+    EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+    EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 4 && Derived::ColsAtCompileTime == 1, 
+                    ||  Derived::RowsAtCompileTime == 1 && Derived::ColsAtCompileTime == 4
+                        THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+    return float4{(float)(lhs(0) - rhs.x),
+                  (float)(lhs(1) - rhs.y),
+                  (float)(lhs(2) - rhs.z),
+                  (float)(lhs(3) - rhs.w)};
 }
 
-} //namespace cuda
-} //namespace rtac
-
-template <typename T> RTAC_HOSTDEVICE
-inline float2 operator*(const float2& v, const rtac::cuda::Matrix3<T>& A)
-{
-    return float2{v.x*A(0,0) + v.y*A(1,0),
-                  v.x*A(0,1) + v.y*A(1,1)};
+template <typename Derived> RTAC_HOSTDEVICE inline
+float2 operator-(const float2& lhs, const Eigen::MatrixBase<Derived>& rhs) {
+    EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+    EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 2 && Derived::ColsAtCompileTime == 1, 
+                    ||  Derived::RowsAtCompileTime == 1 && Derived::ColsAtCompileTime == 2
+                        THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+    return float2{(float)(lhs.x - rhs(0)),
+                  (float)(lhs.y - rhs(1))};
+}
+template <typename Derived> RTAC_HOSTDEVICE inline
+float3 operator-(const float3& lhs, const Eigen::MatrixBase<Derived>& rhs) {
+    EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+    EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 3 && Derived::ColsAtCompileTime == 1, 
+                    ||  Derived::RowsAtCompileTime == 1 && Derived::ColsAtCompileTime == 3
+                        THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+    return float3{(float)(lhs.x - rhs(0)),
+                  (float)(lhs.y - rhs(1)),
+                  (float)(lhs.z - rhs(2))};
+}
+template <typename Derived> RTAC_HOSTDEVICE inline
+float4 operator-(const float4& lhs, const Eigen::MatrixBase<Derived>& rhs) {
+    EIGEN_STATIC_ASSERT_FIXED_SIZE(Derived);
+    EIGEN_STATIC_ASSERT(Derived::RowsAtCompileTime == 4 && Derived::ColsAtCompileTime == 1, 
+                    ||  Derived::RowsAtCompileTime == 1 && Derived::ColsAtCompileTime == 4
+                        THIS_METHOD_IS_ONLY_FOR_MATRICES_OF_A_SPECIFIC_SIZE);
+    return float4{(float)(lhs.x - rhs(0)),
+                  (float)(lhs.y - rhs(1)),
+                  (float)(lhs.z - rhs(2)),
+                  (float)(lhs.w - rhs(3))};
 }
 
-template <typename T> RTAC_HOSTDEVICE
-inline T operator*(T a, const rtac::cuda::Matrix3<T>& A)
-{
-    return A * a;
-}
 
-template <typename T> RTAC_HOSTDEVICE
-inline float3 operator*(const rtac::cuda::Matrix3<T>& A, const float3& v)
-{
-    return float3{A(0,0)*v.x + A(0,1)*v.y + A(0,2)*v.z,
-                  A(1,0)*v.x + A(1,1)*v.y + A(1,2)*v.z,
-                  A(2,0)*v.x + A(2,1)*v.y + A(2,2)*v.z};
-}
 
-template <typename T> RTAC_HOSTDEVICE
-inline float3 operator*(const float3& v, const rtac::cuda::Matrix3<T>& A)
-{
-    return float3{v.x*A(0,0) + v.y*A(1,0) + v.z*A(2,0),
-                  v.x*A(0,1) + v.y*A(1,1) + v.z*A(2,1),
-                  v.x*A(0,2) + v.y*A(1,2) + v.z*A(2,2)};
-}
-
-template <typename T> RTAC_HOSTDEVICE
-inline rtac::cuda::Matrix3<T> operator*(const rtac::cuda::Matrix3<T>& A,
-                                        const rtac::cuda::Matrix3<T>& B)
-{
-    rtac::cuda::Matrix3<T> C;
-
-    C(0,0) = A(0,0)*B(0,0) + A(0,0)*B(0,1) + A(0,0)*B(0,2);
-    C(0,1) = A(0,1)*B(1,0) + A(0,1)*B(1,1) + A(0,1)*B(1,2);
-    C(0,2) = A(0,2)*B(2,0) + A(0,2)*B(2,1) + A(0,2)*B(2,2);
-
-    C(1,0) = A(1,0)*B(0,0) + A(1,0)*B(0,1) + A(1,0)*B(0,2);
-    C(1,1) = A(1,1)*B(1,0) + A(1,1)*B(1,1) + A(1,1)*B(1,2);
-    C(1,2) = A(1,2)*B(2,0) + A(1,2)*B(2,1) + A(1,2)*B(2,2);
-
-    C(2,0) = A(2,0)*B(0,0) + A(2,0)*B(0,1) + A(2,0)*B(0,2);
-    C(2,1) = A(2,1)*B(1,0) + A(2,1)*B(1,1) + A(2,1)*B(1,2);
-    C(2,2) = A(2,2)*B(2,0) + A(2,2)*B(2,1) + A(2,2)*B(2,2);
-
-    return C;
-}
-
-template <typename T> RTAC_HOSTDEVICE
-inline float3 operator*(const rtac::cuda::DevicePose<T>& pose, const float3& v)
-{
-    return pose.to_world_frame(v);
-}
-
-template <typename T> RTAC_HOSTDEVICE
-inline rtac::cuda::DevicePose<T> operator*(const rtac::cuda::DevicePose<T>& A,
-                                           const rtac::cuda::DevicePose<T>& B)
-{
-    return rtac::cuda::DevicePose<T>(A) *= B;
-}
-
-template <typename T>
-inline std::ostream& operator<<(std::ostream& os, const rtac::cuda::Matrix3<T>& A)
-{
-    os << A(0,0) << " " << A(0,1) << " " << A(0,2) << "\n"
-       << A(1,0) << " " << A(1,1) << " " << A(1,2) << "\n"
-       << A(2,0) << " " << A(2,1) << " " << A(2,2) << "\n";
-    return os;
-}
-
-template <typename T>
-inline std::ostream& operator<<(std::ostream& os, const rtac::cuda::DevicePose<T>& pose)
-{
-    static constexpr int w = 8, p = 2;
-    std::ostringstream oss;
-    oss << std::setfill(' ') << std::setprecision(p);
-    oss << std::setw(w) << pose.R_(0,0) << " " 
-        << std::setw(w) << pose.R_(0,1) << " " 
-        << std::setw(w) << pose.R_(0,2) << " | "
-        << std::setw(w) << pose.T_.x    << "\n";
-    oss << std::setw(w) << pose.R_(1,0) << " " 
-        << std::setw(w) << pose.R_(1,1) << " " 
-        << std::setw(w) << pose.R_(1,2) << " | "
-        << std::setw(w) << pose.T_.y    << "\n";
-    oss << std::setw(w) << pose.R_(2,0) << " " 
-        << std::setw(w) << pose.R_(2,1) << " " 
-        << std::setw(w) << pose.R_(2,2) << " | "
-        << std::setw(w) << pose.T_.z    << "\n";
-    os << oss.str();
-    return os;
+template <typename T> RTAC_HOSTDEVICE inline
+float3 operator*(const rtac::Pose<T>& lhs, const float3& rhs) {
+    return lhs.rotation_matrix()*rhs + lhs.translation();
 }
 
 #endif //_DEF_RTAC_CUDA_GEOMETRY_H_

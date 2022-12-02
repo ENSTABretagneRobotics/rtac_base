@@ -22,5 +22,6 @@ endforeach()
 add_subdirectory(texture)
 add_subdirectory(vector_view)
 add_subdirectory(eigen_cuda)
+add_subdirectory(geometry_cuda)
 
 

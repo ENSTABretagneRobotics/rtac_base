@@ -42,21 +42,6 @@
 #include <rtac_base/types/Complex.h>
 namespace rtac { namespace cuda {
 
-//// Complex number definition : using thrust::complex when in CUDA device code
-//// (NVCC compiler) and std::complex when in host code (CPU side). Both are
-//// binary compatible (a buffer can be created an initialized on host side then
-//// uploaded to device and the other way around seamlessly). 
-//#ifdef RTAC_CUDACC
-//    template <typename T>
-//    using Complex = thrust::complex<T>;
-//#else
-//    template <typename T>
-//    using Complex = std::complex<T>;
-//#endif //RTAC_CUDACC
-
-template <class T>
-using Complex = rtac::Complex<T>;
-
 inline void init_cuda()
 {
     // CUDA will init on the first API call.
@@ -73,46 +58,6 @@ inline void set_device(int deviceOrdinal)
 
 }; //namespace cuda
 }; //namespace rtac
-
-#ifndef RTAC_CUDACC
-
-#include <rtac_base/types/common.h>
-
-//template <typename T>
-//float2 to_float2(const rtac::Vector2<T>& v)
-//{
-//    return float2({v[0], v[1]});
-//}
-//template <typename T>
-//float3 to_float3(const rtac::Vector3<T>& v)
-//{
-//    return float3({v[0], v[1], v[2]});
-//}
-//template <typename T>
-//float4 to_float4(const rtac::Vector4<T>& v)
-//{
-//    return float4({v[0], v[1], v[2], v[3]});
-//}
-
-template <typename T>
-float2 to_float2(const Eigen::MatrixBase<rtac::Vector2<T>>& v)
-{
-    return float2({v[0], v[1]});
-}
-
-template <typename T>
-float3 to_float3(const Eigen::MatrixBase<rtac::Vector3<T>>& v)
-{
-    return float3({v[0], v[1], v[2]});
-}
-
-template <typename T>
-float4 to_float4(const Eigen::MatrixBase<rtac::Vector4<T>>& v)
-{
-    return float4({v[0], v[1], v[2], v[3]});
-}
-
-#endif //RTAC_CUDACC
 
 inline std::ostream& operator<<(std::ostream& os, const float2& v)
 {

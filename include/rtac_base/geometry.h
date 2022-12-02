@@ -5,6 +5,7 @@
 #ifndef _DEF_RTAC_BASE_GEOMETRY_H_
 #define _DEF_RTAC_BASE_GEOMETRY_H_
 
+#include <rtac_base/cuda_defines.h>
 #include <rtac_base/types/common.h>
 
 namespace rtac { namespace geometry {
@@ -124,6 +125,7 @@ inline Matrix3<T> look_at(const Vector3<T>& target, const Vector3<T>& position, 
 
     return r;
 }
+
 
 }; //namespace geometry
 }; //namespace rtac
