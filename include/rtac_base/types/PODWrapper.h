@@ -3,7 +3,7 @@
 
 #include <rtac_base/cuda_defines.h>
 
-namespace rtac { namespace cuda {
+namespace rtac {
 
 /**
  * The purpose of this object is hide the details of a regular c++ class type
@@ -33,7 +33,6 @@ struct PODWrapper
     }
 };
 
-} //namespace cuda
 } //namespace rtac
 
 #endif //_DEF_RTAC_BASE_CUDA_CONSTANT_OBJECT_H_

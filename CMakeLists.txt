@@ -22,6 +22,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/Bounds.h
     include/rtac_base/types/Point.h
     include/rtac_base/types/Complex.h
+    include/rtac_base/types/PODWrapper.h
 
     include/rtac_base/type_utils.h
     include/rtac_base/types/VectorView.h
