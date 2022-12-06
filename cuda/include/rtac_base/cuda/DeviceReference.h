@@ -50,6 +50,10 @@ struct Ref
     // Implicitly castable to pointer.
     operator       T*()       { return deviceData_; }
     operator const T*() const { return deviceData_; }
+
+    // Have to put this because of optixLaunch param API
+          T* get()       { return deviceData_; }
+    const T* get() const { return deviceData_; }
 };
 
 
