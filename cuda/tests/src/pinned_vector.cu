@@ -3,8 +3,8 @@ using namespace std;
 
 #include <rtac_base/cuda/PinnedVector.h>
 #include <rtac_base/cuda/DeviceVector.h>
-#include <rtac_base/cuda/HostVector.h>
 using namespace rtac::cuda;
+using namespace rtac;
 
 template <typename T>
 __global__ void fill_vector(rtac::VectorView<T> vect, T offset = 0)

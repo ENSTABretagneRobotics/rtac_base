@@ -8,6 +8,7 @@
 
 #include <rtac_base/cuda/utils.h>
 #include <rtac_base/types/VectorView.h>
+#include <rtac_base/types/HostVector.h>
 
 #ifndef RTAC_CUDACC
 #include <rtac_base/types/common.h>
@@ -18,9 +19,6 @@
 //#endif
 
 namespace rtac { namespace cuda {
-
-template <typename T>
-class HostVector;
 
 template <typename T>
 class DeviceVector;

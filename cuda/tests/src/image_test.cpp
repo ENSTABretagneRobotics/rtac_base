@@ -5,7 +5,6 @@ using namespace std;
 #include <rtac_base/types/Image.h>
 using namespace rtac;
 
-#include <rtac_base/cuda/HostVector.h>
 #include <rtac_base/cuda/DeviceVector.h>
 using namespace rtac::cuda;
 

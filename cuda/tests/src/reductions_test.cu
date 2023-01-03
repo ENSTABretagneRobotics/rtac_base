@@ -7,7 +7,6 @@ using namespace rtac::time;
 
 #include <rtac_base/cuda/reductions.hcu>
 #include <rtac_base/cuda/DeviceVector.h>
-#include <rtac_base/cuda/HostVector.h>
 using namespace rtac::cuda;
 
 DeviceVector<unsigned int> image_data(unsigned int W, unsigned int H)

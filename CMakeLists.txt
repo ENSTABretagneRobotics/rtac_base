@@ -26,6 +26,7 @@ list(APPEND rtac_base_headers
 
     include/rtac_base/type_utils.h
     include/rtac_base/types/VectorView.h
+    include/rtac_base/types/HostVector.h
     include/rtac_base/types/MappedPointer.h
     include/rtac_base/types/BuildTarget.h
     include/rtac_base/types/CallbackQueue.h
@@ -78,6 +79,7 @@ target_include_directories(rtac_base
 target_compile_features(rtac_base PUBLIC cxx_std_17)
 
 if(WITH_CUDA)
+    target_compile_definitions(rtac_base PUBLIC "-DRTAC_CUDA_ENABLED")
     add_subdirectory(cuda)
 endif()
 

@@ -1,10 +1,10 @@
 #include <iostream>
 using namespace std;
 
+#include <rtac_base/types/HostVector.h>
+using HostVector = rtac::HostVector<float>;
 #include <rtac_base/cuda/DeviceVector.h>
-#include <rtac_base/cuda/HostVector.h>
 using DeviceVector = rtac::cuda::DeviceVector<float>;
-using HostVector = rtac::cuda::HostVector<float>;
 
 std::vector<float> new_vector(size_t size)
 {

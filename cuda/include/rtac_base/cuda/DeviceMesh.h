@@ -1,10 +1,10 @@
 #ifndef _DEF_RTAC_CUDA_DEVICE_MESH_H_
 #define _DEF_RTAC_CUDA_DEVICE_MESH_H_
 
+#include <rtac_base/types/HostVector.h>
 #include <rtac_base/types/Mesh.h>
 
 #include <rtac_base/cuda/DeviceVector.h>
-#include <rtac_base/cuda/HostVector.h>
 
 namespace rtac { namespace cuda {
 

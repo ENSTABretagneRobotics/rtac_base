@@ -4,14 +4,9 @@
 #include <iostream>
 #include <vector>
 
-#include <cuda_runtime.h>
-
-#include <rtac_base/cuda/utils.h>
 #include <rtac_base/types/VectorView.h>
-
-#ifndef RTAC_CUDACC
-#include <rtac_base/types/common.h>
-#endif
+#include <rtac_base/types/HostVector.h>
+#include <rtac_base/cuda/utils.h>
 
 //#ifdef RTAC_CUDACC
 //#include <thrust/device_ptr.h> // thrust is causing linking issues with OptiX for unclear reasons
@@ -20,8 +15,6 @@
 
 namespace rtac { namespace cuda {
 
-template <typename T>
-class HostVector;
 template <typename T>
 class PinnedVector;
 
@@ -65,11 +58,6 @@ class DeviceVector
     DeviceVector& operator=(const HostVector<T>& other);
     DeviceVector& operator=(const PinnedVector<T>& other);
     DeviceVector& operator=(const std::vector<T>& other);
-    
-    #ifndef RTAC_CUDACC
-    DeviceVector(const rtac::Vector<T>& other);
-    DeviceVector& operator=(const rtac::Vector<T>& other);
-    #endif
 
     void resize(size_t size);
     void clear() { this->free(); }
@@ -199,22 +187,6 @@ DeviceVector<T>& DeviceVector<T>::operator=(const std::vector<T>& other)
     this->copy_from_host(other.size(), other.data());
     return *this;
 }
-
-#ifndef RTAC_CUDACC
-template <typename T>
-DeviceVector<T>::DeviceVector(const rtac::Vector<T>& other) :
-    DeviceVector(other.size())
-{
-    *this = other;
-}
-
-template <typename T>
-DeviceVector<T>& DeviceVector<T>::operator=(const rtac::Vector<T>& other)
-{
-    this->copy_from_host(other.size(), other.data());
-    return *this;
-}
-#endif
 
 template <typename T>
 void DeviceVector<T>::allocate(size_t size)
@@ -356,7 +328,7 @@ const_iterator DeviceVector<T>::end() const
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const rtac::cuda::DeviceVector<T>& v)
 {
-    os << rtac::cuda::HostVector<T>(v);
+    os << rtac::HostVector<T>(v);
     return os;
 }
 

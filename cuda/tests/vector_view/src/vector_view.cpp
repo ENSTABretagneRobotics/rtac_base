@@ -2,8 +2,8 @@
 using namespace std;
 
 #include <rtac_base/cuda/DeviceVector.h>
-#include <rtac_base/cuda/HostVector.h>
 using namespace rtac::cuda;
+using namespace rtac;
 
 #include "vector_view.h"
 
