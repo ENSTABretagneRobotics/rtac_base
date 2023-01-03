@@ -16,6 +16,7 @@ list(APPEND test_files
     src/ppmformat_test.cpp
     src/nmea_utils.cpp
     src/navigation_test.cpp
+    src/scaled_arrays.cpp
 )
 
 list(APPEND test_deps
