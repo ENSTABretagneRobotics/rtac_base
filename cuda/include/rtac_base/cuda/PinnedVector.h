@@ -58,6 +58,12 @@ class PinnedVector
 
     void copy_from_host(size_t size, const T* data);
     void copy_from_device(size_t size, const T* data);
+    void copy_to_host(T* dst) const {
+        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
+                               reinterpret_cast<const void*>(data_),
+                               sizeof(T)*this->size(),
+                               cudaMemcpyHostToHost) );
+    }
     
     PinnedVector& operator=(const PinnedVector<T>& other);
     PinnedVector& operator=(const HostVector<T>& other);

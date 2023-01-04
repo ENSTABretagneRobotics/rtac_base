@@ -5,12 +5,7 @@
 #include <vector>
 #include <iostream>
 
-#include <rtac_base/cuda_defines.h>
 #include <rtac_base/types/VectorView.h>
-
-#ifdef RTAC_CUDA_ENABLED
-#include <rtac_base/cuda/utils.h>
-#endif //RTAC_CUDA_ENABLED
 
 namespace rtac {
 
@@ -81,20 +76,14 @@ class HostVector
     HostVector(const cuda::DeviceVector<T>& other) { *this = other; }
     HostVector(const cuda::PinnedVector<T>& other) { *this = other; }
     HostVector& operator=(const cuda::DeviceVector<T>& other) {
-        this->copy_from_device(other.size(), other.data());
+        this->resize(other.size());
+        other.copy_to_host(this->data());
         return *this;
     }
     HostVector& operator=(const cuda::PinnedVector<T>& other) {
-        this->copy_from_device(other.size(), other.data());
+        this->resize(other.size());
+        other.copy_to_host(this->data());
         return *this;
-    }
-
-    void copy_from_device(size_t size, const T* data) {
-        this->resize(size);
-        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(this->data()),
-                               reinterpret_cast<const void*>(data),
-                               sizeof(T)*this->size(),
-                               cudaMemcpyDeviceToHost) );
     }
     #endif //RTAC_CUDA_ENABLED
 };
