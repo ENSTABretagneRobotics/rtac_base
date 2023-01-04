@@ -4,15 +4,9 @@
 #include <iostream>
 #include <vector>
 
-#include <cuda_runtime.h>
-
+#include <rtac_base/containers/VectorView.h>
+#include <rtac_base/containers/HostVector.h>
 #include <rtac_base/cuda/utils.h>
-#include <rtac_base/types/VectorView.h>
-#include <rtac_base/types/HostVector.h>
-
-#ifndef RTAC_CUDACC
-#include <rtac_base/types/common.h>
-#endif
 
 //#ifdef RTAC_CUDACC
 //#include <thrust/device_ptr.h> // thrust is causing linking issues with OptiX for unclear reasons

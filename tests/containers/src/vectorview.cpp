@@ -2,7 +2,7 @@
 #include <vector>
 using namespace std;
 
-#include <rtac_base/types/VectorView.h>
+#include <rtac_base/containers/VectorView.h>
 using namespace rtac;
 
 template <typename T>

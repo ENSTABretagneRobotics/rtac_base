@@ -1,6 +1,7 @@
 list(APPEND container_test_files
     src/vectorview.cpp
     src/hostvector.cpp
+    src/image.cpp
 )
 
 foreach(filename ${container_test_files})

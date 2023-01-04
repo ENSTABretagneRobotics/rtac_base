@@ -2,7 +2,7 @@
 #include <vector>
 using namespace std;
 
-#include <rtac_base/types/HostVector.h>
+#include <rtac_base/containers/HostVector.h>
 using namespace rtac;
 
 template <typename T>

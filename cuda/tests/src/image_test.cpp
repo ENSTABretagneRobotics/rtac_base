@@ -2,7 +2,7 @@
 #include <vector>
 using namespace std;
 
-#include <rtac_base/types/Image.h>
+#include <rtac_base/containers/Image.h>
 using namespace rtac;
 
 #include <rtac_base/cuda/DeviceVector.h>

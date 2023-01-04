@@ -1,10 +1,12 @@
+
+add_subdirectory(containers)
+
 list(APPEND test_files
     src/misc_test.cpp
     src/files_test.cpp
     src/mathtypes_test.cpp
     src/geometry_test.cpp
     src/ply_files_test.cpp
-    src/image_test.cpp
     src/mesh.cpp
     src/pointcloud_test.cpp
     src/mappedpointer_test.cpp
@@ -37,4 +39,3 @@ foreach(filename ${test_files})
 endforeach()
 
 add_subdirectory(external)
-add_subdirectory(containers)

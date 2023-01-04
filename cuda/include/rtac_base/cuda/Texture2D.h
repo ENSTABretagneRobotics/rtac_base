@@ -7,7 +7,7 @@
 
 #include <cuda_runtime.h>
 
-#include <rtac_base/types/HostVector.h>
+#include <rtac_base/containers/HostVector.h>
 
 #include <rtac_base/cuda/utils.h>
 #include <rtac_base/cuda/DeviceVector.h>

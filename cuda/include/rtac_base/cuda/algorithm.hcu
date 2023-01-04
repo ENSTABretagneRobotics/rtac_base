@@ -8,7 +8,7 @@
 #include <thrust/execution_policy.h>
 
 #include <rtac_base/cuda_defines.h>
-#include <rtac_base/types/VectorView.h>
+#include <rtac_base/containers/VectorView.h>
 #include <rtac_base/cuda/DeviceVector.h>
 #include <rtac_base/cuda/PinnedVector.h>
 

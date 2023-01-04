@@ -6,18 +6,19 @@
 
 #include <rtac_base/cuda_defines.h>
 #include <rtac_base/types/Shape.h>
-#include <rtac_base/types/VectorView.h>
+#include <rtac_base/containers/VectorView.h>
+#include <rtac_base/containers/HostVector.h>
 
 namespace rtac {
 
-template <typename PixelT, template <typename> class ContainerT>
+template <typename PixelT, template <typename> class ContainerT = HostVector>
 class Image
 {
     public:
 
     using value_type = PixelT;
     using Container  = ContainerT<PixelT>;
-    using Shape      = rtac::Shape<uint32_t>;
+    using Shape      = rtac::Shape<uint32_t>; // using uint32_t for best cuda performances
 
     protected:
 
@@ -55,63 +56,28 @@ class Image
     RTAC_HOSTDEVICE const Shape& shape()  const { return shape_; }
     RTAC_HOSTDEVICE auto         size()   const { return data_.size(); }
 
-    RTAC_HOSTDEVICE PixelT  operator[](std::size_t idx) const;
-    RTAC_HOSTDEVICE PixelT& operator[](std::size_t idx);
-    RTAC_HOSTDEVICE PixelT  operator()(std::size_t h, std::size_t w) const;
-    RTAC_HOSTDEVICE PixelT& operator()(std::size_t h, std::size_t w);
+    RTAC_HOSTDEVICE PixelT  operator[](std::size_t idx) const { return data_[idx]; }
+    RTAC_HOSTDEVICE PixelT& operator[](std::size_t idx)       { return data_[idx]; }
+    RTAC_HOSTDEVICE PixelT  operator()(std::size_t h, std::size_t w) const {
+        return data_[this->width()*h + w];
+    }
+    RTAC_HOSTDEVICE PixelT& operator()(std::size_t h, std::size_t w) {
+        return data_[this->width()*h + w];
+    }
 
     Image<const PixelT, VectorView> const_view() const { return this->view(); }
-    Image<const PixelT, VectorView> view() const;
-    Image<PixelT, VectorView>       view();
+    Image<const PixelT, VectorView> view() const {
+        return Image<const PixelT,VectorView>(this->shape(),
+            VectorView<const PixelT>(data_.size(), data_.data()));
+    }
+    Image<PixelT, VectorView> view() {
+        return Image<PixelT,VectorView>(this->shape(),
+            VectorView<PixelT>(data_.size(), data_.data()));
+    }
 };
 
 template <typename PixelT>
 using ImageView = Image<PixelT, VectorView>;
-
-template <typename T, template<typename> class C>
-RTAC_HOSTDEVICE T Image<T,C>::operator[](std::size_t idx) const
-{
-    //static_assert(is_subscriptable<Container>::value,
-    //              "rtac::Image : container is not subscriptable.");
-    return data_[idx];
-}
-
-template <typename T, template<typename> class C>
-RTAC_HOSTDEVICE T& Image<T,C>::operator[](std::size_t idx)
-{
-    //static_assert(is_subscriptable<Container>::value,
-    //              "rtac::Image : container is not subscriptable.");
-    return data_[idx];
-}
-
-template <typename T, template<typename> class C>
-RTAC_HOSTDEVICE T Image<T,C>::operator()(std::size_t h, std::size_t w) const
-{
-    //static_assert(is_subscriptable<Container>::value,
-    //              "rtac::Image : container is not subscriptable.");
-    return data_[shape_.width*h + w];
-}
-
-template <typename T, template<typename> class C>
-RTAC_HOSTDEVICE T& Image<T,C>::operator()(std::size_t h, std::size_t w)
-{
-    //static_assert(is_subscriptable<Container>::value,
-    //              "rtac::Image : container is not subscriptable.");
-    return data_[shape_.width*h + w];
-}
-
-template <typename T, template<typename> class C>
-Image<const T, VectorView> Image<T,C>::view() const
-{
-    return Image<const T,VectorView>(this->shape(),
-        VectorView<const T>(data_.size(), data_.data()));
-}
-
-template <typename T, template<typename> class C>
-Image<T, VectorView> Image<T,C>::view()
-{
-    return Image<T,VectorView>(this->shape(), VectorView<T>(data_.size(), data_.data()));
-}
 
 }; //namespace rtac
 

@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-#include <rtac_base/types/HostVector.h>
+#include <rtac_base/containers/HostVector.h>
 using HostVector = rtac::HostVector<float>;
 #include <rtac_base/cuda/DeviceVector.h>
 using DeviceVector = rtac::cuda::DeviceVector<float>;

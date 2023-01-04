@@ -5,7 +5,7 @@
 #include <vector>
 #include <iostream>
 
-#include <rtac_base/types/VectorView.h>
+#include <rtac_base/containers/VectorView.h>
 
 namespace rtac {
 

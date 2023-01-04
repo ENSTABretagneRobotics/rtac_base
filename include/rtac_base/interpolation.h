@@ -2,7 +2,7 @@
 #define _DEF_RTAC_BASE_INTERPOLATION_H_
 
 #include <rtac_base/interpolation_impl.h>
-#include <rtac_base/types/VectorView.h>
+#include <rtac_base/containers/VectorView.h>
 
 namespace rtac { namespace algorithm {
 

@@ -3,8 +3,8 @@
 
 #include <rtac_base/types/Shape.h>
 #include <rtac_base/types/Bounds.h>
-#include <rtac_base/types/Image.h>
-#include <rtac_base/types/VectorView.h>
+#include <rtac_base/containers/VectorView.h>
+#include <rtac_base/containers/Image.h>
 
 namespace rtac {
 

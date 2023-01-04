@@ -24,14 +24,15 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/Complex.h
     include/rtac_base/types/PODWrapper.h
 
+    include/rtac_base/containers/VectorView.h
+    include/rtac_base/containers/HostVector.h
+    include/rtac_base/containers/Image.h
+
     include/rtac_base/type_utils.h
-    include/rtac_base/types/VectorView.h
-    include/rtac_base/types/HostVector.h
     include/rtac_base/types/MappedPointer.h
     include/rtac_base/types/BuildTarget.h
     include/rtac_base/types/CallbackQueue.h
 
-    include/rtac_base/types/Image.h
     include/rtac_base/types/PointCloudBase.h
     include/rtac_base/types/PointCloud.h
     include/rtac_base/types/Mesh.h

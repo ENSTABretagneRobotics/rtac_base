@@ -5,7 +5,7 @@
 #include <algorithm>
 
 #include <rtac_base/types/common.h>
-#include <rtac_base/types/VectorView.h>
+#include <rtac_base/containers/VectorView.h>
 
 namespace rtac { namespace algorithm {
 /**

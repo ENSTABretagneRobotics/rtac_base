@@ -2,7 +2,7 @@
 
 #include <rtac_base/cuda/DeviceVector.h>
 using namespace rtac::cuda;
-#include <rtac_base/types/VectorView.h>
+#include <rtac_base/containers/VectorView.h>
 using namespace rtac;
 
 

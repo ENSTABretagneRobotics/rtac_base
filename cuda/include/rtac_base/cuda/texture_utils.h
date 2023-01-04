@@ -1,7 +1,8 @@
 #ifndef _DEF_RTAC_BASE_CUDA_TEXTURE_UTILS_H_
 #define _DEF_RTAC_BASE_CUDA_TEXTURE_UTILS_H_
 
-#include <rtac_base/types/Image.h>
+#include <rtac_base/containers/VectorView.h>
+#include <rtac_base/containers/Image.h>
 
 #include <rtac_base/cuda/DeviceVector.h>
 #include <rtac_base/cuda/Texture2D.h>

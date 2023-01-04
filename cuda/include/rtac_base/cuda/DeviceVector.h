@@ -4,8 +4,8 @@
 #include <iostream>
 #include <vector>
 
-#include <rtac_base/types/VectorView.h>
-#include <rtac_base/types/HostVector.h>
+#include <rtac_base/containers/VectorView.h>
+#include <rtac_base/containers/HostVector.h>
 #include <rtac_base/cuda/utils.h>
 
 //#ifdef RTAC_CUDACC
