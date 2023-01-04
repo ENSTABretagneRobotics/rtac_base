@@ -38,3 +38,4 @@ foreach(filename ${test_files})
 endforeach()
 
 add_subdirectory(external)
+add_subdirectory(containers)
