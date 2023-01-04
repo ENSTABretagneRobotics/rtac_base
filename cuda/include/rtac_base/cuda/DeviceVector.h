@@ -12,6 +12,10 @@
 //#include <thrust/device_ptr.h> // thrust is causing linking issues with OptiX for unclear reasons
 //#endif
 
+namespace rtac { namespace display {
+    template <typename T> class GLVector;
+}}
+
 
 namespace rtac { namespace cuda {
 
@@ -80,6 +84,13 @@ class DeviceVector
 
     auto view() const { return rtac::make_view(*this); }
     auto view()       { return rtac::make_view(*this); }
+
+    DeviceVector(const display::GLVector<T>& other) { *this = other; }
+    DeviceVector& operator=(const display::GLVector<T>& other) {
+        this->resize(other.size());
+        other.copy_to_cuda(this->data());
+        return *this;
+    }
 
     #ifdef RTAC_CUDACC  // the following methods are only usable in CUDA code.
     //value_type& operator[](size_t idx);

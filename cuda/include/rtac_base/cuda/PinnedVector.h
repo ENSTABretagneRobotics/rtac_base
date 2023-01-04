@@ -12,6 +12,11 @@
 //#include <thrust/device_ptr.h> // thrust is causing linking issues with OptiX for unclear reasons
 //#endif
 
+namespace rtac { namespace display {
+    template <typename T> class GLVector;
+}}
+
+
 namespace rtac { namespace cuda {
 
 template <typename T>
@@ -92,6 +97,13 @@ class PinnedVector
     const value_type& front() const;
     value_type& back();
     const value_type& back() const;
+
+    PinnedVector(const display::GLVector<T>& other) { *this = other; }
+    PinnedVector& operator=(const display::GLVector<T>& other) {
+        this->resize(other.size());
+        other.copy_to_host(this->data());
+        return *this;
+    }
 
     #ifdef RTAC_CUDACC  // the following methods are only usable in CUDA code.
     //thrust::device_ptr<T>       begin_thrust();
