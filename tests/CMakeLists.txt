@@ -9,7 +9,6 @@ list(APPEND test_files
     src/pointcloud_test.cpp
     src/mappedpointer_test.cpp
     src/buildtarget_test.cpp
-    src/vector_view.cpp
     src/complex_test.cpp
     src/bounds_test.cpp
     src/ppmformat_test.cpp

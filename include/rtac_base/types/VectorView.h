@@ -6,6 +6,16 @@
 
 namespace rtac {
 
+/**
+ * Small container to store a pointer to a continuous memory location an its
+ * size, along with a regular array interface (size getter, iterator,
+ * subscripting...)
+ *
+ * Primary purpose is to pass data around in a CUDA kernel.
+ *
+ * Caution : this type is only valid as long as the original memory location is
+ * valid. There are no memory protections.
+ */
 template <typename T>
 class VectorView
 {
@@ -76,7 +86,6 @@ class VectorView<const T>
     RTAC_HOSTDEVICE const T& back()                      const { return data_[size_ - 1]; }
 };
 
-// have to define these proxy types. nvcc does not play well with templates...
 template <class VectorT>
 auto make_view(VectorT& vector)
 {
