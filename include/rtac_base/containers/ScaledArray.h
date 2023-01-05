@@ -6,6 +6,7 @@
 
 #include <rtac_base/cuda_defines.h>
 #include <rtac_base/types/Bounds.h>
+#include <rtac_base/containers/Image.h>
 
 namespace rtac {
 
@@ -169,6 +170,71 @@ struct IsScaledArray {
     static constexpr bool value = std::is_base_of<
         ScaledArrayExpression<Derived>, Derived>::value;
 };
+
+template <typename T,
+          template<typename>class ContainerT,
+          class WidthDimT,
+          class HeightDimT>
+struct ScaledImageConfig
+{
+    using value_type = T;
+    using Container  = ContainerT<T>;
+    using WidthDim   = WidthDimT;
+    using HeightDim  = HeightDimT;
+};
+
+template <class ConfigT>
+class ScaledImage
+{
+    public:
+    
+    using value_type = typename ConfigT::Container::value_type;
+    using Container  = typename ConfigT::Container;
+    using WidthDim   = typename ConfigT::WidthDim;
+    using HeightDim  = typename ConfigT::HeightDim;
+    using Shape      = rtac::Shape<uint32_t>;
+
+    protected:
+
+    Container data_;
+    WidthDim  wDim_;
+    HeightDim hDim_; 
+
+    public:
+
+    template <template<typename>class ContainerT>
+    ScaledImage(const ContainerT<value_type>& data,
+                const WidthDim& wDim,
+                const HeightDim& hDim) :
+        data_(data), wDim_(wDim), hDim_(hDim)
+    {
+        if(data_.size() != wDim_.size() * hDim_.size()) {
+            throw std::runtime_error("Inconsistent sizes for ScaledImage");
+        }
+    }
+
+    RTAC_HOSTDEVICE uint32_t width()  const { return wDim_.size(); }
+    RTAC_HOSTDEVICE uint32_t height() const { return hDim_.size(); }
+    RTAC_HOSTDEVICE Shape    shape()  const { return Shape(this->width(), this->height()); }
+    RTAC_HOSTDEVICE auto     size()   const { return data_.size(); }
+
+    RTAC_HOSTDEVICE value_type  operator[](std::size_t idx) const { return data_[idx]; }
+    RTAC_HOSTDEVICE value_type& operator[](std::size_t idx)       { return data_[idx]; }
+    RTAC_HOSTDEVICE value_type  operator()(uint32_t h, uint32_t w) const { 
+        return data_[this->width()*h + w];
+    }
+    RTAC_HOSTDEVICE value_type& operator()(uint32_t h, uint32_t w) { 
+        return data_[this->width()*h + w];
+    }
+};
+
+template <typename T, template<typename>class C, class WDimT, class HDimT>
+inline ScaledImage<ScaledImageConfig<T,C,WDimT,HDimT>>
+    make_scaled_image(const C<T>& data, const WDimT& wDim, const HDimT& hDim)
+{
+    return ScaledImage<ScaledImageConfig<T,C,WDimT,HDimT>>(data, wDim, hDim);
+}
+    
 
 } //namespace rtac
 
