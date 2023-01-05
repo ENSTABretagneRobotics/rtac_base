@@ -4,12 +4,14 @@ using namespace std;
 
 #include <rtac_base/types/Shape.h>
 #include <rtac_base/containers/Image.h>
+#include <rtac_base/containers/utilities.h> // optional
 using namespace rtac;
 
 template <typename T, template<typename> class C>
 void print_image(const Image<T,C>& img)
 {
-    auto view = img.view();
+    //auto view = img.view();
+    auto view = make_view(img);
     cout << view << endl;
     cout << view.size() << endl;
     for(int i = 0; i < view.size(); i++) {
