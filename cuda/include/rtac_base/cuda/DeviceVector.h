@@ -82,8 +82,8 @@ class DeviceVector
     const_iterator begin() const;
     const_iterator end() const;
 
-    auto view() const { return rtac::make_view(*this); }
-    auto view()       { return rtac::make_view(*this); }
+    auto view() const { return VectorView<const T>(this->size(), this->data()); }
+    auto view()       { return VectorView<T>(this->size(), this->data()); }
 
     DeviceVector(const display::GLVector<T>& other) { *this = other; }
     DeviceVector& operator=(const display::GLVector<T>& other) {

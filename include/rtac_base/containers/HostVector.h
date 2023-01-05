@@ -30,6 +30,14 @@ class HostVector
 
     using value_type = T;
 
+    static HostVector<T> linspace(T first, T last, std::size_t size) {
+        HostVector<T> res(size);
+        for(std::size_t i = 0; i < size; i++) {
+            res[i] = ((last - first)*i) / (size - 1) + first;
+        }
+        return res;
+    }
+
     protected:
 
     std::vector<T> data_;
@@ -44,9 +52,12 @@ class HostVector
     HostVector& operator=(const HostVector<T>& other)  { data_ = other.data_; return *this; }
     HostVector& operator=(const std::vector<T>& other) { data_ = other;       return *this; }
     
-    void copy(size_t size, const T* data) {
+    void copy(size_t size, const T* data) { // change to assign ?
         this->resize(size);
         std::memcpy(this->data(), data, size*sizeof(T));
+    }
+    void copy_to(T* dst) const {
+        std::memcpy(dst, this->data(), this->size()*sizeof(T));
     }
 
     void resize(size_t size) { data_.resize(size);  }
@@ -71,8 +82,8 @@ class HostVector
     const T& front() const { return data_.front(); }
     const T& back()  const { return data_.back();  }
 
-    auto view() const { return rtac::make_view(*this); }
-    auto view()       { return rtac::make_view(*this); }
+    auto view() const { return VectorView<const T>(this->size(), this->data()); }
+    auto view()       { return VectorView<T>(this->size(), this->data()); }
 
     HostVector(const cuda::DeviceVector<T>& other) { *this = other; }
     HostVector& operator=(const cuda::DeviceVector<T>& other) {

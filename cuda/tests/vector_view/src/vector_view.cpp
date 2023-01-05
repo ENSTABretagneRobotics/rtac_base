@@ -28,7 +28,7 @@ int main()
     // cout << VectorView(output).front() << endl;
 
     HostVector<float> tmp(output);
-    cout << make_view(tmp).back() << endl;
+    cout << tmp.view().back() << endl;
 
     return 0;
 }

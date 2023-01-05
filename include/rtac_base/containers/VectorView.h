@@ -86,18 +86,6 @@ class VectorView<const T>
     RTAC_HOSTDEVICE const T& back()                      const { return data_[size_ - 1]; }
 };
 
-template <class VectorT>
-auto make_view(VectorT& vector)
-{
-    return VectorView<typename VectorT::value_type>(vector.size(), vector.data());
-}
-
-template <class VectorT>
-auto make_view(const VectorT& vector)
-{
-    return VectorView<const typename VectorT::value_type>(vector.size(), vector.data());
-}
-
 }; //namespace rtac
 
 #endif  //_DEF_RTAC_BASE_TYPES_VECTOR_VIEW_H_
