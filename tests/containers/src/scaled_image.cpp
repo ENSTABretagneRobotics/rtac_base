@@ -56,7 +56,12 @@ int main()
     }
     cout << endl;
 
-    print(img1);
+    print(img1.view());
+
+    auto img2 = make_scaled_image(
+        make_array_dim(HostVector<float>::linspace(0.0f, 1.0f, W), {0.0f,1.0f}),
+        img0.height_dim(), img1.container());
+    print(img2.view());
 
     return 0;
 }

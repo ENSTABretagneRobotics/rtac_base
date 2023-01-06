@@ -35,8 +35,12 @@ struct DimExpression
     }
     
     RTAC_HOSTDEVICE float operator[](uint32_t index) const { return this->index_to_value(index); }
-    RTAC_HOSTDEVICE DimIterator<Derived> begin() const { return DimIterator(this, 0); }
-    RTAC_HOSTDEVICE DimIterator<Derived> end()   const { return DimIterator(this, this->size()); }
+    RTAC_HOSTDEVICE DimIterator<Derived> begin() const {
+        return DimIterator<Derived>(this, 0);
+    }
+    RTAC_HOSTDEVICE DimIterator<Derived> end() const {
+        return DimIterator<Derived>(this, this->size());
+    }
 
     // these 3 method are to be reimplemented in subclasses
     RTAC_HOSTDEVICE uint32_t      size()   const { return this->cast()->size(); }
@@ -147,7 +151,7 @@ class LinearDim : public DimExpression<LinearDim>
     RTAC_HOSTDEVICE float index_to_value(uint32_t index) const { return fmaf(a_, index, b_); }
 
     // the view for this type is itself. It can be easily copied
-    RTAC_HOSTDEVICE const LinearDim& view() const { return *this; }
+    RTAC_HOSTDEVICE LinearDim view() const { return *this; }
 };
 
 /**
@@ -177,11 +181,21 @@ class ArrayDim : public DimExpression< ArrayDim<VectorT> >
     RTAC_HOSTDEVICE Bounds<float> bounds() const { return bounds_;      }
     RTAC_HOSTDEVICE float index_to_value(uint32_t index) const { return data_[index]; }
 
+    //RTAC_HOSTDEVICE ArrayDim<ConstVectorView> view() const {
+    //    return ArrayDim<ConstVectorView>(ConstVectorView<float>(this->size(), data_.data()), 
+    //                                     this->bounds());
+    //}
     RTAC_HOSTDEVICE ArrayDim<ConstVectorView> view() const {
-        return ArrayDim<ConstVectorView>(ConstVectorView<float>(this->size(), this->data()), 
+        return ArrayDim<ConstVectorView>(ConstVectorView<float>(this->size(), data_.data()), 
                                          this->bounds());
     }
 };
+
+template <template<typename> class VectorT>
+inline ArrayDim<VectorT> make_array_dim(const VectorT<float>& data, const Bounds<float>& bounds)
+{
+    return ArrayDim<VectorT>(data, bounds);
+}
 
 
 } //namespace rtac

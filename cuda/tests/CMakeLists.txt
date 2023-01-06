@@ -9,6 +9,7 @@ list(APPEND test_names
     src/pinned_vector.cu
     src/texture1d.cu
     src/constant_object.cu
+    src/scaledimage.cu
 )
 
 foreach(filename ${test_names})

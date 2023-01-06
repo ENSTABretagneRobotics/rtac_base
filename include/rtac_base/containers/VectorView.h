@@ -87,7 +87,17 @@ class VectorView<const T>
     RTAC_HOSTDEVICE const T& back()                      const { return data_[size_ - 1]; }
 };
 
-template <typename T> using ConstVectorView = VectorView<const T>;
+/**
+ * This works as an alias for VectorView<const T>
+ *
+ * Mostly used when argument deduction fails.
+ */
+template <typename T>
+struct ConstVectorView : public VectorView<const T>
+{
+    using value_type = T;
+    using VectorView<const T>::VectorView;
+};
 
 }; //namespace rtac
 

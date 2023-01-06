@@ -36,6 +36,10 @@ class DeviceVector
     using iterator        = pointer;
     using const_iterator  = const_pointer;
 
+    static DeviceVector<T> linspace(T first, T last, std::size_t size) {
+        return HostVector<T>::linspace(first, last, size);
+    }
+
     protected:
 
     T*     data_;

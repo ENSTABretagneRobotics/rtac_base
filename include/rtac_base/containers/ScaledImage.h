@@ -3,11 +3,13 @@
 
 #include <cstdint>
 #include <cmath>
+#include <type_traits>
 
 #include <rtac_base/cuda_defines.h>
 #include <rtac_base/types/Bounds.h>
 #include <rtac_base/containers/Image.h>
 #include <rtac_base/containers/DimExpression.h>
+#include <rtac_base/containers/utilities.h>
 
 namespace rtac {
 
@@ -39,16 +41,11 @@ class ScaledImageView : public ScaledImageExpression< ScaledImageView<T,WDimT,HD
 
     public:
 
-    template <template<typename>class ContainerT>
     ScaledImageView(const WidthDim& wDim,
                     const HeightDim& hDim,
                     value_type* data) :
         data_(data), wDim_(wDim), hDim_(hDim)
-    {
-        if(data_.size() != wDim_.size() * hDim_.size()) {
-            throw std::runtime_error("Inconsistent sizes for ScaledImage");
-        }
-    }
+    {}
     
     RTAC_HOSTDEVICE const T* data() const { return data_;  }
     RTAC_HOSTDEVICE T*       data()       { return data_;  }
@@ -78,16 +75,11 @@ class ScaledImageView<const T, WDimT, HDimT>
 
     public:
 
-    template <template<typename>class ContainerT>
     ScaledImageView(const WidthDim& wDim,
                     const HeightDim& hDim,
                     const T* data) :
         data_(data), wDim_(wDim), hDim_(hDim)
-    {
-        if(data_.size() != wDim_.size() * hDim_.size()) {
-            throw std::runtime_error("Inconsistent sizes for ScaledImage");
-        }
-    }
+    {}
     
     RTAC_HOSTDEVICE const T* data() const { return data_;  }
 
@@ -151,6 +143,9 @@ class ScaledImage : public ScaledImageExpression< ScaledImage<T, WDimT, HDimT, V
         hDim_ = other.hDim_;
         return *this;
     }
+
+    const VectorT<T>& container() const { return data_; }
+    VectorT<T>&       container()       { return data_; }
     
     RTAC_HOSTDEVICE const T* data() const { return data_.data();  }
     RTAC_HOSTDEVICE T*       data()       { return data_.data();  }
@@ -174,7 +169,12 @@ inline ScaledImage<T,WDimT,HDimT,V>
 {
     return ScaledImage<T,WDimT,HDimT,V>(wDim, hDim, data);
 }
-    
+
+template <typename Derived>
+struct IsScaledImage {
+    static constexpr bool value = std::is_base_of<
+        ScaledImageExpression<Derived>, Derived>::value;
+};
 
 } //namespace rtac
 
