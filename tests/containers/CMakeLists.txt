@@ -3,6 +3,7 @@ list(APPEND container_test_files
     src/hostvector.cpp
     src/image.cpp
     src/container_views.cpp
+    src/scaled_arrays.cpp
 )
 
 foreach(filename ${container_test_files})

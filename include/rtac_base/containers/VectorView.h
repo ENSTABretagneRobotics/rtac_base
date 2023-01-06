@@ -72,7 +72,8 @@ class VectorView<const T>
     public:
 
     VectorView(std::size_t size = 0, const T* data = nullptr) : data_(data), size_(size) {}
-    template <template<typename>class VectorT>
+    
+    template <template<typename>class VectorT>// [[deprecated]]
     VectorView(const VectorT<T>& vector) : VectorView(vector.size(), vector.data()) {}
 
     RTAC_HOSTDEVICE std::size_t size() const { return size_; }
@@ -85,6 +86,8 @@ class VectorView<const T>
     RTAC_HOSTDEVICE const T& front()                     const { return data_[0]; }
     RTAC_HOSTDEVICE const T& back()                      const { return data_[size_ - 1]; }
 };
+
+template <typename T> using ConstVectorView = VectorView<const T>;
 
 }; //namespace rtac
 

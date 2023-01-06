@@ -78,6 +78,19 @@ struct ImageExpression
     RTAC_HOSTDEVICE uint32_t    step()   const { return this->cast()->step();   }
 };
 
+template <typename T, class Derived>
+void load_checkerboard(ImageExpression<Derived>& img, const T& black, const T& white)
+{
+    for(unsigned int h = 0; h < img.height(); h++) {
+        for(unsigned int w = 0; w < img.width(); w++) {
+            if((h+w) & 0x1 > 0)
+                img(h,w) = white;
+            else 
+                img(h,w) = black;
+        }
+    }
+}
+
 template <typename T>
 class ImageView : public ImageExpression<ImageView<T>>
 {
