@@ -7,7 +7,7 @@
 #include <rtac_base/containers/VectorView.h>
 #include <rtac_base/containers/HostVector.h>
 #include <rtac_base/containers/Image.h>
-#include <rtac_base/containers/ScaledArray.h>
+#include <rtac_base/containers/ScaledImage.h>
 
 namespace rtac {
 

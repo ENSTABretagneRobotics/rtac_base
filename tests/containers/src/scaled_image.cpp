@@ -2,7 +2,7 @@
 using namespace std;
 
 #include <rtac_base/containers/HostVector.h>
-#include <rtac_base/containers/ScaledArray.h>
+#include <rtac_base/containers/ScaledImage.h>
 using namespace rtac;
 
 template <typename D>
