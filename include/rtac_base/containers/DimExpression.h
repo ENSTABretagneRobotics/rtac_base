@@ -1,6 +1,11 @@
 #ifndef _DEF_RTAC_BASE_CONTAINERS_DIM_EXPRESSION_H_
 #define _DEF_RTAC_BASE_CONTAINERS_DIM_EXPRESSION_H_
 
+#include <cmath>
+
+#include <rtac_base/cuda_defines.h>
+#include <rtac_base/types/Bounds.h>
+
 namespace rtac {
 
 template <class Derived> class DimIterator;

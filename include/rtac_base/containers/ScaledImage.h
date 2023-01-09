@@ -146,6 +146,7 @@ class ScaledImage : public ScaledImageExpression< ScaledImage<T, WDimT, HDimT, V
 
     const VectorT<T>& container() const { return data_; }
     VectorT<T>&       container()       { return data_; }
+    RTAC_HOSTDEVICE Shape shape() const { return Shape{this->width(), this->height()}; }
     
     RTAC_HOSTDEVICE const T* data() const { return data_.data();  }
     RTAC_HOSTDEVICE T*       data()       { return data_.data();  }
