@@ -10,14 +10,15 @@ function(target_add_docs TARGET_NAME)
     endif()
 
     get_target_property(DOXYGEN_EXECUTABLE Doxygen::doxygen IMPORTED_LOCATION)
-    # message(STATUS "DOXYGEN_EXECUTABLE : ${DOXYGEN_EXECUTABLE}")
+    message(STATUS "DOXYGEN_EXECUTABLE : ${DOXYGEN_EXECUTABLE}")
 
-    add_custom_target(${TARGET_NAME}_docs ALL
-                      COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
-                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                      COMMENT "Building documentation for ${TARGET_NAME}"
-                      VERBATIM)
-    add_dependencies(${TARGET_NAME}_docs ${TARGET_NAME})
+    # Genewrating documentation in PRE_BUILD mode so the documentation is ready
+    # if we have an issue with the build of TARGET_NAME itself.
+    add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD  
+                       COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
+                       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                       COMMENT "Building documentation for ${TARGET_NAME}"
+                       VERBATIM USES_TERMINAL)
 endfunction()
 
 
