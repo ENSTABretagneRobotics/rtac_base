@@ -36,7 +36,7 @@ template <class Derived>
 struct DimExpression
 {
     RTAC_HOSTDEVICE const Derived* cast() const {
-        return reinterpret_cast<const Derived*>(this);
+        return static_cast<const Derived*>(this);
     }
     
     RTAC_HOSTDEVICE float operator[](uint32_t index) const { return this->index_to_value(index); }

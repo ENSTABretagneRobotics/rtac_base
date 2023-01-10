@@ -46,10 +46,10 @@ template <class Derived>
 struct ImageExpression
 {
     RTAC_HOSTDEVICE const Derived* cast() const {
-        return reinterpret_cast<const Derived*>(this);
+        return static_cast<const Derived*>(this);
     }
     RTAC_HOSTDEVICE Derived* cast() {
-        return reinterpret_cast<Derived*>(this);
+        return static_cast<Derived*>(this);
     }
 
     RTAC_HOSTDEVICE uint32_t size() const { return this->width()*this->height(); }

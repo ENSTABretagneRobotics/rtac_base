@@ -13,7 +13,7 @@ template <class Derived>
 struct Function1D
 {
     RTAC_HOSTDEVICE const Derived* cast() const {
-        return reinterpret_cast<const Derived*>(this);
+        return static_cast<const Derived*>(this);
     }
 
     RTAC_HOSTDEVICE bool is_in_domain(float x) const {
@@ -51,7 +51,7 @@ template <class Derived>
 struct Function2D
 {
     RTAC_HOSTDEVICE const Derived* cast() const {
-        return reinterpret_cast<const Derived*>(this);
+        return static_cast<const Derived*>(this);
     }
 
     RTAC_HOSTDEVICE bool is_in_domain(float x, float y) const {
