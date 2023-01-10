@@ -1,266 +1,320 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
-<tagfile doxygen_version="1.9.2" doxygen_gitid="9d2b2e839ee5a7c6d7a99784d138460aea9324fd">
-  <compound kind="file">
-    <name>files.h</name>
-    <path>/home/pnarvor/work/rtac/code/rtac_base/include/rtac_base/</path>
-    <filename>files_8h.html</filename>
-    <member kind="function">
-      <type>std::string</type>
-      <name>rtac_data_path</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>a0a67dbbc3c19e8bf4b2d58cbd8acca4f</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>PathList</type>
-      <name>rtac_data_paths</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>a4c24f2dbaf98c62d63e9b04d3774532b</anchor>
-      <arglist>(const std::string &amp;delimiter=&quot;:&quot;)</arglist>
-    </member>
-    <member kind="function">
-      <type>PathList</type>
-      <name>find</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>a3ff1d89f3b5678abf05238d7870b722c</anchor>
-      <arglist>(const std::string &amp;reString=&quot;.*&quot;, bool followSimlink=true)</arglist>
-    </member>
-    <member kind="function">
-      <type>PathList</type>
-      <name>find</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>a466ace97b2fabe12f060b00afc3b9e9b</anchor>
-      <arglist>(const std::string &amp;reString, const char *path, bool followSimlink=true)</arglist>
-    </member>
-    <member kind="function">
-      <type>PathList</type>
-      <name>find</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>ac058cfb364ddd4f5587b37f0cce3c3b9</anchor>
-      <arglist>(const std::string &amp;reString, const std::string &amp;path, bool followSimlink=true)</arglist>
-    </member>
-    <member kind="function">
-      <type>PathList</type>
-      <name>find</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>a1e9910713dcb717849175cde76bd4f46</anchor>
-      <arglist>(const std::string &amp;reString, const PathList &amp;path, bool followSimlink=true)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>find_one</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>a2ad3293d382aece807d7f8bbab4999bb</anchor>
-      <arglist>(const std::string &amp;reString=&quot;.*&quot;, bool followSimlink=true)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>find_one</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>afcc9b0f5dcb569adcface9e6e55b900e</anchor>
-      <arglist>(const std::string &amp;reString, const char *path, bool followSimlink=true)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>find_one</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>a0a5e2ad218ca2704861e550d5f2398bb</anchor>
-      <arglist>(const std::string &amp;reString, const std::string &amp;path, bool followSimlink=true)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>find_one</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>af207b412a6dd21d1a1620c4ce654f4e0</anchor>
-      <arglist>(const std::string &amp;reString, const PathList &amp;path, bool followSimlink=true)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>write_pgm</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>a0c233dbf680ffc968a5f5029285dc46c</anchor>
-      <arglist>(const std::string &amp;path, size_t width, size_t height, const char *data, const std::string &amp;comment=&quot;&quot;)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>write_ppm</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>afbc1697c36ae7e10d0bfc9e9988eea28</anchor>
-      <arglist>(const std::string &amp;path, size_t width, size_t height, const char *data, const std::string &amp;comment=&quot;&quot;)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>read_ppm</name>
-      <anchorfile>files_8h.html</anchorfile>
-      <anchor>a89eeeb7507ab06b9613739f3d44700f6</anchor>
-      <arglist>(const std::string &amp;path, size_t &amp;width, size_t &amp;height, std::vector&lt; uint8_t &gt; &amp;data)</arglist>
-    </member>
-  </compound>
+<tagfile>
   <compound kind="file">
     <name>geometry.h</name>
-    <path>/home/pnarvor/work/rtac/code/rtac_base/include/rtac_base/</path>
-    <filename>geometry_8h.html</filename>
+    <path>/home/pnarvor/work/narval/code/rtac_base/include/rtac_base/</path>
+    <filename>include_2rtac__base_2geometry_8h.html</filename>
+    <namespace>rtac</namespace>
     <member kind="function">
       <type>Eigen::Matrix&lt; T, D, 1 &gt;</type>
       <name>find_noncolinear</name>
-      <anchorfile>geometry_8h.html</anchorfile>
-      <anchor>afef90abcb03b37f492b04dd758b36141</anchor>
+      <anchorfile>include_2rtac__base_2geometry_8h.html</anchorfile>
+      <anchor>acabeee574816b5b2ed8cf6c525e7045b</anchor>
       <arglist>(const Eigen::Matrix&lt; T, D, 1 &gt; &amp;v)</arglist>
     </member>
     <member kind="function">
       <type>Eigen::Matrix&lt; T, D, 1 &gt;</type>
       <name>find_orthogonal</name>
-      <anchorfile>geometry_8h.html</anchorfile>
-      <anchor>af12fd24bfa9d879030007ac8595c8b64</anchor>
+      <anchorfile>include_2rtac__base_2geometry_8h.html</anchorfile>
+      <anchor>a992debeb1ffc9c4c2942a41d7f7fd264</anchor>
       <arglist>(const Eigen::Matrix&lt; T, D, 1 &gt; &amp;v)</arglist>
     </member>
     <member kind="function">
       <type>Eigen::Matrix&lt; T, D, D &gt;</type>
       <name>orthonormalized</name>
-      <anchorfile>geometry_8h.html</anchorfile>
-      <anchor>aab7011801858ff3f225a2826fab09a91</anchor>
+      <anchorfile>include_2rtac__base_2geometry_8h.html</anchorfile>
+      <anchor>a0e8e5ceddd287631aaaa79c18221d84b</anchor>
       <arglist>(const Eigen::Matrix&lt; T, D, D &gt; &amp;M, T tol=1e-6)</arglist>
     </member>
     <member kind="function">
       <type>Matrix3&lt; T &gt;</type>
       <name>look_at</name>
-      <anchorfile>geometry_8h.html</anchorfile>
-      <anchor>aee7f254bafc93884d14503b456dafc11</anchor>
+      <anchorfile>include_2rtac__base_2geometry_8h.html</anchorfile>
+      <anchor>a1b6ad866725b405192d8eb3d83e2ff52</anchor>
       <arglist>(const Vector3&lt; T &gt; &amp;target, const Vector3&lt; T &gt; &amp;position, const Vector3&lt; T &gt; &amp;up)</arglist>
     </member>
   </compound>
   <compound kind="file">
-    <name>files.cpp</name>
-    <path>/home/pnarvor/work/rtac/code/rtac_base/src/</path>
-    <filename>files_8cpp.html</filename>
-    <includes id="files_8h" name="files.h" local="no" imported="no">rtac_base/files.h</includes>
+    <name>files.h</name>
+    <path>/home/pnarvor/work/narval/code/rtac_base/include/rtac_base/</path>
+    <filename>files_8h.html</filename>
+    <namespace>rtac</namespace>
+    <member kind="function">
+      <type>std::basic_istream&lt; CharT, Traits &gt; &amp;</type>
+      <name>getline</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a2a256c6728424a025b3a8e3ffae11da9</anchor>
+      <arglist>(std::basic_istream&lt; CharT, Traits &gt; &amp;input, std::basic_string&lt; CharT, Traits, Allocator &gt; &amp;str, CharT delim)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::basic_istream&lt; CharT, Traits &gt; &amp;</type>
+      <name>getline</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a322bff136d3964994f18d2f6e45aafe8</anchor>
+      <arglist>(std::basic_istream&lt; CharT, Traits &gt; &amp;&amp;input, std::basic_string&lt; CharT, Traits, Allocator &gt; &amp;str, CharT delim)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::basic_istream&lt; CharT, Traits &gt; &amp;</type>
+      <name>getline</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>aa097913f82e94289f6e2c51061aa849e</anchor>
+      <arglist>(std::basic_istream&lt; CharT, Traits &gt; &amp;input, std::basic_string&lt; CharT, Traits, Allocator &gt; &amp;str)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::basic_istream&lt; CharT, Traits &gt; &amp;</type>
+      <name>getline</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a7e2451c11c7f07b1837af074e466abac</anchor>
+      <arglist>(std::basic_istream&lt; CharT, Traits &gt; &amp;&amp;input, std::basic_string&lt; CharT, Traits, Allocator &gt; &amp;str)</arglist>
+    </member>
     <member kind="function">
       <type>std::string</type>
       <name>rtac_data_path</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>a0a67dbbc3c19e8bf4b2d58cbd8acca4f</anchor>
+      <anchor>a327e6421660b10c5167f6d846e9d3c73</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>PathList</type>
       <name>rtac_data_paths</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>a4c24f2dbaf98c62d63e9b04d3774532b</anchor>
+      <anchor>a9193dc347e730a34fbf679b6341054b3</anchor>
       <arglist>(const std::string &amp;delimiter=&quot;:&quot;)</arglist>
     </member>
     <member kind="function">
       <type>PathList</type>
       <name>find</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>a3ff1d89f3b5678abf05238d7870b722c</anchor>
+      <anchor>aee435138de5e590197bc8b3092275bed</anchor>
       <arglist>(const std::string &amp;reString=&quot;.*&quot;, bool followSimlink=true)</arglist>
     </member>
     <member kind="function">
       <type>PathList</type>
       <name>find</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>a466ace97b2fabe12f060b00afc3b9e9b</anchor>
+      <anchor>a80104b26596b6b7696c29c9c1d63cc2c</anchor>
       <arglist>(const std::string &amp;reString, const char *path, bool followSimlink=true)</arglist>
     </member>
     <member kind="function">
       <type>PathList</type>
       <name>find</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>ac058cfb364ddd4f5587b37f0cce3c3b9</anchor>
+      <anchor>add17ca63d0cfe65ac9c240440e547106</anchor>
       <arglist>(const std::string &amp;reString, const std::string &amp;path, bool followSimlink=true)</arglist>
     </member>
     <member kind="function">
       <type>PathList</type>
       <name>find</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>a1e9910713dcb717849175cde76bd4f46</anchor>
+      <anchor>adcf97909b89c6a224d0133564a5a5562</anchor>
       <arglist>(const std::string &amp;reString, const PathList &amp;path, bool followSimlink=true)</arglist>
     </member>
     <member kind="function">
       <type>std::string</type>
       <name>find_one</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>a2ad3293d382aece807d7f8bbab4999bb</anchor>
+      <anchor>a33d388bd20475f3e1e5e3b62cd9b7c1f</anchor>
       <arglist>(const std::string &amp;reString=&quot;.*&quot;, bool followSimlink=true)</arglist>
     </member>
     <member kind="function">
       <type>std::string</type>
       <name>find_one</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>afcc9b0f5dcb569adcface9e6e55b900e</anchor>
+      <anchor>a11e1b63aef5ec3819dc7b564157e6001</anchor>
       <arglist>(const std::string &amp;reString, const char *path, bool followSimlink=true)</arglist>
     </member>
     <member kind="function">
       <type>std::string</type>
       <name>find_one</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>a0a5e2ad218ca2704861e550d5f2398bb</anchor>
+      <anchor>a47fa449ce547c16e219f0aabc261a3e9</anchor>
       <arglist>(const std::string &amp;reString, const std::string &amp;path, bool followSimlink=true)</arglist>
     </member>
     <member kind="function">
       <type>std::string</type>
       <name>find_one</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>af207b412a6dd21d1a1620c4ce654f4e0</anchor>
+      <anchor>a849bd98e925e06f6e6a72608172b2e5e</anchor>
       <arglist>(const std::string &amp;reString, const PathList &amp;path, bool followSimlink=true)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>write_pgm</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>a0c233dbf680ffc968a5f5029285dc46c</anchor>
+      <anchor>a56539f51dc3b181bb668b8f22fc53d5c</anchor>
       <arglist>(const std::string &amp;path, size_t width, size_t height, const char *data, const std::string &amp;comment=&quot;&quot;)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>write_ppm</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>afbc1697c36ae7e10d0bfc9e9988eea28</anchor>
+      <anchor>a94e5b8920d5aa41af06479e9fcc25ea7</anchor>
       <arglist>(const std::string &amp;path, size_t width, size_t height, const char *data, const std::string &amp;comment=&quot;&quot;)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>read_ppm</name>
       <anchorfile>files_8h.html</anchorfile>
-      <anchor>a89eeeb7507ab06b9613739f3d44700f6</anchor>
+      <anchor>a7de764274846d8c45b4cea8acc1f1908</anchor>
+      <arglist>(const std::string &amp;path, size_t &amp;width, size_t &amp;height, std::vector&lt; uint8_t &gt; &amp;data)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>files.cpp</name>
+    <path>/home/pnarvor/work/narval/code/rtac_base/src/</path>
+    <filename>files_8cpp.html</filename>
+    <includes id="files_8h" name="files.h" local="no" imported="no">rtac_base/files.h</includes>
+    <namespace>rtac</namespace>
+    <member kind="function">
+      <type>std::string</type>
+      <name>rtac_data_path</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a327e6421660b10c5167f6d846e9d3c73</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>PathList</type>
+      <name>rtac_data_paths</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a9193dc347e730a34fbf679b6341054b3</anchor>
+      <arglist>(const std::string &amp;delimiter=&quot;:&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>PathList</type>
+      <name>find</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>aee435138de5e590197bc8b3092275bed</anchor>
+      <arglist>(const std::string &amp;reString=&quot;.*&quot;, bool followSimlink=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>PathList</type>
+      <name>find</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a80104b26596b6b7696c29c9c1d63cc2c</anchor>
+      <arglist>(const std::string &amp;reString, const char *path, bool followSimlink=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>PathList</type>
+      <name>find</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>add17ca63d0cfe65ac9c240440e547106</anchor>
+      <arglist>(const std::string &amp;reString, const std::string &amp;path, bool followSimlink=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>PathList</type>
+      <name>find</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>adcf97909b89c6a224d0133564a5a5562</anchor>
+      <arglist>(const std::string &amp;reString, const PathList &amp;path, bool followSimlink=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>find_one</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a33d388bd20475f3e1e5e3b62cd9b7c1f</anchor>
+      <arglist>(const std::string &amp;reString=&quot;.*&quot;, bool followSimlink=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>find_one</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a11e1b63aef5ec3819dc7b564157e6001</anchor>
+      <arglist>(const std::string &amp;reString, const char *path, bool followSimlink=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>find_one</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a47fa449ce547c16e219f0aabc261a3e9</anchor>
+      <arglist>(const std::string &amp;reString, const std::string &amp;path, bool followSimlink=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>find_one</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a849bd98e925e06f6e6a72608172b2e5e</anchor>
+      <arglist>(const std::string &amp;reString, const PathList &amp;path, bool followSimlink=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>write_pgm</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a56539f51dc3b181bb668b8f22fc53d5c</anchor>
+      <arglist>(const std::string &amp;path, size_t width, size_t height, const char *data, const std::string &amp;comment=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>write_ppm</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a94e5b8920d5aa41af06479e9fcc25ea7</anchor>
+      <arglist>(const std::string &amp;path, size_t width, size_t height, const char *data, const std::string &amp;comment=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>read_ppm</name>
+      <anchorfile>files_8h.html</anchorfile>
+      <anchor>a7de764274846d8c45b4cea8acc1f1908</anchor>
       <arglist>(const std::string &amp;path, size_t &amp;width, size_t &amp;height, std::vector&lt; uint8_t &gt; &amp;data)</arglist>
     </member>
   </compound>
   <compound kind="struct">
     <name>rtac::cuda::Addition</name>
     <filename>structrtac_1_1cuda_1_1Addition.html</filename>
-    <templarg>typename T</templarg>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::ArrayDim</name>
+    <filename>classrtac_1_1ArrayDim.html</filename>
+    <templarg>VectorT</templarg>
+    <base>DimExpression&lt; ArrayDim&lt; VectorT &gt; &gt;</base>
   </compound>
   <compound kind="struct">
-    <name>rtac::types::Buildable</name>
-    <filename>structrtac_1_1types_1_1Buildable.html</filename>
+    <name>rtac::Bounds</name>
+    <filename>structrtac_1_1Bounds.html</filename>
+    <templarg></templarg>
+    <templarg>SizeV</templarg>
   </compound>
   <compound kind="class">
-    <name>rtac::types::BuildableHandle</name>
-    <filename>classrtac_1_1types_1_1BuildableHandle.html</filename>
-    <templarg>typename BuildableT</templarg>
-    <templarg>template&lt; typename T &gt; class PointerT</templarg>
+    <name>Bounds&lt; float &gt;</name>
+    <filename>structrtac_1_1Bounds.html</filename>
   </compound>
   <compound kind="class">
-    <name>rtac::types::BuildTarget</name>
-    <filename>classrtac_1_1types_1_1BuildTarget.html</filename>
-    <class kind="struct">rtac::types::BuildTarget::CircularDependencyError</class>
-  </compound>
-  <compound kind="class">
-    <name>rtac::types::BuildTargetHandle</name>
-    <filename>classrtac_1_1types_1_1BuildTargetHandle.html</filename>
-    <templarg>typename TargetT</templarg>
-    <templarg>template&lt; typename T &gt; class PointerT</templarg>
-    <class kind="struct">rtac::types::BuildTargetHandle::Hash</class>
-  </compound>
-  <compound kind="class">
-    <name>rtac::types::CallbackQueue</name>
-    <filename>classrtac_1_1types_1_1CallbackQueue.html</filename>
-    <templarg>class ... ArgTypes</templarg>
+    <name>Bounds&lt; float, 1 &gt;</name>
+    <filename>structrtac_1_1Bounds.html</filename>
   </compound>
   <compound kind="struct">
-    <name>rtac::types::BuildTarget::CircularDependencyError</name>
-    <filename>structrtac_1_1types_1_1BuildTarget_1_1CircularDependencyError.html</filename>
+    <name>rtac::Bounds&lt; T, 1 &gt;</name>
+    <filename>structrtac_1_1Bounds_3_01T_00_011_01_4.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::BuildTarget</name>
+    <filename>classrtac_1_1BuildTarget.html</filename>
+    <class kind="struct">rtac::BuildTarget::CircularDependencyError</class>
+  </compound>
+  <compound kind="class">
+    <name>rtac::BuildTargetHandle</name>
+    <filename>classrtac_1_1BuildTargetHandle.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>rtac::CallbackQueue</name>
+    <filename>classrtac_1_1CallbackQueue.html</filename>
+    <templarg>ArgTypes</templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::external::Chunk</name>
+    <filename>classrtac_1_1external_1_1Chunk.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::external::ChunkContainer</name>
+    <filename>classrtac_1_1external_1_1ChunkContainer.html</filename>
+    <templarg></templarg>
+    <class kind="class">rtac::external::ChunkContainer::ConstIterator</class>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::BuildTarget::CircularDependencyError</name>
+    <filename>structrtac_1_1BuildTarget_1_1CircularDependencyError.html</filename>
   </compound>
   <compound kind="class">
     <name>rtac::time::Clock</name>
@@ -269,57 +323,99 @@
       <type>void</type>
       <name>reset</name>
       <anchorfile>classrtac_1_1time_1_1Clock.html</anchorfile>
-      <anchor>a577974eceb129d314ef1965ff2a298e2</anchor>
+      <anchor>a61ed43a8323d839b9694ead691c55d3b</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>T</type>
       <name>now</name>
       <anchorfile>classrtac_1_1time_1_1Clock.html</anchorfile>
-      <anchor>a6493d61b2970f4fa9f6e479f45bcd2f0</anchor>
+      <anchor>a6a51b1533142547e321e77fe4b324bd1</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
       <type>T</type>
       <name>interval</name>
       <anchorfile>classrtac_1_1time_1_1Clock.html</anchorfile>
-      <anchor>ab1040a4f7f07c161254d3a7a823f8f2d</anchor>
+      <anchor>ad940754e8355374ab3bded18ae0916c6</anchor>
       <arglist>()</arglist>
     </member>
   </compound>
   <compound kind="class">
-    <name>rtac::cuda::DeviceMesh</name>
-    <filename>classrtac_1_1cuda_1_1DeviceMesh.html</filename>
-    <templarg>typename PointT</templarg>
-    <templarg>typename FaceT</templarg>
-    <base>Mesh&lt; rtac::types::Point3&lt; float &gt;, rtac::types::Point3&lt; uint32_t &gt;, DeviceVector &gt;</base>
+    <name>rtac::Complex</name>
+    <filename>classrtac_1_1Complex.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::external::ChunkContainer::ConstIterator</name>
+    <filename>classrtac_1_1external_1_1ChunkContainer_1_1ConstIterator.html</filename>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::ConstVectorView</name>
+    <filename>structrtac_1_1ConstVectorView.html</filename>
+    <templarg></templarg>
+    <base>rtac::VectorView&lt; const T &gt;</base>
   </compound>
   <compound kind="class">
     <name>rtac::cuda::DeviceObject</name>
     <filename>classrtac_1_1cuda_1_1DeviceObject.html</filename>
-    <templarg>class T</templarg>
+    <templarg></templarg>
     <base>rtac::cuda::DeviceObjectPtr</base>
   </compound>
   <compound kind="class">
     <name>rtac::cuda::DeviceObjectBase</name>
     <filename>classrtac_1_1cuda_1_1DeviceObjectBase.html</filename>
-    <templarg>class T</templarg>
+    <templarg></templarg>
   </compound>
   <compound kind="class">
     <name>rtac::cuda::DeviceObjectPtr</name>
     <filename>classrtac_1_1cuda_1_1DeviceObjectPtr.html</filename>
-    <templarg>class T</templarg>
+    <templarg></templarg>
     <base>rtac::cuda::DeviceObjectBase</base>
   </compound>
   <compound kind="class">
     <name>rtac::cuda::DeviceVector</name>
     <filename>classrtac_1_1cuda_1_1DeviceVector.html</filename>
-    <templarg>typename T</templarg>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::DimExpression</name>
+    <filename>structrtac_1_1DimExpression.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>DimExpression&lt; ArrayDim&lt; VectorT &gt; &gt;</name>
+    <filename>structrtac_1_1DimExpression.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>DimExpression&lt; LinearDim &gt;</name>
+    <filename>structrtac_1_1DimExpression.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>rtac::DimIterator</name>
+    <filename>classrtac_1_1DimIterator.html</filename>
+    <templarg></templarg>
   </compound>
   <compound kind="struct">
     <name>rtac::cuda::Division</name>
     <filename>structrtac_1_1cuda_1_1Division.html</filename>
-    <templarg>typename T</templarg>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::details::EigenFetchVectorElement</name>
+    <filename>structrtac_1_1details_1_1EigenFetchVectorElement.html</filename>
+    <templarg>Rows</templarg>
+    <templarg>Cols</templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::details::EigenFetchVectorElement&lt; 1, Cols &gt;</name>
+    <filename>structrtac_1_1details_1_1EigenFetchVectorElement_3_011_00_01Cols_01_4.html</filename>
+    <templarg>Cols</templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::details::EigenFetchVectorElement&lt; Rows, 1 &gt;</name>
+    <filename>structrtac_1_1details_1_1EigenFetchVectorElement_3_01Rows_00_011_01_4.html</filename>
+    <templarg>Rows</templarg>
   </compound>
   <compound kind="class">
     <name>happly::Element</name>
@@ -458,41 +554,293 @@
       <arglist>(Property *prop)</arglist>
     </member>
   </compound>
-  <compound kind="struct">
-    <name>rtac::types::ensure_shared_vector</name>
-    <filename>structrtac_1_1types_1_1ensure__shared__vector.html</filename>
-    <templarg>typename T</templarg>
-  </compound>
   <compound kind="class">
     <name>rtac::time::FrameCounter</name>
     <filename>classrtac_1_1time_1_1FrameCounter.html</filename>
   </compound>
   <compound kind="struct">
-    <name>rtac::types::BuildTargetHandle::Hash</name>
-    <filename>structrtac_1_1types_1_1BuildTargetHandle_1_1Hash.html</filename>
+    <name>rtac::Function1D</name>
+    <filename>structrtac_1_1Function1D.html</filename>
+    <templarg></templarg>
   </compound>
   <compound kind="class">
-    <name>rtac::cuda::HostVector</name>
-    <filename>classrtac_1_1cuda_1_1HostVector.html</filename>
-    <templarg>typename T</templarg>
+    <name>Function1D&lt; LinearFunction1D &gt;</name>
+    <filename>structrtac_1_1Function1D.html</filename>
   </compound>
   <compound kind="class">
-    <name>rtac::types::MappedPointer</name>
-    <filename>classrtac_1_1types_1_1MappedPointer.html</filename>
-    <templarg>typename MappedT</templarg>
-    <templarg>typename PointerT</templarg>
+    <name>Function1D&lt; TexCoordScaler &gt;</name>
+    <filename>structrtac_1_1Function1D.html</filename>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::Function2D</name>
+    <filename>structrtac_1_1Function2D.html</filename>
+    <templarg></templarg>
   </compound>
   <compound kind="class">
-    <name>rtac::types::Mesh</name>
-    <filename>classrtac_1_1types_1_1Mesh.html</filename>
-    <templarg>typename PointT</templarg>
-    <templarg>typename FaceT</templarg>
-    <templarg>template&lt; typename &gt; class VectorT</templarg>
+    <name>Function2D&lt; TextureFunction2D&lt; T, XScalerT, YScalerT &gt; &gt;</name>
+    <filename>structrtac_1_1Function2D.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>rtac::display::GLVector</name>
+    <filename>classrtac_1_1display_1_1GLVector.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::HostVector</name>
+    <filename>classrtac_1_1HostVector.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::Image</name>
+    <filename>classrtac_1_1Image.html</filename>
+    <templarg></templarg>
+    <templarg>ContainerT</templarg>
+    <base>ImageExpression&lt; Image&lt; T, HostVector &gt; &gt;</base>
+  </compound>
+  <compound kind="class">
+    <name>Image&lt; T, VectorT &gt;</name>
+    <filename>classrtac_1_1Image.html</filename>
+    <base>ImageExpression&lt; Image&lt; T, VectorT &gt; &gt;</base>
+  </compound>
+  <compound kind="class">
+    <name>rtac::external::ImageCodec</name>
+    <filename>classrtac_1_1external_1_1ImageCodec.html</filename>
+    <class kind="struct">rtac::external::ImageCodec::ImageInfo</class>
+  </compound>
+  <compound kind="class">
+    <name>rtac::external::ImageCodecBase</name>
+    <filename>classrtac_1_1external_1_1ImageCodecBase.html</filename>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::ImageExpression</name>
+    <filename>classrtac_1_1ImageExpression.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>ImageExpression&lt; Image&lt; T, HostVector &gt; &gt;</name>
+    <filename>classrtac_1_1ImageExpression.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>ImageExpression&lt; Image&lt; T, VectorT &gt; &gt;</name>
+    <filename>classrtac_1_1ImageExpression.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>ImageExpression&lt; ImageView&lt; const T &gt; &gt;</name>
+    <filename>classrtac_1_1ImageExpression.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>ImageExpression&lt; ScaledImage&lt; T, WDimT, HDimT, VectorT &gt; &gt;</name>
+    <filename>classrtac_1_1ImageExpression.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>ImageExpression&lt; ScaledImageView&lt; const T, WDimT, HDimT &gt; &gt;</name>
+    <filename>classrtac_1_1ImageExpression.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>ImageExpression&lt; ScaledImageView&lt; T, WDimT, HDimT &gt; &gt;</name>
+    <filename>classrtac_1_1ImageExpression.html</filename>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::external::ImageCodec::ImageInfo</name>
+    <filename>structrtac_1_1external_1_1ImageCodec_1_1ImageInfo.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>rtac::ImageView</name>
+    <filename>classrtac_1_1ImageView.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::ImageView&lt; const T &gt;</name>
+    <filename>classrtac_1_1ImageView_3_01const_01T_01_4.html</filename>
+    <templarg></templarg>
+    <base>ImageExpression&lt; ImageView&lt; const T &gt; &gt;</base>
+  </compound>
+  <compound kind="class">
+    <name>rtac::algorithm::Interpolator</name>
+    <filename>classrtac_1_1algorithm_1_1Interpolator.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::algorithm::InterpolatorCubicSpline</name>
+    <filename>classrtac_1_1algorithm_1_1InterpolatorCubicSpline.html</filename>
+    <templarg></templarg>
+    <base>rtac::algorithm::InterpolatorInterface</base>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>interpolate</name>
+      <anchorfile>classrtac_1_1algorithm_1_1InterpolatorCubicSpline.html</anchorfile>
+      <anchor>af462f3cd7857989f87e7038044154b18</anchor>
+      <arglist>(VectorView&lt; const T &gt; x, VectorView&lt; T &gt; y) const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>rtac::algorithm::InterpolatorInterface</name>
+    <filename>classrtac_1_1algorithm_1_1InterpolatorInterface.html</filename>
+    <templarg></templarg>
+    <member kind="function">
+      <type>unsigned int</type>
+      <name>size</name>
+      <anchorfile>classrtac_1_1algorithm_1_1InterpolatorInterface.html</anchorfile>
+      <anchor>ac7cfed5cf624aa859cc1669277ed467e</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>Xconst_iterator</type>
+      <name>lower_bound</name>
+      <anchorfile>classrtac_1_1algorithm_1_1InterpolatorInterface.html</anchorfile>
+      <anchor>adbfb353d71fe34063da2b4d00738f4a4</anchor>
+      <arglist>(T x) const</arglist>
+    </member>
+    <member kind="function">
+      <type>Indexes</type>
+      <name>lower_bound_indexes</name>
+      <anchorfile>classrtac_1_1algorithm_1_1InterpolatorInterface.html</anchorfile>
+      <anchor>a1df2ae7ca143af76b8260902b7256d9a</anchor>
+      <arglist>(VectorView&lt; const T &gt; x) const</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual void</type>
+      <name>interpolate</name>
+      <anchorfile>classrtac_1_1algorithm_1_1InterpolatorInterface.html</anchorfile>
+      <anchor>a037e4663d5c84ae8306ab34822c3d2dc</anchor>
+      <arglist>(VectorView&lt; const T &gt; x, VectorView&lt; T &gt; y) const =0</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>rtac::algorithm::InterpolatorLinear</name>
+    <filename>classrtac_1_1algorithm_1_1InterpolatorLinear.html</filename>
+    <templarg></templarg>
+    <base>rtac::algorithm::InterpolatorInterface</base>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>interpolate</name>
+      <anchorfile>classrtac_1_1algorithm_1_1InterpolatorLinear.html</anchorfile>
+      <anchor>a6231c2437403f3c021ad11248e930843</anchor>
+      <arglist>(VectorView&lt; const T &gt; x, VectorView&lt; T &gt; y) const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>rtac::algorithm::InterpolatorNearest</name>
+    <filename>classrtac_1_1algorithm_1_1InterpolatorNearest.html</filename>
+    <templarg></templarg>
+    <base>rtac::algorithm::InterpolatorInterface</base>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>interpolate</name>
+      <anchorfile>classrtac_1_1algorithm_1_1InterpolatorNearest.html</anchorfile>
+      <anchor>a7263a2eed8b2042abfe7cb69c590691c</anchor>
+      <arglist>(VectorView&lt; const T &gt; x, VectorView&lt; T &gt; y) const</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::IsDimExpression</name>
+    <filename>structrtac_1_1IsDimExpression.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::IsFunction1D</name>
+    <filename>structrtac_1_1IsFunction1D.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::IsFunction2D</name>
+    <filename>structrtac_1_1IsFunction2D.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::IsScaledImage</name>
+    <filename>structrtac_1_1IsScaledImage.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::external::JPGCodec</name>
+    <filename>classrtac_1_1external_1_1JPGCodec.html</filename>
+    <base>rtac::external::ImageCodecBase</base>
+  </compound>
+  <compound kind="class">
+    <name>rtac::LinearDim</name>
+    <filename>classrtac_1_1LinearDim.html</filename>
+    <base>DimExpression&lt; LinearDim &gt;</base>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::LinearFunction1D</name>
+    <filename>structrtac_1_1LinearFunction1D.html</filename>
+    <base>Function1D&lt; LinearFunction1D &gt;</base>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::cuda::linear::StridesType::LinearIndex</name>
+    <filename>structrtac_1_1cuda_1_1linear_1_1StridesType_1_1LinearIndex.html</filename>
+    <templarg>row</templarg>
+    <templarg>col</templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::MappedPointer</name>
+    <filename>classrtac_1_1MappedPointer.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::MappedPointer&lt; const VectorT &gt;</name>
+    <filename>classrtac_1_1MappedPointer_3_01const_01VectorT_01_4.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::MappedPointerImpl</name>
+    <filename>classrtac_1_1MappedPointerImpl.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::MappedPointerImpl&lt; const VectorT &gt;</name>
+    <filename>classrtac_1_1MappedPointerImpl_3_01const_01VectorT_01_4.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::cuda::linear::MatrixBase</name>
+    <filename>classrtac_1_1cuda_1_1linear_1_1MatrixBase.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>MatrixBase&lt; T, S, MatrixData&lt; T, S &gt; &gt;</name>
+    <filename>classrtac_1_1cuda_1_1linear_1_1MatrixBase.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>rtac::cuda::linear::MatrixData</name>
+    <filename>classrtac_1_1cuda_1_1linear_1_1MatrixData.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <base>MatrixBase&lt; T, S, MatrixData&lt; T, S &gt; &gt;</base>
+  </compound>
+  <compound kind="class">
+    <name>rtac::Mesh</name>
+    <filename>classrtac_1_1Mesh.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg>V</templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::external::MtlMaterial</name>
+    <filename>structrtac_1_1external_1_1MtlMaterial.html</filename>
   </compound>
   <compound kind="struct">
     <name>rtac::cuda::Multiplication</name>
     <filename>structrtac_1_1cuda_1_1Multiplication.html</filename>
-    <templarg>typename T</templarg>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::nmea::NmeaError</name>
+    <filename>structrtac_1_1nmea_1_1NmeaError.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>rtac::external::ObjLoader</name>
+    <filename>classrtac_1_1external_1_1ObjLoader.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>rtac::cuda::PinnedVector</name>
+    <filename>classrtac_1_1cuda_1_1PinnedVector.html</filename>
+    <templarg></templarg>
   </compound>
   <compound kind="class">
     <name>happly::PLYData</name>
@@ -631,218 +979,254 @@
       <arglist></arglist>
     </member>
   </compound>
-  <compound kind="struct">
-    <name>rtac::types::Point2</name>
-    <filename>structrtac_1_1types_1_1Point2.html</filename>
-    <templarg>typename T</templarg>
+  <compound kind="class">
+    <name>rtac::external::PNGCodec</name>
+    <filename>classrtac_1_1external_1_1PNGCodec.html</filename>
+    <base>rtac::external::ImageCodecBase</base>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>write_image</name>
+      <anchorfile>classrtac_1_1external_1_1PNGCodec.html</anchorfile>
+      <anchor>ac0bff8df57b991621168b0e5c708524c</anchor>
+      <arglist>(const std::string &amp;path, const ImageCodec::ImageInfo &amp;info, const unsigned char *data, bool invertRows)</arglist>
+    </member>
   </compound>
   <compound kind="struct">
-    <name>rtac::types::Point3</name>
-    <filename>structrtac_1_1types_1_1Point3.html</filename>
-    <templarg>typename T</templarg>
+    <name>rtac::external::PNGColorType</name>
+    <filename>structrtac_1_1external_1_1PNGColorType.html</filename>
+    <templarg>Channels</templarg>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::external::PNGColorType&lt; 2, T &gt;</name>
+    <filename>structrtac_1_1external_1_1PNGColorType_3_012_00_01T_01_4.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::external::PNGColorType&lt; 3, T &gt;</name>
+    <filename>structrtac_1_1external_1_1PNGColorType_3_013_00_01T_01_4.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::external::PNGColorType&lt; 4, T &gt;</name>
+    <filename>structrtac_1_1external_1_1PNGColorType_3_014_00_01T_01_4.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::external::PNGPixelError</name>
+    <filename>structrtac_1_1external_1_1PNGPixelError.html</filename>
+    <templarg>D</templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::external::PNGPixelType</name>
+    <filename>structrtac_1_1external_1_1PNGPixelType.html</filename>
+    <templarg>ChannelCount</templarg>
+    <templarg>ChannelDepth</templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::external::PNGScalar</name>
+    <filename>structrtac_1_1external_1_1PNGScalar.html</filename>
+    <templarg>Depth</templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::external::PNGScalar&lt; 16 &gt;</name>
+    <filename>structrtac_1_1external_1_1PNGScalar_3_0116_01_4.html</filename>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::external::PNGScalar&lt; 8 &gt;</name>
+    <filename>structrtac_1_1external_1_1PNGScalar_3_018_01_4.html</filename>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::PODWrapper</name>
+    <filename>structrtac_1_1PODWrapper.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::Point2</name>
+    <filename>structrtac_1_1Point2.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::Point3</name>
+    <filename>structrtac_1_1Point3.html</filename>
+    <templarg></templarg>
   </compound>
   <compound kind="class">
-    <name>rtac::types::PointCloud</name>
-    <filename>classrtac_1_1types_1_1PointCloud.html</filename>
-    <templarg>typename PointCloudT</templarg>
+    <name>Point3&lt; float &gt;</name>
+    <filename>structrtac_1_1Point3.html</filename>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::Point4</name>
+    <filename>structrtac_1_1Point4.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::PointCloud</name>
+    <filename>classrtac_1_1PointCloud.html</filename>
+    <templarg></templarg>
     <member kind="function">
       <type>void</type>
       <name>resize</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a36ddebc223956a068cae889c0f75c037</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>ac00a308bf0366f9ac79869f89b9589de</anchor>
       <arglist>(size_t n)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>resize</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a44c2ad30b6428e861412f7c32ce61880</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>af8b7c05b05ad62b8e75a3c74f40483d0</anchor>
       <arglist>(uint32_t width, uint32_t height)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>push_back</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a4a030760c5fd46b46b99273488e33ad2</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>aae4f62efccd614fb94fe70ab37cb9bbb</anchor>
       <arglist>(const PointType &amp;p)</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>operator const PointCloudT &amp;</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a3face98899bcec17f6a2dee9ebd14653</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>af39f71ee715d964c80e941a8dd1dda7d</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
       <type></type>
       <name>operator PointCloudT &amp;</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a13e3e1fbca307626404e75a191b61b17</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>ae735386396ea8d119a90caaf8023d8a1</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>const_iterator</type>
       <name>begin</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a966ec9f74cd0325bff7df1f173ff4c4d</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>a6acd3618866c9ee5c4d2bd232d8cf88d</anchor>
       <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>iterator</type>
-      <name>begin</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a9b6b335d715e1de0e327b8fb8d44c672</anchor>
-      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>const_iterator</type>
       <name>end</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a86e6bbfe122fd167855f9b67a0a157fc</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>a4e0b8883da0ab33c38d71782d953c8e0</anchor>
       <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>iterator</type>
-      <name>end</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>ae415f4dcc77910f00f6cd2f3373283ab</anchor>
-      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>empty</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a753ed43953e1a1eac79736c9c8d25177</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>a84e9375dd0265a02db9056219ebbd55f</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>export_ply</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a5f5bdb26c42cd7b732a3b43c8059575c</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>af36426a2b5a5e631e53e681f1b9bd5cf</anchor>
       <arglist>(const std::string &amp;path, bool ascii=false) const</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>export_ply</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a9ce2bd0b9376adb012ee4d73b3be039d</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>a0e47df95d59c6743025ac061fc3d49ef</anchor>
       <arglist>(std::ostream &amp;os, bool ascii=false) const</arglist>
     </member>
     <member kind="function">
       <type>happly::PLYData</type>
       <name>export_ply</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>aeab95c0e50fa58004414c16cf6ef21e7</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>a593cba03cfde6a5c172fef378a686457</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static PointCloud&lt; PointCloudT &gt;</type>
       <name>from_ply</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>af5f05c87d830e5e0a10360d83ae0f944</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>a9a6baa2c38593b54e8c010594604d945</anchor>
       <arglist>(const std::string &amp;path)</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static PointCloud&lt; PointCloudT &gt;</type>
       <name>from_ply</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a2ae8d3965b8474b093d11c545cbcc9da</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>aa401e6c4754266ea338f64ebae6fd1c1</anchor>
       <arglist>(std::istream &amp;is)</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static PointCloud&lt; PointCloudT &gt;</type>
       <name>from_ply</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloud.html</anchorfile>
-      <anchor>a4d11bb7f2a52f52ea2d9bbd92ab981ed</anchor>
+      <anchorfile>classrtac_1_1PointCloud.html</anchorfile>
+      <anchor>a79f05081f2cde907ca0e312d109bc3ee</anchor>
       <arglist>(happly::PLYData &amp;data)</arglist>
     </member>
   </compound>
   <compound kind="class">
-    <name>rtac::types::PointCloudBase</name>
-    <filename>classrtac_1_1types_1_1PointCloudBase.html</filename>
-    <templarg>typename PointT</templarg>
+    <name>rtac::PointCloudBase</name>
+    <filename>classrtac_1_1PointCloudBase.html</filename>
+    <templarg></templarg>
     <member kind="function">
       <type>void</type>
       <name>resize</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloudBase.html</anchorfile>
-      <anchor>a8fd10ffb9e71486657e2394fee56b423</anchor>
+      <anchorfile>classrtac_1_1PointCloudBase.html</anchorfile>
+      <anchor>aeb87a5f921faf68ac985c10ae38de741</anchor>
       <arglist>(size_t n)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>push_back</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloudBase.html</anchorfile>
-      <anchor>a9d1dfb982255bee7db950d69807948c9</anchor>
+      <anchorfile>classrtac_1_1PointCloudBase.html</anchorfile>
+      <anchor>a38506f925fb60369c58b2005ae2516e5</anchor>
       <arglist>(const PointT &amp;p)</arglist>
     </member>
     <member kind="function">
       <type>const_iterator</type>
       <name>begin</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloudBase.html</anchorfile>
-      <anchor>af38898df40f5309575f178c4d255d023</anchor>
+      <anchorfile>classrtac_1_1PointCloudBase.html</anchorfile>
+      <anchor>ad2c5a639549685a419d0391f9f034c6d</anchor>
       <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>iterator</type>
-      <name>begin</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloudBase.html</anchorfile>
-      <anchor>a2f7e52a25503ed1d803dfcb39381fe81</anchor>
-      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>const_iterator</type>
       <name>end</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloudBase.html</anchorfile>
-      <anchor>a845d123b59b5623fcf07f719a95547fa</anchor>
+      <anchorfile>classrtac_1_1PointCloudBase.html</anchorfile>
+      <anchor>ae7fcf93792c86b3ae0fb8a0da9755772</anchor>
       <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>iterator</type>
-      <name>end</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloudBase.html</anchorfile>
-      <anchor>a9d072b0d85c9796d70df900f1afdd687</anchor>
-      <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>empty</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloudBase.html</anchorfile>
-      <anchor>a2e8befd6e30a087bef64d9d1f73f4c4d</anchor>
+      <anchorfile>classrtac_1_1PointCloudBase.html</anchorfile>
+      <anchor>afaaed5c84db518f098346269f045fc89</anchor>
       <arglist>() const</arglist>
     </member>
     <member kind="variable">
       <type>uint32_t</type>
       <name>height</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloudBase.html</anchorfile>
-      <anchor>a30f1b2bd2940cd3aa43fda2eddeb82dd</anchor>
+      <anchorfile>classrtac_1_1PointCloudBase.html</anchorfile>
+      <anchor>a06daf3a37e5e14f0440197656caafa18</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
       <type>Vector4&lt; float &gt;</type>
       <name>sensor_origin_</name>
-      <anchorfile>classrtac_1_1types_1_1PointCloudBase.html</anchorfile>
-      <anchor>acbbceb9d02d7d6ed45848162464349cd</anchor>
+      <anchorfile>classrtac_1_1PointCloudBase.html</anchorfile>
+      <anchor>a4ead72b3cc1c1e630583be704f79ce51</anchor>
       <arglist></arglist>
     </member>
   </compound>
-  <compound kind="class">
-    <name>rtac::types::Pose</name>
-    <filename>classrtac_1_1types_1_1Pose.html</filename>
-    <templarg>typename T</templarg>
+  <compound kind="struct">
+    <name>rtac::Pose</name>
+    <filename>structrtac_1_1Pose.html</filename>
+    <templarg></templarg>
     <member kind="function">
-      <type>Pose&lt; T &gt; &amp;</type>
-      <name>operator*=</name>
-      <anchorfile>classrtac_1_1types_1_1Pose.html</anchorfile>
-      <anchor>a3e09377bc7bea6aeca17c5739d48acb2</anchor>
-      <arglist>(const Pose&lt; T &gt; &amp;rhs)</arglist>
-    </member>
-    <member kind="function">
-      <type>Pose&lt; T &gt; &amp;</type>
+      <type>RTAC_HOSTDEVICE Pose &amp;</type>
       <name>look_at</name>
-      <anchorfile>classrtac_1_1types_1_1Pose.html</anchorfile>
-      <anchor>ae265cfb0afd45433ac76b779c94deac3</anchor>
-      <arglist>(const Vector3&lt; T &gt; &amp;target, const Vector3&lt; T &gt; &amp;position, const Vector3&lt; T &gt; &amp;up=Vector3&lt; T &gt;({0, 0, 1}))</arglist>
+      <anchorfile>structrtac_1_1Pose.html</anchorfile>
+      <anchor>aa172963393b29d9b82cc299d05170cb5</anchor>
+      <arglist>(const Vec3 &amp;target, const Vec3 &amp;position, const Vec3 &amp;up=Vec3({0, 0, 1}))</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -926,69 +1310,148 @@
       <arglist>()=0</arglist>
     </member>
   </compound>
-  <compound kind="class">
-    <name>rtac::types::Rectangle</name>
-    <filename>classrtac_1_1types_1_1Rectangle.html</filename>
-    <templarg>typename T</templarg>
-  </compound>
   <compound kind="struct">
-    <name>rtac::types::Shape</name>
-    <filename>structrtac_1_1types_1_1Shape.html</filename>
-    <templarg>typename T</templarg>
-  </compound>
-  <compound kind="struct">
-    <name>rtac::types::shared_vector_test</name>
-    <filename>structrtac_1_1types_1_1shared__vector__test.html</filename>
-    <templarg>typename OtherT</templarg>
-  </compound>
-  <compound kind="struct">
-    <name>rtac::types::shared_vector_test&lt; SharedVectorBase&lt; T &gt; &gt;</name>
-    <filename>structrtac_1_1types_1_1shared__vector__test_3_01SharedVectorBase_3_01T_01_4_01_4.html</filename>
-    <templarg>typename T</templarg>
+    <name>rtac::cuda::linear::ProxyLoader</name>
+    <filename>structrtac_1_1cuda_1_1linear_1_1ProxyLoader.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg>N</templarg>
   </compound>
   <compound kind="class">
-    <name>rtac::types::SharedVectorBase</name>
-    <filename>classrtac_1_1types_1_1SharedVectorBase.html</filename>
-    <templarg>typename VectorT</templarg>
+    <name>rtac::Rectangle</name>
+    <filename>classrtac_1_1Rectangle.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::cuda::Ref</name>
+    <filename>structrtac_1_1cuda_1_1Ref.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::ScaledImage</name>
+    <filename>classrtac_1_1ScaledImage.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg>VectorT</templarg>
+    <base>ScaledImageExpression&lt; ScaledImage&lt; T, WDimT, HDimT, VectorT &gt; &gt;</base>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::ScaledImageExpression</name>
+    <filename>structrtac_1_1ScaledImageExpression.html</filename>
+    <templarg></templarg>
+    <base>rtac::ImageExpression</base>
+  </compound>
+  <compound kind="class">
+    <name>ScaledImageExpression&lt; ScaledImage&lt; T, WDimT, HDimT, VectorT &gt; &gt;</name>
+    <filename>structrtac_1_1ScaledImageExpression.html</filename>
+    <base>ImageExpression&lt; ScaledImage&lt; T, WDimT, HDimT, VectorT &gt; &gt;</base>
+  </compound>
+  <compound kind="class">
+    <name>ScaledImageExpression&lt; ScaledImageView&lt; const T, WDimT, HDimT &gt; &gt;</name>
+    <filename>structrtac_1_1ScaledImageExpression.html</filename>
+    <base>ImageExpression&lt; ScaledImageView&lt; const T, WDimT, HDimT &gt; &gt;</base>
+  </compound>
+  <compound kind="class">
+    <name>ScaledImageExpression&lt; ScaledImageView&lt; T, WDimT, HDimT &gt; &gt;</name>
+    <filename>structrtac_1_1ScaledImageExpression.html</filename>
+    <base>ImageExpression&lt; ScaledImageView&lt; T, WDimT, HDimT &gt; &gt;</base>
+  </compound>
+  <compound kind="class">
+    <name>rtac::ScaledImageView</name>
+    <filename>classrtac_1_1ScaledImageView.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg></templarg>
+    <base>ScaledImageExpression&lt; ScaledImageView&lt; T, WDimT, HDimT &gt; &gt;</base>
+  </compound>
+  <compound kind="class">
+    <name>rtac::ScaledImageView&lt; const T, WDimT, HDimT &gt;</name>
+    <filename>classrtac_1_1ScaledImageView_3_01const_01T_00_01WDimT_00_01HDimT_01_4.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg></templarg>
+    <base>ScaledImageExpression&lt; ScaledImageView&lt; const T, WDimT, HDimT &gt; &gt;</base>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::Shape</name>
+    <filename>structrtac_1_1Shape.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>Shape&lt; uint32_t &gt;</name>
+    <filename>structrtac_1_1Shape.html</filename>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::signal::SincFunction</name>
+    <filename>structrtac_1_1signal_1_1SincFunction.html</filename>
+    <templarg></templarg>
+    <member kind="function">
+      <type>T</type>
+      <name>physical_span</name>
+      <anchorfile>structrtac_1_1signal_1_1SincFunction.html</anchorfile>
+      <anchor>a05f44de42ffd4d6506412227b5e67c6e</anchor>
+      <arglist>(T resolution) const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>rtac::signal::SinFunction</name>
+    <filename>classrtac_1_1signal_1_1SinFunction.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::SonarPing2D</name>
+    <filename>classrtac_1_1SonarPing2D.html</filename>
+    <templarg></templarg>
+    <templarg>VectorT</templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::cuda::linear::StridesType</name>
+    <filename>structrtac_1_1cuda_1_1linear_1_1StridesType.html</filename>
+    <templarg>R</templarg>
+    <templarg>C</templarg>
+    <templarg>Rstride</templarg>
+    <templarg>Cstride</templarg>
+    <class kind="struct">rtac::cuda::linear::StridesType::LinearIndex</class>
   </compound>
   <compound kind="struct">
     <name>rtac::cuda::Substraction</name>
     <filename>structrtac_1_1cuda_1_1Substraction.html</filename>
-    <templarg>typename T</templarg>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>rtac::cuda::TexCoordScaler</name>
+    <filename>structrtac_1_1cuda_1_1TexCoordScaler.html</filename>
+    <base>Function1D&lt; TexCoordScaler &gt;</base>
   </compound>
   <compound kind="class">
     <name>rtac::cuda::Texture2D</name>
     <filename>classrtac_1_1cuda_1_1Texture2D.html</filename>
-    <templarg>typename T</templarg>
+    <templarg></templarg>
   </compound>
   <compound kind="struct">
-    <name>rtac::types::TupleTypeIndex</name>
-    <filename>structrtac_1_1types_1_1TupleTypeIndex.html</filename>
-    <templarg>class T</templarg>
-    <templarg>class Tuple</templarg>
+    <name>rtac::cuda::TextureFunction2D</name>
+    <filename>structrtac_1_1cuda_1_1TextureFunction2D.html</filename>
+    <templarg></templarg>
+    <templarg></templarg>
+    <templarg></templarg>
+    <base>Function2D&lt; TextureFunction2D&lt; T, XScalerT, YScalerT &gt; &gt;</base>
   </compound>
   <compound kind="struct">
-    <name>rtac::types::TupleTypeIndex&lt; T, std::tuple&lt; T, Types... &gt; &gt;</name>
-    <filename>structrtac_1_1types_1_1TupleTypeIndex_3_01T_00_01std_1_1tuple_3_01T_00_01Types_8_8_8_01_4_01_4.html</filename>
-    <templarg>class T</templarg>
-    <templarg>class... Types</templarg>
+    <name>rtac::cuda::TextureView1D</name>
+    <filename>structrtac_1_1cuda_1_1TextureView1D.html</filename>
+    <templarg></templarg>
   </compound>
   <compound kind="struct">
-    <name>rtac::types::TupleTypeIndex&lt; T, std::tuple&lt; U, Types... &gt; &gt;</name>
-    <filename>structrtac_1_1types_1_1TupleTypeIndex_3_01T_00_01std_1_1tuple_3_01U_00_01Types_8_8_8_01_4_01_4.html</filename>
-    <templarg>class T</templarg>
-    <templarg>class U</templarg>
-    <templarg>class... Types</templarg>
-  </compound>
-  <compound kind="struct">
-    <name>rtac::types::TupleTypeIndex&lt; T, std::tuple&lt;&gt; &gt;</name>
-    <filename>structrtac_1_1types_1_1TupleTypeIndex_3_01T_00_01std_1_1tuple_3_4_01_4.html</filename>
-    <templarg>class T</templarg>
+    <name>rtac::cuda::TextureView2D</name>
+    <filename>structrtac_1_1cuda_1_1TextureView2D.html</filename>
+    <templarg></templarg>
   </compound>
   <compound kind="class">
     <name>happly::TypedListProperty</name>
     <filename>classhapply_1_1TypedListProperty.html</filename>
-    <templarg>class T</templarg>
+    <templarg></templarg>
     <base>happly::Property</base>
     <member kind="function">
       <type></type>
@@ -1099,7 +1562,7 @@
   <compound kind="class">
     <name>happly::TypedProperty</name>
     <filename>classhapply_1_1TypedProperty.html</filename>
-    <templarg>class T</templarg>
+    <templarg></templarg>
     <base>happly::Property</base>
     <member kind="function">
       <type></type>
@@ -1193,10 +1656,85 @@
       <arglist></arglist>
     </member>
   </compound>
+  <compound kind="class">
+    <name>rtac::VectorView</name>
+    <filename>classrtac_1_1VectorView.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="class">
+    <name>rtac::VectorView&lt; const T &gt;</name>
+    <filename>classrtac_1_1VectorView_3_01const_01T_01_4.html</filename>
+    <templarg></templarg>
+  </compound>
   <compound kind="struct">
-    <name>rtac::types::TypeInTuple</name>
-    <filename>structrtac_1_1types_1_1TypeInTuple.html</filename>
-    <templarg>class T</templarg>
-    <templarg>class Tuple</templarg>
+    <name>rtac::external::VertexId</name>
+    <filename>structrtac_1_1external_1_1VertexId.html</filename>
+  </compound>
+  <compound kind="namespace">
+    <name>rtac</name>
+    <filename>namespacertac.html</filename>
+    <class kind="class">rtac::ArrayDim</class>
+    <class kind="struct">rtac::Bounds</class>
+    <class kind="struct">rtac::Bounds&lt; T, 1 &gt;</class>
+    <class kind="class">rtac::BuildTarget</class>
+    <class kind="class">rtac::BuildTargetHandle</class>
+    <class kind="class">rtac::CallbackQueue</class>
+    <class kind="class">rtac::Complex</class>
+    <class kind="struct">rtac::ConstVectorView</class>
+    <class kind="struct">rtac::DimExpression</class>
+    <class kind="class">rtac::DimIterator</class>
+    <class kind="struct">rtac::Function1D</class>
+    <class kind="struct">rtac::Function2D</class>
+    <class kind="class">rtac::HostVector</class>
+    <class kind="class">rtac::Image</class>
+    <class kind="struct">rtac::ImageExpression</class>
+    <class kind="class">rtac::ImageView</class>
+    <class kind="class">rtac::ImageView&lt; const T &gt;</class>
+    <class kind="struct">rtac::IsDimExpression</class>
+    <class kind="struct">rtac::IsFunction1D</class>
+    <class kind="struct">rtac::IsFunction2D</class>
+    <class kind="struct">rtac::IsScaledImage</class>
+    <class kind="class">rtac::LinearDim</class>
+    <class kind="struct">rtac::LinearFunction1D</class>
+    <class kind="class">rtac::MappedPointer</class>
+    <class kind="class">rtac::MappedPointer&lt; const VectorT &gt;</class>
+    <class kind="class">rtac::MappedPointerImpl</class>
+    <class kind="class">rtac::MappedPointerImpl&lt; const VectorT &gt;</class>
+    <class kind="class">rtac::Mesh</class>
+    <class kind="struct">rtac::PODWrapper</class>
+    <class kind="struct">rtac::Point2</class>
+    <class kind="struct">rtac::Point3</class>
+    <class kind="struct">rtac::Point4</class>
+    <class kind="class">rtac::PointCloud</class>
+    <class kind="class">rtac::PointCloudBase</class>
+    <class kind="struct">rtac::Pose</class>
+    <class kind="class">rtac::Rectangle</class>
+    <class kind="class">rtac::ScaledImage</class>
+    <class kind="struct">rtac::ScaledImageExpression</class>
+    <class kind="class">rtac::ScaledImageView</class>
+    <class kind="class">rtac::ScaledImageView&lt; const T, WDimT, HDimT &gt;</class>
+    <class kind="struct">rtac::Shape</class>
+    <class kind="class">rtac::SonarPing2D</class>
+    <class kind="class">rtac::VectorView</class>
+    <class kind="class">rtac::VectorView&lt; const T &gt;</class>
+    <member kind="function">
+      <type>auto</type>
+      <name>make_view</name>
+      <anchorfile>namespacertac.html</anchorfile>
+      <anchor>a2ab36a9817f772a7701bf9abd0ad2b00</anchor>
+      <arglist>(const Container &amp;container)</arglist>
+    </member>
+    <member kind="function">
+      <type>auto</type>
+      <name>make_view</name>
+      <anchorfile>namespacertac.html</anchorfile>
+      <anchor>a70b0b698cf78e8319c3b92ff505e3993</anchor>
+      <arglist>(const std::vector&lt; T &gt; &amp;container)</arglist>
+    </member>
+  </compound>
+  <compound kind="page">
+    <name>md_README</name>
+    <title>rtac_base</title>
+    <filename>md_README</filename>
   </compound>
 </tagfile>

@@ -3,11 +3,10 @@ project(rtac_base VERSION 0.1)
 
 option(WITH_CUDA   "Compile and install cuda-dependent code." ON)
 option(BUILD_TESTS "Build unit tests" ON)
+option(BUILD_DOCS  "Build Doxygen documentation" OFF)
 
 # Loading installation script (just loading function, not calling)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_installation.cmake)
-# This script handles Doxygen documentation (add a BUILD_DOCUMENTATION option)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_build_docs.cmake)
 
 find_package(Eigen3 3.4 REQUIRED)
 find_package(PNG)
@@ -121,12 +120,18 @@ if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
+if(BUILD_DOCS)
+    # This script handles Doxygen documentation (add a BUILD_DOCUMENTATION option)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_build_docs.cmake)
+    target_add_docs(rtac_base)
+endif()
+
 rtac_install_target(rtac_base
     HEADER_FILES      ${rtac_base_headers}
     ADDITIONAL_CONFIG_FILES cmake/rtac_installation.cmake
     ADDITIONAL_CONFIG_FILES cmake/rtac_generate_asm.cmake
+    ADDITIONAL_CONFIG_FILES cmake/rtac_build_docs.cmake
 )
-# target_add_docs(rtac_base)
 
 
 
