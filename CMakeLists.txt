@@ -123,7 +123,7 @@ endif()
 if(BUILD_DOCS)
     # This script handles Doxygen documentation (add a BUILD_DOCUMENTATION option)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_build_docs.cmake)
-    target_add_docs(rtac_base)
+    rtac_build_docs(rtac_base)
 endif()
 
 rtac_install_target(rtac_base
@@ -131,6 +131,7 @@ rtac_install_target(rtac_base
     ADDITIONAL_CONFIG_FILES cmake/rtac_installation.cmake
     ADDITIONAL_CONFIG_FILES cmake/rtac_generate_asm.cmake
     ADDITIONAL_CONFIG_FILES cmake/rtac_build_docs.cmake
+    ADDITIONAL_CONFIG_FILES cmake/Doxyfile.in
 )
 
 
