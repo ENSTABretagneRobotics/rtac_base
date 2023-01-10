@@ -215,17 +215,10 @@ class Image : public ImageExpression<Image<T,ContainerT>>
 
 }; //namespace rtac
 
-template <typename T, template<typename> class C>
-inline std::ostream& operator<<(std::ostream& os, const rtac::Image<T,C>& img)
+template <class D>
+inline std::ostream& operator<<(std::ostream& os, const rtac::ImageExpression<D>& img)
 {
-    os << "Image (" << img.width() << 'x' << img.height() << ')';
-    return os;
-}
-
-template <typename T>
-inline std::ostream& operator<<(std::ostream& os, const rtac::ImageView<T>& img)
-{
-    os << "ImageView (" << img.width() << 'x' << img.height() << ')';
+    os << "Image (" << img.width() << 'x' << img.height() << ", step : " << img.step() << ')';
     return os;
 }
 
