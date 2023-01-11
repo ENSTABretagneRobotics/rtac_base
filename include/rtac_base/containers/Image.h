@@ -42,6 +42,20 @@ auto make_view(ImageExpression<Derived>& img) {
     return make_image_view(img.width(), img.height(), img.data(), img.step());
 }
 
+/**
+ * This implements a generic basic interface for an image type using the
+ * [CRTP](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern)
+ * template pattern.
+ *
+ * In short, the CRTP make use of template to achieve static polymorphism (i.e.
+ * no virtual methods are necessary, which method to call is resolved at
+ * compile time without any runtime overhead).
+ *
+ * This type is to be understood as an abstract class and some method must be
+ * implemented in the Derived class to match the interface.
+ *
+ *
+ */
 template <class Derived>
 struct ImageExpression
 {
@@ -77,6 +91,13 @@ struct ImageExpression
     RTAC_HOSTDEVICE uint32_t    height() const { return this->cast()->height(); }
     RTAC_HOSTDEVICE uint32_t    step()   const { return this->cast()->step();   }
 };
+
+/*! \fn uint32_t ImageExpression::size() const
+ *  \brief Returns total number of pixels in the image.
+ */
+/** \fn auto ImageExpression::operator()(uint32_t h, uint32_t w) const
+ *  Fetch a pixel at line h, and column w
+ */
 
 template <typename T, class Derived>
 void load_checkerboard(ImageExpression<Derived>& img, const T& black, const T& white)
