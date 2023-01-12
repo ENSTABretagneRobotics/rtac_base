@@ -17,6 +17,7 @@ list(APPEND test_files
     src/nmea_utils.cpp
     src/navigation_test.cpp
     src/functions.cpp
+    src/bin_codecs_test.cpp
 )
 
 list(APPEND test_deps
