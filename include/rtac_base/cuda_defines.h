@@ -6,12 +6,14 @@
 #   define RTAC_HOST       __host__
 #   define RTAC_DEVICE     __device__
 #   define RTAC_HOSTDEVICE __host__ __device__
+#   define RTAC_HD_WARNING _Pragma("hd_warning_disable")
 #   define RTAC_HD_GENERIC _Pragma("hd_warning_disable") __host__ __device__
 #   define RTAC_INLINE     __forceinline__
 #else
 #   define RTAC_HOST
 #   define RTAC_DEVICE
 #   define RTAC_HOSTDEVICE
+#   define RTAC_HD_WARNING
 #   define RTAC_HD_GENERIC
 #   define RTAC_INLINE     inline
 #endif
