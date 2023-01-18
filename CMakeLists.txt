@@ -9,9 +9,10 @@ option(BUILD_DOCS  "Build Doxygen documentation" OFF)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_installation.cmake)
 
 find_package(Eigen3 3.4 REQUIRED)
+find_package(yaml-cpp REQUIRED)
+
 find_package(PNG)
 find_package(JPEG)
-
 
 list(APPEND rtac_base_headers
     include/rtac_base/cuda_defines.h
@@ -72,6 +73,7 @@ add_library(rtac_base SHARED
 target_link_libraries(rtac_base
     PUBLIC
         Eigen3::Eigen
+        yaml-cpp
     PRIVATE
         stdc++fs
 )
