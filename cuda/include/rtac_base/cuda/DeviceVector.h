@@ -220,7 +220,9 @@ void DeviceVector<T>::allocate(size_t size)
 template <typename T>
 void DeviceVector<T>::free()
 {
-    CUDA_CHECK( cudaFree(data_) );
+    if(data_)
+        CUDA_CHECK( cudaFree(data_) );
+    data_     = nullptr;
     capacity_ = 0;
     size_     = 0;
 }
