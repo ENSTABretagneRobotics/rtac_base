@@ -11,6 +11,7 @@ list(APPEND test_names
     src/constant_object.cu
     src/scaledimage.cu
     src/texture_function.cu
+    src/texture_vector.cu
 )
 
 foreach(filename ${test_names})
