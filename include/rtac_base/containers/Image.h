@@ -68,9 +68,9 @@ struct ImageExpression
 
     RTAC_HOSTDEVICE uint32_t size() const { return this->width()*this->height(); }
 
-    RTAC_HOSTDEVICE auto  operator[](uint32_t idx) const { return this->data()[idx]; }
-    RTAC_HOSTDEVICE auto& operator[](uint32_t idx)       { return this->data()[idx]; }
-    RTAC_HOSTDEVICE auto  operator()(uint32_t h, uint32_t w) const {
+    RTAC_HOSTDEVICE const auto& operator[](uint32_t idx) const { return this->data()[idx]; }
+    RTAC_HOSTDEVICE       auto& operator[](uint32_t idx)       { return this->data()[idx]; }
+    RTAC_HOSTDEVICE const auto& operator()(uint32_t h, uint32_t w) const {
         return this->data()[this->step()*h + w];
     }
     RTAC_HOSTDEVICE auto& operator()(uint32_t h, uint32_t w) {
@@ -205,6 +205,7 @@ class Image : public ImageExpression<Image<T,ContainerT>>
     public:
 
     Image() : shape_({0,0}) {}
+    Image(uint32_t width, uint32_t height) : Image(Shape{width,height}) {}
     Image(const Shape& shape) : shape_(shape), data_(shape.area()) {}
     Image(const Shape& shape, const Container& data) : shape_(shape), data_(data) {}
     template <template<typename> class C>
