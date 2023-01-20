@@ -21,7 +21,9 @@ list(APPEND rtac_cuda_headers
     include/rtac_base/cuda/operators.h
     include/rtac_base/cuda/algorithm.hcu
     include/rtac_base/cuda/vec_math.h
+
     include/rtac_base/cuda/texture_utils.h
+    include/rtac_base/cuda/vector_utils.h
 )
 
 find_package(CUDA REQUIRED)
@@ -36,6 +38,7 @@ endif()
 add_library(rtac_cuda SHARED
     src/utils.cu
     src/texture_utils.cu
+    src/vector_utils.cu
 )
 set_target_properties(rtac_cuda PROPERTIES
     RTAC_PUBLIC_HEADERS "${rtac_cuda_headers}"
