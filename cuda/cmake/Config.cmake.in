@@ -4,7 +4,7 @@ find_package(rtac_base REQUIRED)
 set(CMAKE_CUDA_ARCHITECTURES @CMAKE_CUDA_ARCHITECTURES@)
 
 enable_language(CUDA)
-find_package(CUDA REQUIRED)
+find_package(CUDAToolkit REQUIRED)
 
 include(${CMAKE_CURRENT_LIST_DIR}/rtac_generate_ptx.cmake)
 

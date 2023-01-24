@@ -26,7 +26,8 @@ list(APPEND rtac_cuda_headers
     include/rtac_base/cuda/vector_utils.h
 )
 
-find_package(CUDA REQUIRED)
+# find_package(CUDA REQUIRED)
+find_package(CUDAToolkit REQUIRED)
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.24.0")
     set(CMAKE_CUDA_ARCHITECTURES native)
 elseif(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.23.0")
@@ -46,13 +47,15 @@ set_target_properties(rtac_cuda PROPERTIES
 target_include_directories(rtac_cuda PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
-    ${CUDA_TOOLKIT_INCLUDE}
+    # ${CUDA_TOOLKIT_INCLUDE}
 )
 target_compile_options(rtac_cuda PUBLIC
     $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>
 )
 target_link_libraries(rtac_cuda PUBLIC
-    ${CUDA_LIBRARIES}
+    # ${CUDA_LIBRARIES}
+    CUDA::cudart
+    CUDA::cufft
     rtac_base
 )
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/rtac_generate_ptx.cmake)
