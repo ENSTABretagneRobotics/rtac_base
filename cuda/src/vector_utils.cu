@@ -37,6 +37,7 @@ struct thrust_abs : std::unary_function<float,void>
     __host__ __device__ void operator()(float& x) const { x = fabs(x); }
 };
 
+
 DeviceVector<float>& abs(DeviceVector<float>& data)
 {
     using namespace thrust::placeholders;
@@ -45,6 +46,25 @@ DeviceVector<float>& abs(DeviceVector<float>& data)
                      thrust::device_pointer_cast(data.data() + data.size()),
                      thrust_abs());
     return data;
+}
+
+struct thrust_cabs : std::unary_function<float,void>
+{
+    __host__ __device__ float operator()(const Complex<float>& x) const { 
+        return ::abs(x);
+    }
+};
+
+DeviceVector<float> abs(const DeviceVector<Complex<float>>& data)
+{
+    DeviceVector<float> res(data.size());
+
+    thrust::transform(thrust::device,
+                      thrust::device_pointer_cast(data.data()),
+                      thrust::device_pointer_cast(data.data() + data.size()),
+                      thrust::device_pointer_cast(res.data()),
+                      thrust_cabs());
+    return res;
 }
 
 DeviceVector<float>& rescale(DeviceVector<float>& data, float minValue, float maxValue)

@@ -3,6 +3,7 @@
 
 #include <limits>
 
+#include <rtac_base/types/Complex.h>
 #include <rtac_base/cuda/DeviceVector.h>
 
 namespace rtac { namespace cuda {
@@ -14,6 +15,7 @@ float max(const DeviceVector<float>& data,
 float range(const DeviceVector<float>& data);
 
 DeviceVector<float>& abs(DeviceVector<float>& data);
+DeviceVector<float>  abs(const DeviceVector<Complex<float>>& data);
 
 DeviceVector<float>&  rescale(DeviceVector<float>& data,
                               float minValue = 0.0f, float maxValue = 1.0f);
