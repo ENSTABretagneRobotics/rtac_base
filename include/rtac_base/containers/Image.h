@@ -67,7 +67,9 @@ struct ImageExpression
     }
 
     RTAC_HOSTDEVICE uint32_t size()  const { return this->width()*this->height(); }
-    rtac::Shape<uint32_t>    shape() const { return rtac::Shape<uint32_t>{this->width(), this->height()}; }
+    RTAC_HOSTDEVICE rtac::Shape<uint32_t> shape() const { 
+        return rtac::Shape<uint32_t>{this->width(), this->height()};
+    }
 
     RTAC_HOSTDEVICE const auto& operator[](uint32_t idx) const { return this->data()[idx]; }
     RTAC_HOSTDEVICE       auto& operator[](uint32_t idx)       { return this->data()[idx]; }
@@ -100,17 +102,19 @@ struct ImageExpression
  *  Fetch a pixel at line h, and column w
  */
 
-template <typename T, class Derived>
-void load_checkerboard(ImageExpression<Derived>& img, const T& black, const T& white)
+template <typename T, class Derived> inline
+Derived& load_checkerboard(ImageExpression<Derived>& img, const T& black, const T& white,
+                           unsigned int squareSize = 1)
 {
     for(unsigned int h = 0; h < img.height(); h++) {
         for(unsigned int w = 0; w < img.width(); w++) {
-            if((h+w) & 0x1 > 0)
+            if((h/squareSize+w/squareSize) & 0x1 > 0)
                 img(h,w) = white;
             else 
                 img(h,w) = black;
         }
     }
+    return *img.cast();
 }
 
 template <typename T>
