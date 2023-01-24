@@ -66,7 +66,8 @@ struct ImageExpression
         return static_cast<Derived*>(this);
     }
 
-    RTAC_HOSTDEVICE uint32_t size() const { return this->width()*this->height(); }
+    RTAC_HOSTDEVICE uint32_t size()  const { return this->width()*this->height(); }
+    rtac::Shape<uint32_t>    shape() const { return rtac::Shape<uint32_t>{this->width(), this->height()}; }
 
     RTAC_HOSTDEVICE const auto& operator[](uint32_t idx) const { return this->data()[idx]; }
     RTAC_HOSTDEVICE       auto& operator[](uint32_t idx)       { return this->data()[idx]; }
