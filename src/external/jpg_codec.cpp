@@ -18,7 +18,7 @@ JPGCodec::~JPGCodec()
 
 void JPGCodec::clear()
 {
-    jpeg_destroy_decompress(&info_);
+    //jpeg_destroy_decompress(&info_);
     std::memset(&info_, 0, sizeof(info_));
     std::memset(&err_,  0, sizeof(err_));
 
