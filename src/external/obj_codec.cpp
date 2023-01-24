@@ -1,29 +1,19 @@
 #include <rtac_base/external/obj_codec.h>
 
 #include <algorithm>
+#include <filesystem>
 
 namespace rtac { namespace external {
 
-ObjLoader::ObjLoader(const std::string& datasetPath) :
-    datasetPath_(datasetPath)
+ObjLoader::ObjLoader(const std::string& objPath)
 {
-    std::cout << "Opening .obj dataset from :\n- " << datasetPath << std::endl;
+     namespace fs = std::filesystem;
 
-    objPath_ = rtac::files::find_one(".*\\obj", datasetPath);
-    if(objPath_ == rtac::files::NotFound) {
-        std::ostringstream oss;
-        oss << "Could not find .obj file in given dataset path " << datasetPath;
-        throw std::runtime_error(oss.str());
-    }
-    std::cout << "Found .obj file :\n- " << objPath_ << std::endl;
+    auto path     = fs::absolute(objPath);
+    objPath_      = path.string();
+    datasetPath_  = path.parent_path().string();
 
-    //mtlPath_ = rtac::files::find_one(".*\\mtl", datasetPath);
-    //if(mtlPath_ == rtac::files::NotFound) {
-    //    std::cout << "No .mtl file found. Ignoring." << std::endl;
-    //}
-    //else {
-    //    std::cout << "Found .mtl file :\n- " << mtlPath_ << std::endl;
-    //}
+    std::cout << "Opening .obj :\n- " << objPath_ << std::endl;
 }
 
 std::array<VertexId, 3> parse_face(const std::string& line)

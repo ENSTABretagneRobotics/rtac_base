@@ -233,8 +233,8 @@ class ObjLoader
 
     protected:
 
-    std::string datasetPath_;
     std::string objPath_;
+    std::string datasetPath_;
     std::string mtlPath_;
 
     std::vector<Point>       points_;
@@ -250,7 +250,7 @@ class ObjLoader
 
     public:
 
-    ObjLoader(const std::string& datasetPath);
+    ObjLoader(const std::string& objPath);
 
     void load_geometry(unsigned int chunkSize = 100);
     void parse_mtl();
