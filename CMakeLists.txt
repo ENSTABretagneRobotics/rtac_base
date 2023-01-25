@@ -13,7 +13,6 @@ find_package(yaml-cpp REQUIRED)
 
 find_package(PNG)
 find_package(JPEG)
-find_package(tinyxml2)
 
 list(APPEND rtac_base_headers
     include/rtac_base/cuda_defines.h
@@ -56,6 +55,8 @@ list(APPEND rtac_base_headers
     include/rtac_base/happly.h
     include/rtac_base/external/obj_codec.h
     include/rtac_base/external/ImageCodec.h
+    include/rtac_base/external/tinyxml2.h
+    include/rtac_base/external/metashape.h
 
     include/rtac_base/nmea_utils.h
     include/rtac_base/navigation.h
@@ -70,6 +71,8 @@ add_library(rtac_base SHARED
 
     src/external/obj_codec.cpp
     src/external/ImageCodec.cpp
+    src/external/tinyxml2.cpp
+    src/external/metashape.cpp
 )
 target_link_libraries(rtac_base
     PUBLIC
@@ -119,12 +122,6 @@ if(JPEG_FOUND)
     set_target_properties(rtac_base PROPERTIES
         RTAC_PUBLIC_HEADERS "${rtac_base_headers}"
     )
-endif()
-
-if(TARGET tinyxml2::tinyxml2)
-    list(APPEND rtac_base_headers include/rtac_base/external/metashape.h)
-    target_sources(rtac_base PRIVATE src/external/metashape.cpp)
-    target_link_libraries(rtac_base PUBLIC tinyxml2::tinyxml2)
 endif()
 
 if(BUILD_TESTS)

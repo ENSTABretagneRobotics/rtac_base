@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-#include <tinyxml2.h>
+#include <rtac_base/external/tinyxml2.h>
 
 namespace rtac { namespace external {
 
