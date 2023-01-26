@@ -57,6 +57,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/external/ImageCodec.h
     include/rtac_base/external/tinyxml2.h
     include/rtac_base/external/metashape.h
+    include/rtac_base/external/kalibr.h
 
     include/rtac_base/nmea_utils.h
     include/rtac_base/navigation.h
@@ -73,6 +74,7 @@ add_library(rtac_base SHARED
     src/external/ImageCodec.cpp
     src/external/tinyxml2.cpp
     src/external/metashape.cpp
+    src/external/kalibr.cpp
 )
 target_link_libraries(rtac_base
     PUBLIC
