@@ -31,7 +31,7 @@ int main()
     tex0.set_subimage(W2,H2,W2,H2, subdata0.data());
     res0 = render_texture(Wout,Hout,tex0);
 
-    write_pgm("output.pgm", Wout, Hout, res0.data());
+    //write_pgm("output.pgm", Wout, Hout, res0.data());
 
     // Colored texture
     auto tex1 = Texture2D<float4>::checkerboard(W, H,

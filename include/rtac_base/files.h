@@ -64,27 +64,6 @@ void write_pgm(const std::string& path, size_t width, size_t height, const char*
                const std::string& comment = "");
 void write_ppm(const std::string& path, size_t width, size_t height, const char* data,
                const std::string& comment = "");
-template <typename T>
-void write_pgm(const std::string& path, size_t width, size_t height, const T* data,
-               T a = 255, T b = 0, const std::string& comment = "")
-{
-    std::vector<uint8_t> imgData(width*height);
-    for(int i = 0; i < imgData.size(); i++) {
-        imgData[i] = static_cast<uint8_t>(a*data[i] + b);
-    }
-    write_pgm(path, width, height, reinterpret_cast<const char*>(imgData.data()), comment);
-}
-
-template <typename T>
-void write_ppm(const std::string& path, size_t width, size_t height, const T* data,
-               T a = 255, T b = 0, const std::string& comment = "")
-{
-    std::vector<uint8_t> imgData(3*width*height);
-    for(int i = 0; i < imgData.size(); i++) {
-        imgData[i] = static_cast<uint8_t>(a*data[i] + b);
-    }
-    write_ppm(path, width, height, reinterpret_cast<const char*>(imgData.data()), comment);
-}
 
 void read_ppm(const std::string& path, size_t& width, size_t& height,
               std::vector<uint8_t>& data);
