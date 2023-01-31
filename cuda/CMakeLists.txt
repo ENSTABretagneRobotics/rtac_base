@@ -49,6 +49,16 @@ target_include_directories(rtac_cuda PUBLIC
 target_compile_options(rtac_cuda PUBLIC
     $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>
 )
+if("${CUDAToolkit_VERSION}" VERSION_LESS "11.0.0")
+    target_compile_definitions(rtac_cuda PUBLIC 
+        $<$<COMPILE_LANGUAGE:CUDA>:RTAC_CXX_STD=14>
+    )
+else()
+    target_compile_definitions(rtac_cuda PUBLIC
+        $<$<COMPILE_LANGUAGE:CUDA>:RTAC_CXX_STD=17>
+    )
+endif()
+
 target_link_libraries(rtac_cuda PUBLIC
     CUDA::cudart
     rtac_base

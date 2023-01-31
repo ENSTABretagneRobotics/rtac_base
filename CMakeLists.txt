@@ -89,6 +89,9 @@ target_include_directories(rtac_base
         $<INSTALL_INTERFACE:include>
 )
 target_compile_features(rtac_base PUBLIC cxx_std_17)
+target_compile_definitions(rtac_base PUBLIC 
+    $<$<COMPILE_LANGUAGE:CXX>:RTAC_CXX_STD=17>
+)
 
 if(WITH_CUDA)
     target_compile_definitions(rtac_base PUBLIC "-DRTAC_CUDA_ENABLED")
