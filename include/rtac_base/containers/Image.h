@@ -86,6 +86,9 @@ struct ImageExpression
     RTAC_HOSTDEVICE auto view() {
         return make_image_view(this->width(), this->height(), this->data(), this->step());
     }
+    RTAC_HOSTDEVICE auto const_view() const {
+        return make_image_view(this->width(), this->height(), this->data(), this->step());
+    }
 
     // These 5 methods have to be reimplemented in subsclasses.
     RTAC_HOSTDEVICE const auto* data()   const { return this->cast()->data();   }
