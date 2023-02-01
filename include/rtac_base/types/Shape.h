@@ -42,6 +42,11 @@ struct Shape
     {
         return Shape<OtherT>{width, height};
     }
+
+    bool operator==(const Shape<T>& other) const {
+        return this->width == other.width && this->height == other.height;
+    }
+    bool operator!=(const Shape<T>& other) const { return !(*this == other); }
 };
 
 }; //namespace rtac
