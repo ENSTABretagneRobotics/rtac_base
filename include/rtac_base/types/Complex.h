@@ -104,7 +104,7 @@ template <class T> RTAC_HOSTDEVICE inline T imag(const rtac::Complex<T>& value) 
 template <class T> RTAC_HOSTDEVICE inline T norm(const rtac::Complex<T>& value) { return value.real()*value.real() + value.imag()*value.imag(); }
 template <class T> RTAC_HOSTDEVICE inline T abs (const rtac::Complex<T>& value) { return sqrt(norm(value)); }
 template <class T> RTAC_HOSTDEVICE inline T arg (const rtac::Complex<T>& value) { return atan2(value.imag(), value.real()); }
-template <class T> RTAC_HOSTDEVICE inline T conj(const rtac::Complex<T>& value) { return rtac::Complex<T>(value.real(), -value.imag()); }
+template <class T> RTAC_HOSTDEVICE inline rtac::Complex<T> conj(const rtac::Complex<T>& value) { return rtac::Complex<T>(value.real(), -value.imag()); }
 
 template <class T> RTAC_HOSTDEVICE inline T polar(const T& r, const T& theta = T()) { return rtac::Complex<T>(r*cos(theta), r*sin(theta)); }
 
