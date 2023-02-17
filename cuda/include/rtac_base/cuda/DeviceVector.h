@@ -86,8 +86,9 @@ class DeviceVector
     const_iterator begin() const;
     const_iterator end() const;
 
-    auto view() const { return VectorView<const T>(this->size(), this->data()); }
-    auto view()       { return VectorView<T>(this->size(), this->data()); }
+    auto view()             { return VectorView<T>(this->size(), this->data()); }
+    auto view()       const { return VectorView<const T>(this->size(), this->data()); }
+    auto const_view() const { return this->view(); } // alias to have a const_view from a non-const reference
 
     DeviceVector(const display::GLVector<T>& other) { *this = other; }
     DeviceVector& operator=(const display::GLVector<T>& other) {
