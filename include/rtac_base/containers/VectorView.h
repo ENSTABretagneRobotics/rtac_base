@@ -30,8 +30,8 @@ class VectorView
 
     public:
 
-    VectorView(std::size_t size = 0, T* data = nullptr) : data_(data), size_(size) {}
-    template <template<typename>class VectorT>
+    RTAC_HOSTDEVICE VectorView(std::size_t size = 0, T* data = nullptr) : data_(data), size_(size) {}
+    template <template<typename>class VectorT> RTAC_HOSTDEVICE
     VectorView(VectorT<T>& vector) : VectorView(vector.size(), vector.data()) {}
 
     RTAC_HOSTDEVICE std::size_t size() const { return size_; }
@@ -71,9 +71,9 @@ class VectorView<const T>
 
     public:
 
-    VectorView(std::size_t size = 0, const T* data = nullptr) : data_(data), size_(size) {}
+    RTAC_HOSTDEVICE VectorView(std::size_t size = 0, const T* data = nullptr) : data_(data), size_(size) {}
     
-    template <template<typename>class VectorT>// [[deprecated]]
+    template <template<typename>class VectorT> RTAC_HOSTDEVICE // [[deprecated]]
     VectorView(const VectorT<T>& vector) : VectorView(vector.size(), vector.data()) {}
 
     RTAC_HOSTDEVICE std::size_t size() const { return size_; }
