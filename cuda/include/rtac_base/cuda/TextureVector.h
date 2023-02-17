@@ -21,7 +21,7 @@ struct TextureVectorView
     
     RTAC_HOSTDEVICE std::size_t size() const { return size_; }
     #ifdef RTAC_CUDACC
-    __device__ T operator[](int idx) const { return tex1Dfetch<T>(data_, idx); }
+    __host__ __device__ T operator[](int idx) const { return tex1Dfetch<T>(data_, idx); }
     #endif
 };
 

@@ -27,6 +27,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/containers/VectorView.h
     include/rtac_base/containers/HostVector.h
     include/rtac_base/containers/Image.h
+    include/rtac_base/containers/DimExpression.h
     include/rtac_base/containers/ScaledImage.h
     include/rtac_base/containers/utilities.h
 
