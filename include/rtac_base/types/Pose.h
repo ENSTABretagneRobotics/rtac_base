@@ -60,8 +60,8 @@ struct Pose
     RTAC_HOSTDEVICE T  y() const { return t_(1); }
     RTAC_HOSTDEVICE T  z() const { return t_(2); }
     RTAC_HOSTDEVICE T& x()       { return t_(0); }
-    T& y()       { return t_(1); }
-    T& z()       { return t_(2); }
+    RTAC_HOSTDEVICE T& y()       { return t_(1); }
+    RTAC_HOSTDEVICE T& z()       { return t_(2); }
 
     RTAC_HOSTDEVICE void set_orientation(const Mat3& r) { r_ = r; }
     RTAC_HOSTDEVICE void set_orientation(const Quat& q) { r_ = q.toRotationMatrix(); }
