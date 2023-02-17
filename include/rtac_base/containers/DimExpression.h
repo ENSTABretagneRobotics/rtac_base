@@ -53,6 +53,9 @@ struct DimExpression
     RTAC_HOSTDEVICE float index_to_value(uint32_t index) const {
         return this->cast()->index_to_value(index);
     }
+
+    RTAC_HOSTDEVICE float front() const { return this->operator[](0);                }
+    RTAC_HOSTDEVICE float back()  const { return this->operator[](this->size() - 1); }
     
     // Leaving this might make usage more complicated.
     //RTAC_HOSTDEVICE uint32_t operator()(float value) const { return this->value_to_index(value); }

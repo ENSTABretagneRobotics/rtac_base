@@ -123,6 +123,15 @@ class ScaledImage : public ScaledImageExpression< ScaledImage<T, WDimT, HDimT, V
 
     public:
 
+    ScaledImage(const WidthDim& wDim,
+                const HeightDim& hDim) :
+        data_(wDim.size()*hDim.size()), wDim_(wDim), hDim_(hDim)
+    {
+        if(data_.size() != wDim_.size() * hDim_.size()) {
+            throw std::runtime_error("Inconsistent sizes for ScaledImage");
+        }
+    }
+
     template <template<typename>class VectorT2>
     ScaledImage(const WidthDim& wDim,
                 const HeightDim& hDim,
@@ -147,6 +156,20 @@ class ScaledImage : public ScaledImageExpression< ScaledImage<T, WDimT, HDimT, V
     const VectorT<T>& container() const { return data_; }
     VectorT<T>&       container()       { return data_; }
     RTAC_HOSTDEVICE Shape shape() const { return Shape{this->width(), this->height()}; }
+
+    RTAC_HOSTDEVICE void reconfigure(const WidthDim& wDim, const HeightDim hDim) {
+        wDim_ = wDim;
+        hDim_ = hDim;
+        data_.resize(wDim_.size() * hDim_.size());
+    }
+    RTAC_HOSTDEVICE void set_width_dim(const WidthDim& wDim) {
+        wDim_ = wDim;
+        data_.resize(wDim_.size() * hDim_.size());
+    }
+    RTAC_HOSTDEVICE void set_height_dim(const HeightDim hDim) {
+        hDim_ = hDim;
+        data_.resize(wDim_.size() * hDim_.size());
+    }
     
     RTAC_HOSTDEVICE const T* data() const { return data_.data();  }
     RTAC_HOSTDEVICE T*       data()       { return data_.data();  }
