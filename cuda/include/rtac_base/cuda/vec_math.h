@@ -11,6 +11,7 @@
 
 #include <rtac_base/cuda_defines.h>
 #include <rtac_base/cuda/utils.h>
+#include <rtac_base/types/Complex.h>
 
 constexpr float M_PIf = M_PI;
 
@@ -38,7 +39,8 @@ RTAC_HOSTDEVICE inline float   norm      (const float2& v) { return sqrt(dot(v,v
 RTAC_HOSTDEVICE inline float2  normalized(const float2& v) { return v /  norm(v);      }
 RTAC_HOSTDEVICE inline float2& normalize (float2& v)       { return v /= norm(v);      }
 
-
+RTAC_HOSTDEVICE inline float2               make_float2(const rtac::Complex<float>& c) { return float2{c.real(), c.imag()};       }
+RTAC_HOSTDEVICE inline rtac::Complex<float> make_complex(const float2& c)              { return rtac::Complex<float>(c.x, c.y);   }
 
 RTAC_HOSTDEVICE inline float3 operator+(const float3& lhs, const float3& rhs)   { return float3{lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z}; }
 RTAC_HOSTDEVICE inline float3 operator-(const float3& lhs, const float3& rhs)   { return float3{lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z}; }
