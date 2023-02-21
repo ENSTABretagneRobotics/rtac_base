@@ -96,6 +96,38 @@ struct SincFunction
 };
 
 template <typename T>
+struct GaussFunction
+{
+    protected:
+
+    std::vector<T> x_;
+    std::vector<T> y_;
+
+    static T sampling_period(T sigma, unsigned int oversampling) {
+        std::cout << "sampling period : " << M_PI*sigma / (3*oversampling) << std::endl;
+        return M_PI*sigma / (3*oversampling);
+    }
+
+    public:
+
+    GaussFunction(T span, T sigma, unsigned int oversampling = 8) :
+        x_((unsigned int)(span / sampling_period(sigma, oversampling)) + 1),
+        y_(x_.size())
+    {
+        auto N = y_.size();
+        for(int n = 0; n < N; n++) {
+            x_[n] = span * (((float)n) / (N - 1) - 0.5f);
+            y_[n] = std::exp(-x_[n]*x_[n] / (2.0f*sigma*sigma));
+        }
+    }
+
+    std::size_t size() const { return y_.size();   }
+    const std::vector<T>& domain()   const { return x_; }
+    const std::vector<T>& function() const { return y_; }
+};
+
+
+template <typename T>
 class SineFunction
 {
     protected:
