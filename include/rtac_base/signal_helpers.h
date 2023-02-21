@@ -2,6 +2,9 @@
 #define _DEF_RTAC_BASE_SINAL_HELPERS_H_
 
 #include <vector>
+#include <cmath>
+
+#include <rtac_base/types/Complex.h>
 
 namespace rtac { namespace signal {
 
@@ -93,7 +96,7 @@ struct SincFunction
 };
 
 template <typename T>
-class SinFunction
+class SineFunction
 {
     protected:
 
@@ -103,7 +106,7 @@ class SinFunction
 
     public:
 
-    SinFunction(T periodCount, unsigned int oversampling = 8) :
+    SineFunction(T periodCount, unsigned int oversampling = 8) :
         x_(2*(((unsigned int)periodCount * oversampling) + 1)),
         y_(x_.size()),
         periodCount_(periodCount)
@@ -121,6 +124,37 @@ class SinFunction
     const std::vector<T>& phase()    const { return x_; }
     const std::vector<T>& function() const { return y_; }
 };
+
+template <typename T>
+class ComplexSineFunction
+{
+    protected:
+
+    std::vector<T> x_;
+    std::vector<Complex<T>> y_;
+    T              periodCount_;
+
+    public:
+
+    ComplexSineFunction(T periodCount, unsigned int oversampling = 8) :
+        x_(2*(((unsigned int)periodCount * oversampling) + 1)),
+        y_(x_.size()),
+        periodCount_(periodCount)
+
+    {
+        auto N = x_.size();
+        for(int n = 0; n < N; n++) {
+            x_[n] = (2.0*M_PI*periodCount_*n) / (N - 1);
+            y_[n] = Complex<T>(std::cos(x_[n]), std::sin(x_[n]));
+        }
+    }
+
+    std::size_t size() const { return y_.size(); }
+
+    const std::vector<T>&          phase()    const { return x_; }
+    const std::vector<Complex<T>>& function() const { return y_; }
+};
+
 
 
 } //namespace signal
