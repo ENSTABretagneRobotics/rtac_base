@@ -57,6 +57,13 @@ DeviceVector<Complex<float>>& operator*=(DeviceVector<Complex<float>>& lhs,
 DeviceVector<Complex<float>>& operator/=(DeviceVector<Complex<float>>& lhs,
                                          const DeviceVector<Complex<float>>& rhs);
 
+DeviceVector<float>  abs (const DeviceVector<float2>& data);
+DeviceVector<float>  real(const DeviceVector<float2>& data);
+DeviceVector<float>  imag(const DeviceVector<float2>& data);
+DeviceVector<float>  arg (const DeviceVector<float2>& data);
+DeviceVector<float>  norm(const DeviceVector<float2>& data);
+DeviceVector<float2> conj(const DeviceVector<float2>& data);
+
 } // namespace cuda
 } // namespace rtac
 

@@ -11,6 +11,8 @@
 #include <cuda_runtime.h>
 #include <cmath>
 
+#include <rtac_base/cuda/vec_math.h>
+
 namespace rtac { namespace cuda {
 
 float min(const DeviceVector<float>& data, float initial)
@@ -186,6 +188,9 @@ struct thrust_cabs
     __host__ __device__ float operator()(const Complex<float>& x) const { 
         return ::abs(x);
     }
+    __host__ __device__ float operator()(const float2& x) const { 
+        return ::sqrt(x.x*x.x + x.y*x.y);
+    }
 };
 
 DeviceVector<float> abs(const DeviceVector<Complex<float>>& data)
@@ -204,6 +209,9 @@ struct thrust_creal
 {
     __host__ __device__ float operator()(const Complex<float>& x) const { 
         return ::real(x);
+    }
+    __host__ __device__ float operator()(const float2& x) const { 
+        return x.x;
     }
 };
 
@@ -224,6 +232,9 @@ struct thrust_cimag
     __host__ __device__ float operator()(const Complex<float>& x) const { 
         return ::imag(x);
     }
+    __host__ __device__ float operator()(const float2& x) const { 
+        return x.y;
+    }
 };
 
 DeviceVector<float> imag(const DeviceVector<Complex<float>>& data)
@@ -242,6 +253,9 @@ struct thrust_carg
 {
     __host__ __device__ float operator()(const Complex<float>& x) const { 
         return ::arg(x);
+    }
+    __host__ __device__ float operator()(const float2& x) const { 
+        return ::arg(Complex<float>(x.x, x.y));
     }
 };
 
@@ -262,6 +276,9 @@ struct thrust_cnorm
     __host__ __device__ float operator()(const Complex<float>& x) const { 
         return ::norm(x);
     }
+    __host__ __device__ float operator()(const float2& x) const { 
+        return x.x*x.x + x.y*x.y;
+    }
 };
 
 DeviceVector<float> norm(const DeviceVector<Complex<float>>& data)
@@ -280,6 +297,9 @@ struct thrust_conj// : std::unary_function<float,void>
 {
     __host__ __device__ Complex<float> operator()(const Complex<float>& x) const { 
         return ::conj(x);
+    }
+    __host__ __device__ float2 operator()(const float2& x) const { 
+        return float2{x.x, -x.y};
     }
 };
 
@@ -401,6 +421,11 @@ struct thrust_cplus
     {
         return lhs + rhs;
     }
+    __host__ __device__ float2 operator()(const float2& lhs,
+                                          const float2& rhs) const
+    {
+        return lhs + rhs;
+    }
 };
 
 DeviceVector<Complex<float>>& operator+=(DeviceVector<Complex<float>>& lhs,
@@ -423,6 +448,11 @@ struct thrust_cminus
 {
     __host__ __device__ Complex<float> operator()(const Complex<float>& lhs,
                                                   const Complex<float>& rhs) const
+    {
+        return lhs - rhs;
+    }
+    __host__ __device__ float2 operator()(const float2& lhs,
+                                          const float2& rhs) const
     {
         return lhs - rhs;
     }
@@ -452,6 +482,11 @@ struct thrust_cmultiplies
     {
         return lhs * rhs;
     }
+    //__host__ __device__ float2 operator()(const float2& lhs,
+    //                                      const float2& rhs) const
+    //{
+    //    return lhs * rhs;
+    //}
 };
 
 DeviceVector<Complex<float>>& operator*=(DeviceVector<Complex<float>>& lhs,
@@ -477,6 +512,11 @@ struct thrust_cdivides
     {
         return lhs / rhs;
     }
+    //__host__ __device__ float2 operator()(const float2& lhs,
+    //                                      const float2& rhs) const
+    //{
+    //    return lhs / rhs;
+    //}
 };
 
 DeviceVector<Complex<float>>& operator/=(DeviceVector<Complex<float>>& lhs,
@@ -493,6 +533,78 @@ DeviceVector<Complex<float>>& operator/=(DeviceVector<Complex<float>>& lhs,
                       thrust::device_pointer_cast(lhs.data()),
                       thrust_cdivides());
     return lhs;
+}
+
+DeviceVector<float> abs(const DeviceVector<float2>& data)
+{
+    DeviceVector<float> res(data.size());
+
+    thrust::transform(thrust::device,
+                      thrust::device_pointer_cast(data.data()),
+                      thrust::device_pointer_cast(data.data() + data.size()),
+                      thrust::device_pointer_cast(res.data()),
+                      thrust_cabs());
+    return res;
+}
+
+DeviceVector<float> real(const DeviceVector<float2>& data)
+{
+    DeviceVector<float> res(data.size());
+
+    thrust::transform(thrust::device,
+                      thrust::device_pointer_cast(data.data()),
+                      thrust::device_pointer_cast(data.data() + data.size()),
+                      thrust::device_pointer_cast(res.data()),
+                      thrust_creal());
+    return res;
+}
+
+DeviceVector<float> imag(const DeviceVector<float2>& data)
+{
+    DeviceVector<float> res(data.size());
+
+    thrust::transform(thrust::device,
+                      thrust::device_pointer_cast(data.data()),
+                      thrust::device_pointer_cast(data.data() + data.size()),
+                      thrust::device_pointer_cast(res.data()),
+                      thrust_cimag());
+    return res;
+}
+
+DeviceVector<float> arg(const DeviceVector<float2>& data)
+{
+    DeviceVector<float> res(data.size());
+
+    thrust::transform(thrust::device,
+                      thrust::device_pointer_cast(data.data()),
+                      thrust::device_pointer_cast(data.data() + data.size()),
+                      thrust::device_pointer_cast(res.data()),
+                      thrust_carg());
+    return res;
+}
+
+DeviceVector<float> norm(const DeviceVector<float2>& data)
+{
+    DeviceVector<float> res(data.size());
+
+    thrust::transform(thrust::device,
+                      thrust::device_pointer_cast(data.data()),
+                      thrust::device_pointer_cast(data.data() + data.size()),
+                      thrust::device_pointer_cast(res.data()),
+                      thrust_cnorm());
+    return res;
+}
+
+DeviceVector<float2> conj(const DeviceVector<float2>& data)
+{
+    DeviceVector<float2> res(data.size());
+
+    thrust::transform(thrust::device,
+                      thrust::device_pointer_cast(data.data()),
+                      thrust::device_pointer_cast(data.data() + data.size()),
+                      thrust::device_pointer_cast(res.data()),
+                      thrust_conj());
+    return res;
 }
 
 } // namespace cuda
