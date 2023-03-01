@@ -53,6 +53,11 @@ struct Bounds<T,1>
     T lower;
     T upper;
 
+    Bounds() = default;
+    Bounds<T,1>& operator=(const Bounds<T,1>&) = default;
+
+    Bounds(T l, T u) : lower(l), upper(u) {}
+
     RTAC_HOSTDEVICE T length() const {
         return upper - lower;
     }

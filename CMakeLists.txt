@@ -20,6 +20,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/Shape.h
     include/rtac_base/types/Rectangle.h
     include/rtac_base/types/Bounds.h
+    include/rtac_base/types/Linspace.h
     include/rtac_base/types/Point.h
     include/rtac_base/types/Complex.h
     include/rtac_base/types/PODWrapper.h
