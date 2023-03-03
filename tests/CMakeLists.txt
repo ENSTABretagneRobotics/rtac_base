@@ -18,6 +18,7 @@ list(APPEND test_files
     src/navigation_test.cpp
     src/functions.cpp
     src/bin_codecs_test.cpp
+    src/exception.cpp
 )
 
 list(APPEND test_deps
