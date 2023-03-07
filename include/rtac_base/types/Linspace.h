@@ -33,10 +33,18 @@ struct Linspace
     RTAC_HOSTDEVICE T length()     const { return bounds_.length(); }
     RTAC_HOSTDEVICE T resolution() const { return bounds_.length() / (size_ - 1); }
     RTAC_HOSTDEVICE T operator[](unsigned int idx) const {
-        return this->resolution() * idx - bounds_.lower;
+        return this->resolution() * idx + bounds_.lower;
     }
 };
 
 } //namespace rtac
+
+template <typename T> inline
+std::ostream& operator<<(std::ostream& os, const rtac::Linspace<T>& linspace)
+{
+    os << "Linspace [" << linspace.lower() << ", " << linspace.upper()
+       << "], size : " << linspace.size();
+    return os;
+}
 
 #endif //_DEF_RTAC_BASE_TYPES_LINSPACE_H_
