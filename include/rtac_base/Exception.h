@@ -31,6 +31,14 @@ class Exception : public std::exception
     }
 };
 
+struct FileError : public Exception
+{
+    FileError() : Exception("RTAC_FILE_ERROR") {}
+    FileError(const std::string& filename) : 
+        Exception("RTAC_FILE_ERROR '" + filename + "'")
+    {}
+};
+
 } //namespace rtac
 
 
