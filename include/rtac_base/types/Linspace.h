@@ -27,6 +27,8 @@ struct Linspace
 
     RTAC_HOSTDEVICE const Bounds<T>& bounds() const { return bounds_; }
     RTAC_HOSTDEVICE unsigned int     size()   const { return size_; }
+    RTAC_HOSTDEVICE T lower() const { return bounds_.lower; }
+    RTAC_HOSTDEVICE T upper() const { return bounds_.upper; }
 
     RTAC_HOSTDEVICE T length()     const { return bounds_.length(); }
     RTAC_HOSTDEVICE T resolution() const { return bounds_.length() / (size_ - 1); }
