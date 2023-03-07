@@ -72,6 +72,7 @@ class Texture2D
     Texture2D<T>& operator=(Texture2D<T>&& other);
 
     void allocate_data(uint32_t width, uint32_t height);
+    void resize(uint32_t width, uint32_t height) { this->allocate_data(width, height); }
     void set_image(uint32_t width, uint32_t height, const T* data);
     void set_image(uint32_t width, uint32_t height, const DeviceVector<T>& data);
     void set_subimage(uint32_t width,   uint32_t height, 
@@ -289,7 +290,7 @@ template <typename T>
 void Texture2D<T>::allocate_data(uint32_t width, uint32_t height)
 {
     // Not reallocating if dimensions did not changed.
-    if(width == width_ && height == height)
+    if(width == this->width_ && height == this->height_)
         return;
 
     this->free_data();
