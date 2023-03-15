@@ -226,6 +226,9 @@ class Image : public ImageExpression<Image<T,ContainerT>>
         return *this;
     }
 
+    void resize(unsigned int width, unsigned int height) {
+        this->resize({width, height});
+    }
     void resize(const Shape& shape) {
         data_.resize(shape.area());
         shape_ = shape;

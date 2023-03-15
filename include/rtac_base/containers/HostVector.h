@@ -46,6 +46,7 @@ class HostVector
 
     HostVector() {}
     HostVector(size_t size) : data_(size) {}
+    HostVector(size_t size, T value) : data_(size, value) {}
     HostVector(const HostVector<T>& other) : data_(other.data_) {}
     HostVector(const std::vector<T>& other) : data_(other) {}
 
