@@ -60,6 +60,7 @@ class HostVector
     void copy_to(T* dst) const {
         std::memcpy(dst, this->data(), this->size()*sizeof(T));
     }
+    void copy_to_host(T* dst) const { this->copy_to(dst); }
 
     void resize(size_t size) { data_.resize(size);  }
     void clear()             { data_.clear();       }
