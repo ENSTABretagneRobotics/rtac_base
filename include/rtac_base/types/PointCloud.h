@@ -6,9 +6,13 @@
 #include <vector>
 #include <memory>
 
+#include <rtac_base/cuda_defines.h>
+#ifndef RTAC_CUDACC
 #include <rtac_base/ply_files.h>
+#endif //RTAC_CUDACC
 
 #include <rtac_base/types/Point.h>
+#include <rtac_base/types/Shape.h>
 #include <rtac_base/types/common.h>
 #include <rtac_base/types/Pose.h>
 #include <rtac_base/types/PointCloudBase.h>
@@ -88,6 +92,7 @@ class PointCloud
     size_t height() const;
     bool   empty()  const;
 
+    #ifndef RTAC_CUDACC
     // .ply files
     static PointCloud<PointCloudT> from_ply(const std::string& path);
     static PointCloud<PointCloudT> from_ply(std::istream& is);
@@ -95,6 +100,7 @@ class PointCloud
     void export_ply(const std::string& path, bool ascii=false) const;
     void export_ply(std::ostream& os, bool ascii=false) const;
     happly::PLYData export_ply() const;
+    #endif //RTAC_CUDACC
 };
 
 //implementation
@@ -378,6 +384,7 @@ bool PointCloud<PointCloudT>::empty() const
     return pointCloud_->empty();
 }
 
+#ifndef RTAC_CUDACC
 /**
  * Loads a PointCloud from a .ply file.
  * 
@@ -539,6 +546,7 @@ happly::PLYData PointCloud<PointCloudT>::export_ply() const
 
     return data;
 }
+#endif //RTAC_CUDACC
 
 }; //namespace rtac
 

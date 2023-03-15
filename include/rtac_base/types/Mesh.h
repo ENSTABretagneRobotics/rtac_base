@@ -8,7 +8,11 @@
 #include <rtac_base/types/Point.h>
 #include <rtac_base/types/PointCloud.h>
 #include <rtac_base/containers/HostVector.h>
+
+#include <rtac_base/cuda_defines.h>
+#ifndef RTAC_CUDACC
 #include <rtac_base/happly.h>
+#endif
 
 namespace rtac {
 
@@ -255,6 +259,7 @@ typename Mesh<P,F,N,U,V>::Ptr Mesh<P,F,N,U,V>::icosahedron(float scale)
     return res;
 }
 
+#ifndef RTAC_CUDACC
 template <typename P, typename F, typename N, typename U, template<typename> class V>
 template <typename PointScalarT, typename FaceIndexT>
 typename Mesh<P,F,N,U,V>::Ptr Mesh<P,F,N,U,V>::from_ply(const std::string& path)
@@ -345,6 +350,7 @@ void Mesh<P,F,N,U,V>::export_ply(const std::string& path, bool ascii) const
     else
         data.write(path, happly::DataFormat::Binary);
 }
+#endif //RTAC_CUDACC
 
 }; //namespace rtac
 

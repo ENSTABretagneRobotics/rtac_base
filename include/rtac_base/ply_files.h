@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <rtac_base/happly.h>
+
 #include <rtac_base/types/Pose.h>
 #include <rtac_base/types/Shape.h>
 #include <rtac_base/types/Rectangle.h>

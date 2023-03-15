@@ -189,14 +189,12 @@ typename MeshT::Ptr DualMesh<MeshT>::create_mesh()
 }; //namespace rtac
 
 template <class MeshT> inline
-std::ostream& operator<<(std::ostream& os, const DualMesh<MeshT>& mesh)
+std::ostream& operator<<(std::ostream& os, const rtac::DualMesh<MeshT>& mesh)
 {
     os << "DualMesh :"
        << "\n- points : " << mesh.points().size()
        << "\n- edges  : " << mesh.edges().size()
        << "\n- faces  : " << mesh.faces().size();
-
-    os << endl;
     return os;
 }
 
