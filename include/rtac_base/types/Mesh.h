@@ -7,6 +7,7 @@
 
 #include <rtac_base/types/Point.h>
 #include <rtac_base/types/PointCloud.h>
+#include <rtac_base/containers/HostVector.h>
 #include <rtac_base/happly.h>
 
 namespace rtac {
@@ -15,7 +16,8 @@ template <typename P = Point3<float>,
           typename F = Point3<uint32_t>,
           typename N = Point3<float>,
           typename U = Point2<float>,
-          template <typename> class V = std::vector>
+          //template <typename> class V = std::vector>
+          template <typename> class V = HostVector>
 class Mesh
 {
     public:
