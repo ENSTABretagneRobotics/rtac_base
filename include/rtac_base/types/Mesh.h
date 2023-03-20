@@ -208,7 +208,7 @@ typename Mesh<P,F,N,U,V>::Ptr Mesh<P,F,N,U,V>::icosahedron(float scale)
 {
     auto res = Mesh<P,F,N,U,V>::Create();
 
-    constexpr float phi  = 0.5f*(1.0f + sqrt(5));
+    float phi  = 0.5f*(1.0f + sqrt(5));
     scale /= sqrt(1 + phi*phi);
 
     std::vector<P> points(12);

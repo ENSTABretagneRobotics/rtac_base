@@ -93,9 +93,11 @@ target_include_directories(rtac_base
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
-target_compile_features(rtac_base PUBLIC cxx_std_17)
+target_compile_features(rtac_base PUBLIC cxx_std_14)
+# target_compile_features(rtac_base PUBLIC cxx_std_17)
 target_compile_definitions(rtac_base PUBLIC 
-    $<$<COMPILE_LANGUAGE:CXX>:RTAC_CXX_STD=17>
+    # $<$<COMPILE_LANGUAGE:CXX>:RTAC_CXX_STD=17>
+    $<$<COMPILE_LANGUAGE:CXX>:RTAC_CXX_STD=14>
 )
 
 if(WITH_CUDA)

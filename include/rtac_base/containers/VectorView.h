@@ -30,7 +30,10 @@ class VectorView
 
     public:
 
-    RTAC_HOSTDEVICE VectorView(std::size_t size = 0, T* data = nullptr) : data_(data), size_(size) {}
+    VectorView() = default;
+    VectorView<T>& operator=(const VectorView<T>&) = default;
+
+    RTAC_HOSTDEVICE VectorView(std::size_t size, T* data) : data_(data), size_(size) {}
     template <template<typename>class VectorT> RTAC_HOSTDEVICE
     VectorView(VectorT<T>& vector) : VectorView(vector.size(), vector.data()) {}
 
@@ -71,7 +74,17 @@ class VectorView<const T>
 
     public:
 
-    RTAC_HOSTDEVICE VectorView(std::size_t size = 0, const T* data = nullptr) : data_(data), size_(size) {}
+    VectorView() = default;
+    VectorView<const T>& operator=(const VectorView<const T>&) = default;
+
+    VectorView(const VectorView<T>& other) : size_(other.size()), data_(other.data()) {}
+    VectorView<const T>& operator=(const VectorView<T>& other) {
+        size_ = other.size();
+        data_ = other.data();
+        return *this;
+    }
+
+    RTAC_HOSTDEVICE VectorView(std::size_t size, const T* data) : data_(data), size_(size) {}
     
     template <template<typename>class VectorT> RTAC_HOSTDEVICE // [[deprecated]]
     VectorView(const VectorT<T>& vector) : VectorView(vector.size(), vector.data()) {}
@@ -98,6 +111,42 @@ struct ConstVectorView : public VectorView<const T>
     using value_type = T;
     using VectorView<const T>::VectorView;
 };
+
+/**
+ * Makes a VectorView with automatic template argument deduction for c++14.
+ * Automatic template argument deduction for constructors is a c++17 feature.
+ */
+template <typename T> inline RTAC_HOSTDEVICE
+VectorView<T> make_vector_view(unsigned int size, T* data) {
+    return VectorView<T>(size, data);
+}
+
+/**
+ * Makes a VectorView with automatic template argument deduction for c++14.
+ * Automatic template argument deduction for constructors is a c++17 feature.
+ */
+template <typename T> inline RTAC_HOSTDEVICE
+VectorView<const T> make_vector_view(unsigned int size, const T* data) { 
+    return VectorView<const T>(size, data);
+}
+
+/**
+ * Makes a VectorView with automatic template argument deduction for c++14.
+ * Automatic template argument deduction for constructors is a c++17 feature.
+ */
+template <typename T> inline RTAC_HOSTDEVICE
+VectorView<const T> make_const_vector_view(unsigned int size, T* data) { 
+    return VectorView<const T>(size, data);
+}
+
+/**
+ * Makes a VectorView with automatic template argument deduction for c++14.
+ * Automatic template argument deduction for constructors is a c++17 feature.
+ */
+template <typename T> inline RTAC_HOSTDEVICE
+VectorView<const T> make_const_vector_view(unsigned int size, const T* data) { 
+    return VectorView<const T>(size, data);
+}
 
 }; //namespace rtac
 

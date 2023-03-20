@@ -1,13 +1,13 @@
 #include <rtac_base/external/obj_codec.h>
 
 #include <algorithm>
-#include <filesystem>
+#include <experimental/filesystem>
 
 namespace rtac { namespace external {
 
 ObjLoader::ObjLoader(const std::string& objPath)
 {
-     namespace fs = std::filesystem;
+     namespace fs = std::experimental::filesystem;
 
     auto path     = fs::absolute(objPath);
     objPath_      = path.string();

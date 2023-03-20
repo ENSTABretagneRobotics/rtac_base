@@ -2,6 +2,7 @@
 #define _DEF_RTAC_BASE_BIN_CODECS_H_
 
 #include <stdexcept>
+#include <vector>
 
 namespace rtac {
 
@@ -36,6 +37,22 @@ inline void hex_encode(VectorCharT<CharT>& output, const VectorT<T>& input)
 template <typename T,     template<typename> class VectorT,
           typename CharT, template<typename> class VectorCharT>
 inline void hex_decode(VectorT<T>& output, const VectorCharT<CharT>& input)
+{
+    static_assert(sizeof(CharT) == 1);
+    output.resize(input.size() / (2 * sizeof(T)));
+    hex_decode(output.data(), (const unsigned char*)input.data(), input.size());
+}
+
+template <typename T, typename CharT>
+inline void hex_encode(std::vector<CharT>& output, const std::vector<T>& input)
+{
+    static_assert(sizeof(CharT) == 1);
+    output.resize(2*sizeof(T)*input.size());
+    hex_encode((unsigned char*)output.data(), input.data(), input.size());
+}
+
+template <typename T, typename CharT>
+inline void hex_decode(std::vector<T>& output, const std::vector<CharT>& input)
 {
     static_assert(sizeof(CharT) == 1);
     output.resize(input.size() / (2 * sizeof(T)));

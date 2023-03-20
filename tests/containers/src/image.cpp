@@ -22,7 +22,7 @@ void print_image(const Image<T,C>& img)
 
 int main()
 {
-    Image<unsigned int, std::vector> img(32,32);
+    Image<unsigned int, HostVector> img(32,32);
     for(int h = 0; h < img.height(); h++) {
         for(int w = 0; w < img.width(); w++) {
             img(h,w) = img.width()*h + w;
