@@ -28,16 +28,5 @@ bool Worker::execute_next_queue()
     return true;
 }
 
-void Worker::add_callback(std::function<void(void)>&& f)
-{
-    std::lock_guard<std::mutex> lock(queueLock_);
-    nextQueue_.push_back(std::move(make_async_function(std::forward<std::function<void()>>(f))));
-}
-
-void Worker::add_callback(void(*f)(void))
-{
-    this->add_callback(std::move(std::function<void(void)>(f)));
-}
-
 } //namespace async
 } //namespace rtac

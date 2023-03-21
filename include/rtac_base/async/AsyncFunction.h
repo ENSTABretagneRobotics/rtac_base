@@ -43,9 +43,22 @@ class AsyncFunction : public AsyncFunctionBase
 
     public:
 
+    AsyncFunction() = delete;
+    AsyncFunction(const AsyncFunction<R>&) = delete;
+    AsyncFunction<R>& operator=(const AsyncFunction<R>&) = delete;
+
     AsyncFunction(std::function<R(void)>&& f) : 
         function_(std::move(f))
     {}
+
+    AsyncFunction(AsyncFunction<R>&& f) :
+        function_(std::move(f.function_)),
+        promise_ (std::move(f.promise_))
+    {}
+    AsyncFunction<R>& operator=(AsyncFunction<R>&& f) {
+        function_ = std::move(f.function_);
+        promise_  = std::move(f.promise_);
+    }
 
     std::future<R> future() { return promise_.get_future(); }
     void execute() { promise_.set_value(function_());   }
@@ -75,24 +88,59 @@ class AsyncFunction<void> : public AsyncFunctionBase
 
     public:
 
-    AsyncFunction(std::function<void(void)>&& f) :
+    AsyncFunction() = delete;
+    AsyncFunction(const AsyncFunction<void>&) = delete;
+    AsyncFunction<void>& operator=(const AsyncFunction<void>&) = delete;
+
+    AsyncFunction(std::function<void(void)>&& f) : 
         function_(std::move(f))
     {}
+
+    AsyncFunction(AsyncFunction<void>&& f) :
+        function_(std::move(f.function_)),
+        promise_ (std::move(f.promise_))
+    {}
+    AsyncFunction<void>& operator=(AsyncFunction<void>&& f) {
+        function_ = std::move(f.function_);
+        promise_  = std::move(f.promise_);
+    }
 
     std::future<void> future() { return promise_.get_future(); }
     void execute() { function_(); promise_.set_value();        }
 };
 
+/**
+ * This is a special specialization of AsyncFunctionBase. The only goal is to
+ * provide a synchronization primitive and does nothing otherwise
+ */
+class EmptyAsyncFunction : public AsyncFunctionBase
+{
+    public:
+
+    using Ptr = std::shared_ptr<EmptyAsyncFunction>;
+    using result_type = void;
+
+    protected:
+
+    std::promise<void> promise_;
+
+    public:
+
+    EmptyAsyncFunction() {}
+
+    std::future<void> future() { return promise_.get_future(); }
+    void execute()             { promise_.set_value();         }
+};
+
 template <class R> inline typename 
-AsyncFunction<R>::Ptr make_async_function(std::function<R(void)>&& f)
+AsyncFunction<R>::Ptr make_async(std::function<R(void)>&& f)
 {
     return std::make_shared<AsyncFunction<R>>(std::forward<std::function<R(void)>>(f));
 }
 
-inline typename 
-AsyncFunction<void>::Ptr make_async_function(std::function<void(void)>&& f)
+inline EmptyAsyncFunction::Ptr make_empty_async()
 {
-    return std::make_shared<AsyncFunction<void>>(std::forward<std::function<void(void)>>(f));
+    return std::make_shared<EmptyAsyncFunction>();
 }
 
 } //namespace async
