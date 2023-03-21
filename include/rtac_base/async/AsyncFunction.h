@@ -14,7 +14,7 @@ namespace rtac { namespace async {
  */
 struct AsyncFunctionBase
 {
-    using Ptr = std::shared_ptr<AsyncFunctionBase>;
+    using Ptr = std::unique_ptr<AsyncFunctionBase>;
 
     void operator()() { this->execute(); }
 
@@ -33,7 +33,7 @@ class AsyncFunction : public AsyncFunctionBase
 {
     public:
 
-    using Ptr = std::shared_ptr<AsyncFunction<R>>;
+    using Ptr = std::unique_ptr<AsyncFunction<R>>;
     using result_type = R;
 
     protected:
@@ -78,7 +78,7 @@ class AsyncFunction<void> : public AsyncFunctionBase
 {
     public:
 
-    using Ptr = std::shared_ptr<AsyncFunction<void>>;
+    using Ptr = std::unique_ptr<AsyncFunction<void>>;
     using result_type = void;
 
     protected:
@@ -117,7 +117,7 @@ class EmptyAsyncFunction : public AsyncFunctionBase
 {
     public:
 
-    using Ptr = std::shared_ptr<EmptyAsyncFunction>;
+    using Ptr = std::unique_ptr<EmptyAsyncFunction>;
     using result_type = void;
 
     protected:
@@ -140,7 +140,7 @@ class EmptyAsyncFunction : public AsyncFunctionBase
 template <class R, class...Args1, class... Args2> inline typename
 AsyncFunction<R>::Ptr async_bind(R(*f)(Args1...), Args2&&... args)
 {
-    return std::make_shared<AsyncFunction<R>>(std::move(
+    return std::make_unique<AsyncFunction<R>>(std::move(
         std::function<R()>(std::bind(f, std::forward<Args2>(args)...))));
 }
 
@@ -153,7 +153,7 @@ AsyncFunction<R>::Ptr async_bind(R(*f)(Args1...), Args2&&... args)
 template <class R, class C, class...Args1, class... Args2> inline typename
 AsyncFunction<R>::Ptr async_bind(R(C::*f)(Args1...), C* c, Args2&&... args)
 {
-    return std::make_shared<AsyncFunction<R>>(std::move(
+    return std::make_unique<AsyncFunction<R>>(std::move(
         std::function<R()>(std::bind(f, c, std::forward<Args2>(args)...))));
 }
 
@@ -166,19 +166,19 @@ AsyncFunction<R>::Ptr async_bind(R(C::*f)(Args1...), C* c, Args2&&... args)
 template <class R, class C, class...Args1, class... Args2> inline typename
 AsyncFunction<R>::Ptr async_bind(R(C::*f)(Args1...) const, const C* c, Args2&&... args)
 {
-    return std::make_shared<AsyncFunction<R>>(std::move(
+    return std::make_unique<AsyncFunction<R>>(std::move(
         std::function<R()>(std::bind(f, c, std::forward<Args2>(args)...))));
 }
 
 template <class R> inline typename 
 AsyncFunction<R>::Ptr make_async(std::function<R(void)>&& f)
 {
-    return std::make_shared<AsyncFunction<R>>(std::forward<std::function<R(void)>>(f));
+    return std::make_unique<AsyncFunction<R>>(std::forward<std::function<R(void)>>(f));
 }
 
 inline EmptyAsyncFunction::Ptr empty_async()
 {
-    return std::make_shared<EmptyAsyncFunction>();
+    return std::make_unique<EmptyAsyncFunction>();
 }
 
 } //namespace async

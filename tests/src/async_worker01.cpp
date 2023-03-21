@@ -60,7 +60,7 @@ int main()
     Test t0;
     auto res1 = worker.push_back(async_bind(&Test::get, &t0));
     auto res2 = worker.push_back(async_bind(&Test::get, (const Test*)&t0));
-    auto res3 = worker.push_back(async_bind(&Test::get_const, &t0));
+    auto res3 = worker.push_front(async_bind(&Test::get_const, &t0));
 
     std::thread th(std::bind(&Worker::run, &worker));
     
