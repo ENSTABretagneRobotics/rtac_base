@@ -44,16 +44,18 @@ class AsyncFunction : public AsyncFunctionBase
     public:
 
     AsyncFunction(std::function<R(void)>&& f) : 
-        function_(f)
+        function_(std::move(f))
     {}
 
-    std::future<R> future() { return promise_.future(); }
+    std::future<R> future() { return promise_.get_future(); }
     void execute() { promise_.set_value(function_());   }
 };
 
 /**
- * This stores a std::function to be executed at a later time and a
- * std::promise to get the result.
+ * This is a specialization of AsyncFunction for void return type. It is
+ * identical except for the execute method which has to be modified because we
+ * cannot call the std::promise::set_value method directly on the result of a
+ * void function.
  *
  * The std::promise object acts as a synchonization primitive to wait for the
  * result.
@@ -69,14 +71,16 @@ class AsyncFunction<void> : public AsyncFunctionBase
     protected:
 
     std::function<void(void)> function_;
+    std::promise<void>        promise_;
 
     public:
 
     AsyncFunction(std::function<void(void)>&& f) :
-        function_(f)
+        function_(std::move(f))
     {}
 
-    void execute() { function_(); }
+    std::future<void> future() { return promise_.get_future(); }
+    void execute() { function_(); promise_.set_value();        }
 };
 
 template <class R> inline typename 

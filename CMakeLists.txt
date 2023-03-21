@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(rtac_base VERSION 0.2)
 
 option(WITH_CUDA   "Compile and install cuda-dependent code." ON)
+option(WITH_ASYNC  "Compile and install async components (will use GCC '-pthread' compile and link option)" ON)
 option(BUILD_TESTS "Build unit tests" ON)
 option(BUILD_DOCS  "Build Doxygen documentation" OFF)
 
@@ -64,9 +65,6 @@ list(APPEND rtac_base_headers
     include/rtac_base/external/metashape.h
     include/rtac_base/external/kalibr.h
 
-    include/rtac_base/async/AsyncFunction.h
-    include/rtac_base/async/Worker.h
-
     include/rtac_base/nmea_utils.h
     include/rtac_base/navigation.h
 )
@@ -83,8 +81,6 @@ add_library(rtac_base SHARED
     src/external/tinyxml2.cpp
     src/external/metashape.cpp
     src/external/kalibr.cpp
-
-    src/async/Worker.cpp
 )
 target_link_libraries(rtac_base
     PUBLIC
@@ -104,6 +100,16 @@ target_compile_definitions(rtac_base PUBLIC
     # $<$<COMPILE_LANGUAGE:CXX>:RTAC_CXX_STD=17>
     $<$<COMPILE_LANGUAGE:CXX>:RTAC_CXX_STD=14>
 )
+
+if(WITH_ASYNC)
+    list(APPEND rtac_base_headers
+        include/rtac_base/async/AsyncFunction.h
+        include/rtac_base/async/Worker.h
+    )
+    target_sources(rtac_base PRIVATE src/async/Worker.cpp)
+    target_compile_options(rtac_base PUBLIC -pthread)
+    target_link_options   (rtac_base PUBLIC -pthread)
+endif()
 
 if(WITH_CUDA)
     target_compile_definitions(rtac_base PUBLIC "-DRTAC_CUDA_ENABLED")

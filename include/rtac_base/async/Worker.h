@@ -30,20 +30,16 @@ class Worker
 
     void run();
 
+    void add_callback(std::function<void(void)>&& f);
+    void add_callback(void(*f)(void));
+
     template <typename R>
     std::future<R> add_callback(std::function<R(void)>&& f);
-    void add_callback(std::function<void(void)>&& f);
-
     template <typename R>
-    std::future<R> add_callback(R(*f)(void)) {
-        this->add_callback(std::move(std::function<R(void)>(f)));
-    }
-    void add_callback(void(*f)(void)) {
-        this->add_callback(std::move(std::function<void(void)>(f)));
-    }
+    std::future<R> add_callback(R(*f)(void));
 };
 
-template <typename R>
+template <typename R> inline
 std::future<R> Worker::add_callback(std::function<R(void)>&& f)
 {
     auto asyncF = make_async_function(std::forward<std::function<R(void)>>(f));
@@ -53,6 +49,12 @@ std::future<R> Worker::add_callback(std::function<R(void)>&& f)
         nextQueue_.push_back(std::move(asyncF));
     }
     return res;
+}
+
+template <typename R> inline
+std::future<R> Worker::add_callback(R(*f)(void))
+{
+    this->add_callback(std::move(std::function<R(void)>(f)));
 }
 
 } //namespace async

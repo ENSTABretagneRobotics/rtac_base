@@ -34,5 +34,10 @@ void Worker::add_callback(std::function<void(void)>&& f)
     nextQueue_.push_back(std::move(make_async_function(std::forward<std::function<void()>>(f))));
 }
 
+void Worker::add_callback(void(*f)(void))
+{
+    this->add_callback(std::move(std::function<void(void)>(f)));
+}
+
 } //namespace async
 } //namespace rtac
