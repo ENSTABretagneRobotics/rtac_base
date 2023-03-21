@@ -64,6 +64,9 @@ list(APPEND rtac_base_headers
     include/rtac_base/external/metashape.h
     include/rtac_base/external/kalibr.h
 
+    include/rtac_base/async/AsyncFunction.h
+    include/rtac_base/async/Worker.h
+
     include/rtac_base/nmea_utils.h
     include/rtac_base/navigation.h
 )
@@ -80,6 +83,8 @@ add_library(rtac_base SHARED
     src/external/tinyxml2.cpp
     src/external/metashape.cpp
     src/external/kalibr.cpp
+
+    src/async/Worker.cpp
 )
 target_link_libraries(rtac_base
     PUBLIC

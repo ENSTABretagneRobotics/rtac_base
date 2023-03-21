@@ -19,6 +19,7 @@ list(APPEND test_files
     src/functions.cpp
     src/bin_codecs_test.cpp
     src/exception.cpp
+    src/async_worker01.cpp
 )
 
 list(APPEND test_deps
