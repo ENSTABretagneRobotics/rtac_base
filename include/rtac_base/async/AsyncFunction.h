@@ -132,13 +132,51 @@ class EmptyAsyncFunction : public AsyncFunctionBase
     void execute()             { promise_.set_value();         }
 };
 
+/**
+ * Creates a new AsyncFunction from a function pointer and its arguments.
+ *
+ * The two parameter packs allow for implicit conversion to happen.
+ */
+template <class R, class...Args1, class... Args2> inline typename
+AsyncFunction<R>::Ptr async_bind(R(*f)(Args1...), Args2&&... args)
+{
+    return std::make_shared<AsyncFunction<R>>(std::move(
+        std::function<R()>(std::bind(f, std::forward<Args2>(args)...))));
+}
+
+/**
+ * Creates a new AsyncFunction from a method pointer, a class instance, and its
+ * arguments.
+ *
+ * The two parameter packs allow for implicit conversion to happen.
+ */
+template <class R, class C, class...Args1, class... Args2> inline typename
+AsyncFunction<R>::Ptr async_bind(R(C::*f)(Args1...), C* c, Args2&&... args)
+{
+    return std::make_shared<AsyncFunction<R>>(std::move(
+        std::function<R()>(std::bind(f, c, std::forward<Args2>(args)...))));
+}
+
+/**
+ * Creates a new AsyncFunction from a method pointer, a class instance, and its
+ * arguments (const version)
+ *
+ * The two parameter packs allow for implicit conversion to happen.
+ */
+template <class R, class C, class...Args1, class... Args2> inline typename
+AsyncFunction<R>::Ptr async_bind(R(C::*f)(Args1...) const, const C* c, Args2&&... args)
+{
+    return std::make_shared<AsyncFunction<R>>(std::move(
+        std::function<R()>(std::bind(f, c, std::forward<Args2>(args)...))));
+}
+
 template <class R> inline typename 
 AsyncFunction<R>::Ptr make_async(std::function<R(void)>&& f)
 {
     return std::make_shared<AsyncFunction<R>>(std::forward<std::function<R(void)>>(f));
 }
 
-inline EmptyAsyncFunction::Ptr make_empty_async()
+inline EmptyAsyncFunction::Ptr empty_async()
 {
     return std::make_shared<EmptyAsyncFunction>();
 }

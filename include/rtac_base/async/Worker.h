@@ -28,16 +28,13 @@ class Worker
     void run();
 
     template <class R>
-    std::future<R> push_back(typename AsyncFunction<R>::Ptr&& f);
-
-    template <typename R>
-    std::future<R> push_back(std::function<R(void)> f);
-    template <typename R>
-    std::future<R> push_back(R(*f)(void));
+    std::future<R> push_front(std::shared_ptr<AsyncFunction<R>>&& f);
+    template <class R>
+    std::future<R> push_back(std::shared_ptr<AsyncFunction<R>>&& f);
 };
 
 template <class R> inline
-std::future<R> Worker::push_back(typename AsyncFunction<R>::Ptr&& f)
+std::future<R> Worker::push_front(std::shared_ptr<AsyncFunction<R>>&& f)
 {
     std::future<R> res = f->future();
     std::lock_guard<std::mutex> lock(queueLock_);
@@ -45,16 +42,13 @@ std::future<R> Worker::push_back(typename AsyncFunction<R>::Ptr&& f)
     return res;
 }
 
-template <typename R> inline
-std::future<R> Worker::push_back(std::function<R(void)> f)
+template <class R> inline
+std::future<R> Worker::push_back(std::shared_ptr<AsyncFunction<R>>&& f)
 {
-    return this->push_back<R>(std::move(make_async(std::forward<std::function<R(void)>>(f))));
-}
-
-template <typename R> inline
-std::future<R> Worker::push_back(R(*f)(void))
-{
-    return this->push_back<R>(std::move(std::function<R(void)>(f)));
+    std::future<R> res = f->future();
+    std::lock_guard<std::mutex> lock(queueLock_);
+    nextQueue_.push_back(std::move(f));
+    return res;
 }
 
 } //namespace async
