@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(rtac_base VERSION 0.1)
+project(rtac_base VERSION 0.2)
 
 option(WITH_CUDA   "Compile and install cuda-dependent code." ON)
 option(BUILD_TESTS "Build unit tests" ON)

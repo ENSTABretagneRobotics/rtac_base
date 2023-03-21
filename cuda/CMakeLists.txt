@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(rtac_cuda VERSION 0.1 LANGUAGES CUDA CXX)
+project(rtac_cuda VERSION 0.2 LANGUAGES CUDA CXX)
 
 if(NOT TARGET rtac_base)
     find_package(rtac_base REQUIRED)
