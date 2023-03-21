@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <thread>
 #include <functional>
 using namespace std;
@@ -50,6 +51,8 @@ struct Test
     }
 };
 
+unsigned int echo(unsigned int v) { return v; }
+
 int main()
 {
     Worker worker;
@@ -63,6 +66,10 @@ int main()
     auto res3 = worker.push_front(async_bind(&Test::get_const, &t0));
 
     std::thread th(std::bind(&Worker::run, &worker));
+
+    std::ostringstream oss;
+    oss << "execution result : " << worker.execute(echo, 74);
+    std::cout << oss.str() << std::endl;
     
     future_type(res0);
     res0.wait();

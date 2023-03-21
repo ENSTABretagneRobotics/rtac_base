@@ -31,6 +31,9 @@ class Worker
     std::future<R> push_front(std::unique_ptr<AsyncFunction<R>>&& f);
     template <class R>
     std::future<R> push_back(std::unique_ptr<AsyncFunction<R>>&& f);
+
+    template <class R, class... Args1, class... Args2>
+    R execute(R(*f)(Args1...), Args2&&... args);
 };
 
 template <class R> inline
@@ -49,6 +52,14 @@ std::future<R> Worker::push_back(std::unique_ptr<AsyncFunction<R>>&& f)
     std::lock_guard<std::mutex> lock(queueLock_);
     nextQueue_.push_back(std::move(f));
     return res;
+}
+
+template <class R, class... Args1, class... Args2> inline
+R Worker::execute(R(*f)(Args1...), Args2&&... args)
+{
+    auto res = this->push_back(async_bind(f, args...));
+    res.wait();
+    return res.get();
 }
 
 } //namespace async
