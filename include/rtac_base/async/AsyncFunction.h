@@ -1,10 +1,25 @@
 #ifndef _DEF_RTAC_BASE_ASYNC_ASYNC_FUNCTION_H_
 #define _DEF_RTAC_BASE_ASYNC_ASYNC_FUNCTION_H_
 
+#include <type_traits>
 #include <functional>
 #include <future>
 
 namespace rtac {
+
+/**
+ * This type allows for a unified return type deduction, choosing between
+ * std::result_of or std::invoke_result depending on compiler option
+ *
+ * TODO : only std::result_of is used for now, implement for std::invoke_result
+ * -> This is actually difficult to doin a portable way because there is no
+ * reliable way to check in code for c++ version for gcc and MVSC.
+ */
+template <class F, class... Args>
+struct ResultOf
+{
+    using type = typename std::result_of<F&&(Args&&...)>::type;
+};
 
 /**
  * This is a base type for the async::AsyncFunction<T> type.
@@ -132,16 +147,24 @@ class EmptyAsyncFunction : public AsyncFunctionBase
     void execute()             { promise_.set_value();         }
 };
 
-/**
- * Creates a new AsyncFunction from a function pointer and its arguments.
- *
- * The two parameter packs allow for implicit conversion to happen.
- */
-template <class R, class...Args1, class... Args2> inline typename
-AsyncFunction<R>::Ptr async_bind(R(*f)(Args1...), Args2&&... args)
+///**
+// * Creates a new AsyncFunction from a function pointer and its arguments.
+// *
+// * The two parameter packs allow for implicit conversion to happen.
+// */
+//template <class R, class...Args1, class... Args2> inline typename
+//AsyncFunction<R>::Ptr async_bind(R(*f)(Args1...), Args2&&... args)
+//{
+//    return std::make_unique<AsyncFunction<R>>(std::move(
+//        std::function<R()>(std::bind(f, std::forward<Args2>(args)...))));
+//}
+
+template <class F, class... Args> inline
+auto async_bind(F f, Args&&... args)
 {
+    using R = typename ResultOf<F,Args...>::type;
     return std::make_unique<AsyncFunction<R>>(std::move(
-        std::function<R()>(std::bind(f, std::forward<Args2>(args)...))));
+        std::function<R()>(std::bind(f, std::forward<Args>(args)...))));
 }
 
 /**

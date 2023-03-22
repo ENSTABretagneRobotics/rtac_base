@@ -66,8 +66,13 @@ int main()
     auto res2 = worker.push_back(async_bind(&Test::get, (const Test*)&t0));
     auto res4 = worker.push_front(empty_async());
     auto res3 = worker.push_front(async_bind(&Test::get_const, &t0));
+    auto res5 = worker.push_back(async_bind([](int v){ std::cout << "lambda called : " << v << std::endl; return v; }, 89));
 
     std::thread th(std::bind(&AsyncWorker::run, &worker));
+
+    std::ostringstream oss0;
+    oss0 << "sync lambda executed : " << worker.execute([](int v){ return v + 10; }, 101);
+    std::cout << oss0.str() << std::endl;
 
     res4.wait();
     std::cout << "There !" << std::endl;
