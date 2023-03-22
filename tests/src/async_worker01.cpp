@@ -4,8 +4,8 @@
 #include <functional>
 using namespace std;
 
-#include <rtac_base/async/Worker.h>
-using namespace rtac::async;
+#include <rtac_base/async/AsyncWorker.h>
+using namespace rtac;
 
 void hello_there()
 {
@@ -13,7 +13,7 @@ void hello_there()
     getchar();
 }
 
-unsigned int hello(Worker* worker, unsigned int count)
+unsigned int hello(AsyncWorker* worker, unsigned int count)
 {
     if(count == 0)
         return 0;
@@ -55,7 +55,7 @@ unsigned int echo(unsigned int v) { return v; }
 
 int main()
 {
-    Worker worker;
+    AsyncWorker worker;
     
     worker.push_back(async_bind(hello_there));
     auto res0 = worker.push_back(async_bind(hello, &worker, 5));
@@ -65,7 +65,7 @@ int main()
     auto res2 = worker.push_back(async_bind(&Test::get, (const Test*)&t0));
     auto res3 = worker.push_front(async_bind(&Test::get_const, &t0));
 
-    std::thread th(std::bind(&Worker::run, &worker));
+    std::thread th(std::bind(&AsyncWorker::run, &worker));
 
     std::ostringstream oss;
     oss << "execution result : " << worker.execute(echo, 74);

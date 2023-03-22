@@ -1,16 +1,16 @@
-#include <rtac_base/async/Worker.h>
+#include <rtac_base/async/AsyncWorker.h>
 
-namespace rtac { namespace async {
+namespace rtac {
 
-Worker::Worker()
+AsyncWorker::AsyncWorker()
 {}
 
-void Worker::run()
+void AsyncWorker::run()
 {
     while(execute_next_queue());
 }
 
-bool Worker::execute_next_queue()
+bool AsyncWorker::execute_next_queue()
 {
     {
         std::lock_guard<std::mutex> lock(queueLock_);
@@ -28,5 +28,4 @@ bool Worker::execute_next_queue()
     return true;
 }
 
-} //namespace async
 } //namespace rtac

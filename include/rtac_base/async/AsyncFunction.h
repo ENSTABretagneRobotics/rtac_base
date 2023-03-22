@@ -4,7 +4,7 @@
 #include <functional>
 #include <future>
 
-namespace rtac { namespace async {
+namespace rtac {
 
 /**
  * This is a base type for the async::AsyncFunction<T> type.
@@ -181,7 +181,6 @@ inline EmptyAsyncFunction::Ptr empty_async()
     return std::make_unique<EmptyAsyncFunction>();
 }
 
-} //namespace async
 } //namespace rtac
 
 #endif //_DEF_RTAC_BASE_ASYNC_ASYNC_FUNCTION_H_

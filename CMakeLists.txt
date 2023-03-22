@@ -104,9 +104,9 @@ target_compile_definitions(rtac_base PUBLIC
 if(WITH_ASYNC)
     list(APPEND rtac_base_headers
         include/rtac_base/async/AsyncFunction.h
-        include/rtac_base/async/Worker.h
+        include/rtac_base/async/AsyncWorker.h
     )
-    target_sources(rtac_base PRIVATE src/async/Worker.cpp)
+    target_sources(rtac_base PRIVATE src/async/AsyncWorker.cpp)
     target_compile_options(rtac_base PUBLIC -pthread)
     target_link_options   (rtac_base PUBLIC -pthread)
 endif()

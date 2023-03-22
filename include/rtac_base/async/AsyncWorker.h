@@ -1,5 +1,5 @@
-#ifndef _DEF_RTAC_BASE_ASYNC_WORKER_H_
-#define _DEF_RTAC_BASE_ASYNC_WORKER_H_
+#ifndef _DEF_RTAC_BASE_ASYNC_ASYNC_WORKER_H_
+#define _DEF_RTAC_BASE_ASYNC_ASYNC_WORKER_H_
 
 #include <thread>
 #include <future>
@@ -9,9 +9,9 @@
 
 #include <rtac_base/async/AsyncFunction.h>
 
-namespace rtac { namespace async {
+namespace rtac {
 
-class Worker
+class AsyncWorker
 {
     protected:
 
@@ -23,7 +23,7 @@ class Worker
 
     public:
 
-    Worker();
+    AsyncWorker();
 
     void run();
 
@@ -37,7 +37,7 @@ class Worker
 };
 
 template <class R> inline
-std::future<R> Worker::push_front(std::unique_ptr<AsyncFunction<R>>&& f)
+std::future<R> AsyncWorker::push_front(std::unique_ptr<AsyncFunction<R>>&& f)
 {
     std::future<R> res = f->future();
     std::lock_guard<std::mutex> lock(queueLock_);
@@ -46,7 +46,7 @@ std::future<R> Worker::push_front(std::unique_ptr<AsyncFunction<R>>&& f)
 }
 
 template <class R> inline
-std::future<R> Worker::push_back(std::unique_ptr<AsyncFunction<R>>&& f)
+std::future<R> AsyncWorker::push_back(std::unique_ptr<AsyncFunction<R>>&& f)
 {
     std::future<R> res = f->future();
     std::lock_guard<std::mutex> lock(queueLock_);
@@ -55,14 +55,13 @@ std::future<R> Worker::push_back(std::unique_ptr<AsyncFunction<R>>&& f)
 }
 
 template <class R, class... Args1, class... Args2> inline
-R Worker::execute(R(*f)(Args1...), Args2&&... args)
+R AsyncWorker::execute(R(*f)(Args1...), Args2&&... args)
 {
     auto res = this->push_back(async_bind(f, args...));
     res.wait();
     return res.get();
 }
 
-} //namespace async
 } //namespace rtac
 
 #endif //_DEF_RTAC_BASE_ASYNC_WORKER_H_
