@@ -27,6 +27,9 @@ class AsyncWorker
 
     void run();
 
+    std::future<void> push_front(EmptyAsyncFunction::Ptr&& f);
+    std::future<void> push_back( EmptyAsyncFunction::Ptr&& f);
+
     template <class R>
     std::future<R> push_front(std::unique_ptr<AsyncFunction<R>>&& f);
     template <class R>

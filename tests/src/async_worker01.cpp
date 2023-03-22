@@ -47,6 +47,7 @@ struct Test
     }
     float get_const() const {
         std::cout << "Test::get_const() const called" << std::endl;
+        getchar();
         return 314.0;
     }
 };
@@ -63,9 +64,13 @@ int main()
     Test t0;
     auto res1 = worker.push_back(async_bind(&Test::get, &t0));
     auto res2 = worker.push_back(async_bind(&Test::get, (const Test*)&t0));
+    auto res4 = worker.push_front(empty_async());
     auto res3 = worker.push_front(async_bind(&Test::get_const, &t0));
 
     std::thread th(std::bind(&AsyncWorker::run, &worker));
+
+    res4.wait();
+    std::cout << "There !" << std::endl;
 
     std::ostringstream oss;
     oss << "execution result : " << worker.execute(echo, 74);

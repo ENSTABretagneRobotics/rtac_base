@@ -28,4 +28,20 @@ bool AsyncWorker::execute_next_queue()
     return true;
 }
 
+std::future<void> AsyncWorker::push_front(EmptyAsyncFunction::Ptr&& f)
+{
+    std::future<void> res = f->future();
+    std::lock_guard<std::mutex> lock(queueLock_);
+    nextQueue_.push_front(std::move(f));
+    return res;
+}
+
+std::future<void> AsyncWorker::push_back(EmptyAsyncFunction::Ptr&& f)
+{
+    std::future<void> res = f->future();
+    std::lock_guard<std::mutex> lock(queueLock_);
+    nextQueue_.push_back(std::move(f));
+    return res;
+}
+
 } //namespace rtac
