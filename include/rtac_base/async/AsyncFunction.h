@@ -147,18 +147,11 @@ class EmptyAsyncFunction : public AsyncFunctionBase
     void execute()             { promise_.set_value();         }
 };
 
-///**
-// * Creates a new AsyncFunction from a function pointer and its arguments.
-// *
-// * The two parameter packs allow for implicit conversion to happen.
-// */
-//template <class R, class...Args1, class... Args2> inline typename
-//AsyncFunction<R>::Ptr async_bind(R(*f)(Args1...), Args2&&... args)
-//{
-//    return std::make_unique<AsyncFunction<R>>(std::move(
-//        std::function<R()>(std::bind(f, std::forward<Args2>(args)...))));
-//}
-
+/**
+ * Creates a new AsyncFunction from a callable and its argument. It is
+ * compatible with function pointers and lambda expressions with capture
+ * (untested on callable object but should work).
+ */
 template <class F, class... Args> inline
 auto async_bind(F f, Args&&... args)
 {
@@ -193,12 +186,10 @@ AsyncFunction<R>::Ptr async_bind(R(C::*f)(Args1...) const, const C* c, Args2&&..
         std::function<R()>(std::bind(f, c, std::forward<Args2>(args)...))));
 }
 
-template <class R> inline typename 
-AsyncFunction<R>::Ptr make_async(std::function<R(void)>&& f)
-{
-    return std::make_unique<AsyncFunction<R>>(std::forward<std::function<R(void)>>(f));
-}
-
+/**
+ * Creates an empty synchronization primitive which does nothing, but can be
+ * synchronized upon.
+ */
 inline EmptyAsyncFunction::Ptr empty_async()
 {
     return std::make_unique<EmptyAsyncFunction>();

@@ -35,16 +35,8 @@ class AsyncWorker
     template <class R>
     std::future<R> push_back(std::unique_ptr<AsyncFunction<R>>&& f);
 
-    //template <class R, class... Args1, class... Args2>
-    //R execute(R(*f)(Args1...), Args2&&... args);
     template <class F, class... Args>
     auto execute(F f, Args&&... args);
-
-    template <class R, class C, class... Args1, class... Args2>
-    R execute(R(C::*f)(Args1...), C* c, Args2&&... args);
-
-    template <class R, class C, class... Args1, class... Args2>
-    R execute(R(C::*f)(Args1...) const, const C* c, Args2&&... args);
 };
 
 template <class R> inline
@@ -65,14 +57,6 @@ std::future<R> AsyncWorker::push_back(std::unique_ptr<AsyncFunction<R>>&& f)
     return res;
 }
 
-//template <class R, class... Args1, class... Args2> inline
-//R AsyncWorker::execute(R(*f)(Args1...), Args2&&... args)
-//{
-//    auto res = this->push_back(async_bind(f, args...));
-//    res.wait();
-//    return res.get();
-//}
-
 template <class F, class... Args> inline
 auto AsyncWorker::execute(F f, Args&&... args)
 {
@@ -80,46 +64,6 @@ auto AsyncWorker::execute(F f, Args&&... args)
     res.wait();
     return res.get();
 }
-
-template <class R, class C, class... Args1, class... Args2> inline
-R AsyncWorker::execute(R(C::*f)(Args1...), C* c, Args2&&... args)
-{
-    auto res = this->push_back(async_bind(f, c, args...));
-    res.wait();
-    return res.get();
-}
-
-template <class R, class C, class... Args1, class... Args2> inline
-R AsyncWorker::execute(R(C::*f)(Args1...) const, const C* c, Args2&&... args)
-{
-    auto res = this->push_back(async_bind(f, c, args...));
-    res.wait();
-    return res.get();
-}
-
-//template <class F, class... Args> inline
-//auto execute(AsyncWorker& worker, F f, Args&&... args)
-//{
-//    auto res = worker.push_back(async_bind(f, std::forward<Args>(args)...));
-//    res.wait();
-//    return res.get();
-//}
-//
-//template <class R, class C, class... Args1, class... Args2> inline
-//R execute(AsyncWorker& worker, R(C::*f)(Args1...), C* c, Args2&&... args)
-//{
-//    auto res = worker.push_back(async_bind(f, c, args...));
-//    res.wait();
-//    return res.get();
-//}
-//
-//template <class R, class C, class... Args1, class... Args2> inline
-//R execute(AsyncWorker& worker, R(C::*f)(Args1...) const, const C* c, Args2&&... args)
-//{
-//    auto res = worker.push_back(async_bind(f, c, args...));
-//    res.wait();
-//    return res.get();
-//}
 
 } //namespace rtac
 
