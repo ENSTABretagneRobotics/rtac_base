@@ -39,6 +39,11 @@ struct FileError : public Exception
     {}
 };
 
+struct FormatError : public Exception
+{
+    FormatError() : Exception("RTAC_FORMAT_ERROR") {}
+};
+
 } //namespace rtac
 
 

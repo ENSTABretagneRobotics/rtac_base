@@ -4,8 +4,10 @@
 #include <iostream>
 
 #include <rtac_base/cuda_defines.h>
+#include <rtac_base/Exception.h>
 #include <rtac_base/types/common.h>
 #include <rtac_base/geometry.h>
+#include <rtac_base/utilities.h>
 
 namespace rtac {
 
@@ -125,6 +127,9 @@ struct Pose
 
     template <class D = Vec3> RTAC_HOSTDEVICE
     static Pose from_quaternion(const Quat& q, const Eigen::DenseBase<D>& t = Vec3(0,0,0));
+
+    static Pose decode_string(const std::string& str,    char delimiter = ',');
+    std::string encode_string(const std::string& format, char delimiter = ',');
 };
 
 template<typename T>template <class D0, class D1> RTAC_HOSTDEVICE 
@@ -180,6 +185,73 @@ Pose<T>& Pose<T>::look_at(const Pose<T>::Vec3& target,
     *this = Pose<T>::from_rotation_matrix(geometry::look_at(target, position, up),
                                           position);
     return *this;
+}
+
+template <typename T> inline
+Pose<T> Pose<T>::decode_string(const std::string& str, char delimiter)
+{
+    std::istringstream iss(str);
+    std::string format;
+
+    // getting format
+    if(!std::getline(iss, format, delimiter)) {
+        throw FormatError() << " : invalid pose string '" << str << "'";
+    }
+    
+    // parsing depending on format
+    if(format.find("quat") != std::string::npos) {
+        // Pose encoded as a quaternion, format is tx,ty,tz,qw,qx,qy,qz
+        auto values = parse_numbers<T,7>(iss, delimiter);
+        return Pose<T>::from_quaternion(Quat(values[3],values[4],values[5],values[6]),
+                                        Vec3(values[0],values[1],values[2])).normalize();
+    }
+    else if(format.find("hmat") != std::string::npos) {
+        // Pose encoded as a quaternion, format is tx,ty,tz,qw,qx,qy,qz
+        auto values = parse_numbers<T,12>(iss, delimiter);
+        Mat4 hmat;
+        hmat << values[0], values[1], values[2],  values[3], 
+                values[4], values[5], values[6],  values[7], 
+                values[8], values[9], values[10], values[11], 
+                0.0, 0.0, 0.0, 1.0;
+        return Pose<T>::from_homogeneous_matrix(hmat).normalize();
+    }
+    else {
+        throw FormatError() << " : invalid pose string '" << str << "'";
+        //T value;
+        //try {
+        //    value = std::stof(format);
+        //}
+        //catch(const std::invalid_argument&) {
+        //    throw FormatError() << " : invalid pose string '" << str << "'";
+        //}
+        //auto values = parse_numbers<T>(iss, delimiter);
+        //values.push_front(value);
+        //switch(values.size()) {
+        //    default: throw FormatError() << " : invalid pose string '" << str << "'"; break;
+        //    case 7: 
+        //}
+    }
+}
+
+template <typename T>
+std::string Pose<T>::encode_string(const std::string& format, char d)
+{
+    std::ostringstream oss;
+    if(format == "quat") {
+        auto q = this->quaternion();
+        oss << this->x() << d << this->y() << d << this->z() << d
+            << q.w() << d << q.x() << d << q.y() << d << q.z();
+    }
+    else if(format == "hmat") {
+        oss << r_(0,0) << d << r_(0,1) << d << r_(0,2) << d << t_(0) << d
+            << r_(1,0) << d << r_(1,1) << d << r_(1,2) << d << t_(1) << d
+            << r_(2,0) << d << r_(2,1) << d << r_(2,2) << d << t_(2) << d
+            << 0.0 << d << 0.0 << d << 0.0 << d << 1.0;
+    }
+    else {
+        throw FormatError() << " : unknown format '" << format << "'";
+    }
+    return oss.str();
 }
 
 }; // namespace rtac

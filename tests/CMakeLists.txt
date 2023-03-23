@@ -1,6 +1,4 @@
 
-add_subdirectory(containers)
-
 list(APPEND test_files
     src/misc_test.cpp
     src/files_test.cpp
@@ -19,8 +17,12 @@ list(APPEND test_files
     src/functions.cpp
     src/bin_codecs_test.cpp
     src/exception.cpp
-    src/async_worker01.cpp
+    src/pose_string.cpp
 )
+
+if(WITH_ASYNC)
+    list(APPEND test_files src/async_worker01.cpp)
+endif()
 
 list(APPEND test_deps
     rtac_base
@@ -42,4 +44,6 @@ foreach(filename ${test_files})
     target_link_libraries(${target_name} ${test_deps})
 endforeach()
 
+add_subdirectory(containers)
 add_subdirectory(external)
+
