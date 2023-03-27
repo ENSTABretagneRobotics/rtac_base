@@ -34,7 +34,22 @@ int main()
             cout << "NmeaError " << err << " : " << m << endl;
             continue;
         }
+        try {
+            auto values = latlonalt_from_gpgga(m);
+            std::cout << m;
+            std::cout << "    "
+                      << values[0] << ' '
+                      << values[1] << ' '
+                      << values[2] << std::endl;
+            auto pose = pose_from_gpgga(m);
+            std::cout << pose << std::endl;
+        }
+        catch(const std::exception& e) {
+            std::cout << e.what() << std::endl;
+        }
     }
+
+    rtac::Pose<float> p = rtac::Pose<double>();
     
     return 0;
 }

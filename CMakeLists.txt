@@ -76,6 +76,7 @@ add_library(rtac_base SHARED
     src/time.cpp
     src/bin_codecs.cpp
 
+    src/external/nmea_utils.cpp
     src/external/ply_files.cpp
     src/external/obj_codec.cpp
     src/external/ImageCodec.cpp

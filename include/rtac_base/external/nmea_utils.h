@@ -4,19 +4,22 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 
-#include <rtac_base/types/common.h>
+#include <rtac_base/Exception.h>
+#include <rtac_base/types/Pose.h>
 
 namespace rtac { namespace nmea {
 
-struct NmeaError : public std::runtime_error {
+struct NmeaError : public Exception {
 
     enum Code : uint8_t {
-        NoError          = 0x0,
-        InvalidDelimiter = 0x1,
-        InvalidCharacter = 0x2,
-        NoChecksum       = 0x4,
-        ChecksumMismatch = 0x8,
+        NoError          = 0x00,
+        InvalidDelimiter = 0x01,
+        InvalidCharacter = 0x02,
+        NoChecksum       = 0x04,
+        ChecksumMismatch = 0x08,
+        Other            = 0x10
     };
 
     static std::string code_to_string(const Code& code) {
@@ -27,54 +30,26 @@ struct NmeaError : public std::runtime_error {
             case InvalidCharacter: return "InvalidCharacter";  break;
             case NoChecksum      : return "NoChecksum";        break;
             case ChecksumMismatch: return "ChecksumMismatch";  break;
+            case Other           : return "Other";             break;
         }
     }
 
-    NmeaError(const Code& code) :
-        std::runtime_error(code_to_string(code))
+    NmeaError(const Code& code = Other) :
+        Exception(code_to_string(code))
     {}
 
     NmeaError(const std::string& what_arg) :
-        std::runtime_error(what_arg)
+        Exception(what_arg)
     {}
 };
 
-inline NmeaError::Code nmea_invalid(const std::string& msg)
-{
-    if(msg[0] != '$' || msg[msg.size() - 2] != '\r' || msg[msg.size() - 1] != '\n') {
-        return NmeaError::InvalidDelimiter;
-    }
-
-    uint8_t checksum = 0;
-    unsigned int i = 1;
-    for(; i < msg.size(); i++) {
-        if(msg[i] == '*') {
-            i++;
-            break;
-        }
-        if(msg[i] < 32 || msg[i] > 126) {
-            if(msg[i] == '\r') {
-                // End of message reached without finding a checksum delimiter.
-                return NmeaError::NoChecksum;
-            }
-            return NmeaError::InvalidCharacter;
-        }
-        checksum ^= msg[i];
-    }
-    
-    auto transmittedChecksum = std::stoul(msg.c_str() + i, nullptr, 16);
-    if(transmittedChecksum != checksum) {
-        return NmeaError::ChecksumMismatch;
-    }
-    return NmeaError::NoError;
-}
-
+NmeaError::Code nmea_invalid(const std::string& msg);
 inline std::string nmea_type(const std::string& msg) 
 {
     return msg.substr(1,5);
 }
 
-template <typename T = uint64_t>
+template <typename T = uint64_t> 
 inline T millis_from_gps_time(const std::string& date)
 {
     return 1000*(3600*std::stoul(date.substr(0,2))  // hours
@@ -82,6 +57,9 @@ inline T millis_from_gps_time(const std::string& date)
                  +    std::stoul(date.substr(4,2))) // seconds
                  +    std::stoul(date.substr(7));   // millis
 }
+
+std::array<double,3> latlonalt_from_gpgga(const std::string& msg, bool checkFormat = true);
+Pose<double> pose_from_gpgga(const std::string& msg);
 
 }; //namespace nmea
 }; //namespace rtac
