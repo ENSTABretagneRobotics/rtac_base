@@ -40,6 +40,15 @@ struct Pose
 
     RTAC_HOSTDEVICE Pose() : r_(Mat3::Identity()), t_(0,0,0) {}
 
+    template <typename T2>
+    RTAC_HOSTDEVICE Pose(const Pose<T2>& other) { *this = other; }
+    template <typename T2>
+    RTAC_HOSTDEVICE Pose<T>& operator=(const Pose<T2>& other) {
+        r_ = other.r_.template cast<T>();
+        t_ = other.t_.template cast<T>();
+        return *this;
+    }
+
     template <class D0, class D1> RTAC_HOSTDEVICE 
     Pose(const Eigen::DenseBase<D0>& r, const Eigen::DenseBase<D1>& t) : r_(r), t_(t) {}
 
