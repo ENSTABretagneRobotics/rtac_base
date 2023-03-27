@@ -8,7 +8,7 @@
 
 #include <rtac_base/cuda_defines.h>
 #ifndef RTAC_CUDACC
-#include <rtac_base/ply_files.h>
+#include <rtac_base/external/ply_files.h>
 #endif //RTAC_CUDACC
 
 #include <rtac_base/types/Point.h>

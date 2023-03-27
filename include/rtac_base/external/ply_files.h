@@ -4,11 +4,11 @@
 #include <iostream>
 #include <vector>
 
-#include <rtac_base/happly.h>
-
 #include <rtac_base/types/Pose.h>
 #include <rtac_base/types/Shape.h>
 #include <rtac_base/types/Rectangle.h>
+
+#include <rtac_base/external/happly.h>
 
 
 namespace rtac { namespace ply {

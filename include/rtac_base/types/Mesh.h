@@ -11,7 +11,7 @@
 
 #include <rtac_base/cuda_defines.h>
 #ifndef RTAC_CUDACC
-#include <rtac_base/happly.h>
+#include <rtac_base/external/happly.h>
 #endif
 
 namespace rtac {

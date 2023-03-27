@@ -6,7 +6,7 @@ using namespace std;
 #include <rtac_base/types/Shape.h>
 using namespace rtac;
 
-#include <rtac_base/ply_files.h>
+#include <rtac_base/external/ply_files.h>
 using namespace rtac;
 
 int main()

@@ -58,15 +58,15 @@ list(APPEND rtac_base_headers
     include/rtac_base/time.h
     include/rtac_base/bin_codecs.h
 
-    include/rtac_base/ply_files.h
-    include/rtac_base/happly.h
+    include/rtac_base/external/ply_files.h
+    include/rtac_base/external/happly.h
     include/rtac_base/external/obj_codec.h
     include/rtac_base/external/ImageCodec.h
     include/rtac_base/external/tinyxml2.h
     include/rtac_base/external/metashape.h
     include/rtac_base/external/kalibr.h
+    include/rtac_base/external/nmea_utils.h
 
-    include/rtac_base/nmea_utils.h
     include/rtac_base/navigation.h
 )
 
@@ -75,8 +75,8 @@ add_library(rtac_base SHARED
     src/files.cpp
     src/time.cpp
     src/bin_codecs.cpp
-    src/ply_files.cpp
 
+    src/external/ply_files.cpp
     src/external/obj_codec.cpp
     src/external/ImageCodec.cpp
     src/external/tinyxml2.cpp

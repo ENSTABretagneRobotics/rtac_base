@@ -2,7 +2,7 @@
 #include <list>
 using namespace std;
 
-#include <rtac_base/nmea_utils.h>
+#include <rtac_base/external/nmea_utils.h>
 using namespace rtac::nmea;
 
 int main()
