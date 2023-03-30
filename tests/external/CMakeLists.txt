@@ -30,3 +30,10 @@ add_executable(${target_name}
 )
 target_link_libraries(${target_name} PRIVATE rtac_base)
 
+if(TARGET PROJ::proj)
+    set(target_name proj_test_${PROJECT_NAME})
+    add_executable(${target_name}
+        src/proj_test.cpp
+    )
+    target_link_libraries(${target_name} PRIVATE rtac_base)
+endif()

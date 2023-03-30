@@ -149,6 +149,20 @@ if(JPEG_FOUND)
     )
 endif()
 
+find_package(PROJ QUIET CONFIG)
+if(TARGET PROJ::proj)
+    set(WITH_PROJ ON)
+    target_link_libraries(rtac_base PUBLIC PROJ::proj)
+    list(APPEND rtac_base_headers
+        include/rtac_base/external/proj.h
+    )
+    target_sources(rtac_base PRIVATE
+        src/external/proj.cpp
+    )
+endif()
+
+
+
 if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
