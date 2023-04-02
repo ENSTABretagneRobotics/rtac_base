@@ -118,6 +118,7 @@ class AsyncFunction<void> : public AsyncFunctionBase
     AsyncFunction<void>& operator=(AsyncFunction<void>&& f) {
         function_ = std::move(f.function_);
         promise_  = std::move(f.promise_);
+        return *this;
     }
 
     std::future<void> future() { return promise_.get_future(); }
