@@ -59,7 +59,7 @@ inline T millis_from_gps_time(const std::string& date)
 }
 
 std::array<double,3> latlonalt_from_gpgga(const std::string& msg, bool checkFormat = true);
-Pose<double> pose_from_gpgga(const std::string& msg);
+Pose<double> pose_from_gpgga(const std::string& msg, bool checkFormat = true);
 
 }; //namespace nmea
 }; //namespace rtac

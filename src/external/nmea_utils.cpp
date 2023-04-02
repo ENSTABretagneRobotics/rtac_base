@@ -71,9 +71,9 @@ std::array<double,3> latlonalt_from_gpgga(const std::string& msg, bool checkForm
     return {lat,lon,alt};
 }
 
-Pose<double> pose_from_gpgga(const std::string& msg)
+Pose<double> pose_from_gpgga(const std::string& msg, bool checkFormat)
 {
-    auto t = latlonalt_from_gpgga(msg);
+    auto t = latlonalt_from_gpgga(msg,checkFormat);
 
     Pose<double> res;
     res.x() = t[0];
