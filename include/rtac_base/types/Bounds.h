@@ -61,6 +61,9 @@ struct Bounds<T,1>
     RTAC_HOSTDEVICE T length() const {
         return upper - lower;
     }
+    RTAC_HOSTDEVICE T center() const {
+        return 0.5*(upper + lower);
+    }
 
     RTAC_HOSTDEVICE bool is_inside(T value) const {
         return lower < value && value < upper;
