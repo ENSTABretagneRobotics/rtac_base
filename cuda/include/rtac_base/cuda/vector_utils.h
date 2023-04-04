@@ -16,6 +16,7 @@ float range(const DeviceVector<float>& data);
 
 DeviceVector<float>& abs(DeviceVector<float>& data);
 DeviceVector<float> sqrt(const DeviceVector<float>& data);
+DeviceVector<float> log(DeviceVector<float>& data);
 
 DeviceVector<float>&  rescale(DeviceVector<float>& data,
                               float minValue = 0.0f, float maxValue = 1.0f);

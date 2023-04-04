@@ -68,6 +68,24 @@ DeviceVector<float> sqrt(const DeviceVector<float>& data)
     return res;
 }
 
+struct thrust_log// : std::unary_function<float,void>
+{
+    __host__ __device__ void operator()(float& x) const { x = ::log(x); }
+};
+
+
+DeviceVector<float> log(DeviceVector<float>& data)
+{
+    using namespace thrust::placeholders;
+
+    auto res = data;
+    thrust::for_each(thrust::device_pointer_cast(res.data()),
+                     thrust::device_pointer_cast(res.data() + data.size()),
+                     thrust_log());
+    return res;
+}
+
+
 DeviceVector<float>& rescale(DeviceVector<float>& data, float minValue, float maxValue)
 {
     using namespace thrust::placeholders;
