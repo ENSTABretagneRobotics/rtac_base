@@ -94,6 +94,8 @@ class Mesh
     void export_ply(const std::string& path, bool ascii=false) const;
 };
 
+Mesh<>::Ptr make_icosphere(unsigned int level = 0, float scale = 1);
+
 // Implementation
 template <typename P, typename F, typename N, typename U, template<typename> class V>
 Mesh<P,F,N,U,V>& Mesh<P,F,N,U,V>::operator=(Mesh<P,F,N,U,V>&& other)

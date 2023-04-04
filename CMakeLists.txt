@@ -75,6 +75,7 @@ add_library(rtac_base SHARED
     src/files.cpp
     src/time.cpp
     src/bin_codecs.cpp
+    src/Mesh.cpp
 
     src/external/nmea_utils.cpp
     src/external/ply_files.cpp
