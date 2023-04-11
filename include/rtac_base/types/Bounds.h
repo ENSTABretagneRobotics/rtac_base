@@ -79,6 +79,17 @@ struct Bounds<T,1>
     RTAC_HOSTDEVICE bool contains(const Bounds<T,1>& other) const {
         return this->lower <= other.lower && other.upper <= this->upper;
     }
+    RTAC_HOSTDEVICE Bounds<T,1>& intersect_with(const Bounds<T,1>& other) {
+        T m = std::max(this->lower, other.lower);
+        T M = std::min(this->upper, other.upper);
+        if(m > M) {
+            lower = 0; upper = 0;
+        }
+        else {
+            lower = m; upper = M;
+        }
+        return *this;
+    }
 
     RTAC_HOSTDEVICE void update(T value) {
         lower = std::min(lower, value);
