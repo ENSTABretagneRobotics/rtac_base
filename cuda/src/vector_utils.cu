@@ -15,6 +15,13 @@
 
 namespace rtac { namespace cuda {
 
+float sum(const DeviceVector<float>& data, float initial)
+{
+    return thrust::reduce(thrust::device_pointer_cast(data.data()),
+                          thrust::device_pointer_cast(data.data() + data.size()),
+                          initial, thrust::plus<float>());
+}
+
 float min(const DeviceVector<float>& data, float initial)
 {
     return thrust::reduce(thrust::device_pointer_cast(data.data()),

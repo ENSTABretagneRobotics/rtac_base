@@ -8,6 +8,7 @@
 
 namespace rtac { namespace cuda {
 
+float sum(const DeviceVector<float>& data, float initial = 0.0f);
 float min(const DeviceVector<float>& data,
           float initial = std::numeric_limits<float>::max());
 float max(const DeviceVector<float>& data,
