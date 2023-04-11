@@ -58,6 +58,10 @@ struct Bounds<T,1>
 
     Bounds(T l, T u) : lower(l), upper(u) {}
 
+    bool operator==(const Bounds<T,1>& other) {
+        return this->lower == other.lower && this->upper == other.upper;
+    }
+
     RTAC_HOSTDEVICE T length() const {
         return upper - lower;
     }
@@ -65,8 +69,15 @@ struct Bounds<T,1>
         return 0.5*(upper + lower);
     }
 
-    RTAC_HOSTDEVICE bool is_inside(T value) const {
+    [[deprecated]]
+    RTAC_HOSTDEVICE bool is_inside(T value) const { // change to contains
         return lower < value && value < upper;
+    }
+    RTAC_HOSTDEVICE bool contains(T value) const {
+        return lower < value && value < upper;
+    }
+    RTAC_HOSTDEVICE bool contains(const Bounds<T,1>& other) const {
+        return this->lower <= other.lower && other.upper <= this->upper;
     }
 
     RTAC_HOSTDEVICE void update(T value) {
