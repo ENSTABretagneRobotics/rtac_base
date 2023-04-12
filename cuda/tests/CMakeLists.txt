@@ -13,6 +13,7 @@ list(APPEND test_names
     src/texture_function.cu
     src/texture_vector.cu
     src/texture_float2.cu
+    src/point_format.cu
 )
 
 foreach(filename ${test_names})

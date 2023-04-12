@@ -18,6 +18,7 @@ list(APPEND test_files
     src/bin_codecs_test.cpp
     src/exception.cpp
     src/pose_string.cpp
+    src/point_format.cpp
 )
 
 if(WITH_ASYNC)
