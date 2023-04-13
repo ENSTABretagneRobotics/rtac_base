@@ -45,15 +45,15 @@ class HostVector
     public:
 
     HostVector() {}
-    HostVector(size_t size)                 : data_(size) {}
-    HostVector(size_t size, T value)        : data_(size, value) {}
+    HostVector(std::size_t size)            : data_(size) {}
+    HostVector(std::size_t size, T value)   : data_(size, value) {}
     HostVector(const HostVector<T>& other)  : data_(other.data_) {}
     HostVector(const std::vector<T>& other) : data_(other) {}
 
     HostVector& operator=(const HostVector<T>& other)  { data_ = other.data_; return *this; }
     HostVector& operator=(const std::vector<T>& other) { data_ = other;       return *this; }
 
-    void copy_from_host(size_t size, const T* data) {
+    void copy_from_host(std::size_t size, const T* data) {
         this->resize(size);
         std::memcpy(this->data(), data, size*sizeof(T));
     }
@@ -61,30 +61,32 @@ class HostVector
         std::memcpy(dst, this->data(), this->size()*sizeof(T));
     }
     
-    void copy(size_t size, const T* data) { // change to assign ?
+    [[deprecated]]
+    void copy(std::size_t size, const T* data) { // change to assign ?
         this->resize(size);
         std::memcpy(this->data(), data, size*sizeof(T));
     }
+    [[deprecated]]
     void copy_to(T* dst) const {
         std::memcpy(dst, this->data(), this->size()*sizeof(T));
     }
 
-    void resize(size_t size) { data_.resize(size);  }
-    void clear()             { data_.clear();       }
+    void resize(std::size_t size) { data_.resize(size); }
+    void clear()                  { data_.clear();      }
 
-    size_t size()     const { return data_.size();     }
-    size_t capacity() const { return data_.capacity(); }
+    std::size_t size()     const { return data_.size();     }
+    std::size_t capacity() const { return data_.capacity(); }
 
-    T*       data()       { return data_.data(); }
     const T* data() const { return data_.data(); }
+    T*       data()       { return data_.data(); }
 
     T*       begin()       { return data_.data();                }
     T*       end()         { return data_.data() + data_.size(); }
     const T* begin() const { return data_.data();                }
     const T* end()   const { return data_.data() + data_.size(); }
 
-    T&       operator[](size_t idx)       { return data_[idx]; }
-    const T& operator[](size_t idx) const { return data_[idx]; }
+    T&       operator[](std::size_t idx)       { return data_[idx]; }
+    const T& operator[](std::size_t idx) const { return data_[idx]; }
 
     T&       front()       { return data_.front(); }
     T&       back()        { return data_.back();  }

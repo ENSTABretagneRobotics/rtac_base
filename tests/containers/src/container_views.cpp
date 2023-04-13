@@ -30,7 +30,7 @@ int main()
     cout << "view0 : " << view0 << endl;
 
     std::vector<float> v1(v0.size());
-    v0.copy_to(v1.data());
+    v0.copy_to_host(v1.data());
     cout << "v1    : " << v1 << endl;
     auto view1 = make_view(v1);
     cout << "view1 : " << view1 << endl;

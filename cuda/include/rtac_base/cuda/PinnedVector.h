@@ -8,14 +8,9 @@
 #include <rtac_base/containers/HostVector.h>
 #include <rtac_base/cuda/utils.h>
 
-//#ifdef RTAC_CUDACC
-//#include <thrust/device_ptr.h> // thrust is causing linking issues with OptiX for unclear reasons
-//#endif
-
 namespace rtac { namespace display {
     template <typename T> class GLVector;
 }}
-
 
 namespace rtac { namespace cuda {
 
@@ -36,67 +31,69 @@ class PinnedVector
     using iterator        = pointer;
     using const_iterator  = const_pointer;
 
+    static PinnedVector<T> linspace(T first, T last, std::size_t size) {
+        return HostVector<T>::linspace(first, last, size);
+    }
+
     protected:
 
-    T*     data_;
-    size_t size_;
-    size_t capacity_;
+    T*          data_;
+    std::size_t size_;
+    std::size_t capacity_;
 
-    void allocate(size_t size);
+    void allocate(std::size_t size);
     void free();
 
     public:
 
     PinnedVector();
-    PinnedVector(size_t size);
+    PinnedVector(std::size_t size);
     PinnedVector(const PinnedVector<T>& other);
     PinnedVector(const HostVector<T>& other);
     PinnedVector(const DeviceVector<T>& other);
     PinnedVector(const std::vector<T>& other);
     ~PinnedVector();
 
-    void copy_from_host(size_t size, const T* data);
-    void copy_from_device(size_t size, const T* data);
-    void copy_to_host(T* dst) const {
-        CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
-                               reinterpret_cast<const void*>(data_),
-                               sizeof(T)*this->size(),
-                               cudaMemcpyHostToHost) );
-    }
+    void copy_from_host(std::size_t size, const T* data);
+    void copy_to_host(T* dst) const;
+    void copy_from_cuda(std::size_t size, const T* data);
+    void copy_to_cuda(T* dst) const;
+
+    [[deprecated]]
+    void copy_from_device(std::size_t size, const T* data);
     
     PinnedVector& operator=(const PinnedVector<T>& other);
     PinnedVector& operator=(const HostVector<T>& other);
     PinnedVector& operator=(const DeviceVector<T>& other);
     PinnedVector& operator=(const std::vector<T>& other);
-    
-    #ifndef RTAC_CUDACC
-    PinnedVector(const rtac::Vector<T>& other);
-    PinnedVector& operator=(const rtac::Vector<T>& other);
-    #endif
 
-    void resize(size_t size);
+    void resize(std::size_t size);
     void clear() { this->free(); }
-    size_t size() const;
-    size_t capacity() const;
 
-    pointer       data();
-    const_pointer data() const;
+    std::size_t size()     const { return size_;     }
+    std::size_t capacity() const { return capacity_; }
 
-    iterator begin();
-    iterator end();
-    const_iterator begin() const;
-    const_iterator end() const;
+    const T* data() const { return data_; }
+          T* data()       { return data_; }
 
-    auto view() const { return VectorView<const T>(this->size(), this->data()); }
-    auto view()       { return VectorView<T>(this->size(), this->data()); }
+    const T* cbegin() const { return data_; }
+    const T* begin()  const { return data_; }
+          T* begin()        { return data_; }
+    const T* cend()   const { return data_ + size_; }
+    const T* end()    const { return data_ + size_; }
+          T* end()          { return data_ + size_; }
 
-    value_type& operator[](size_t idx);
-    const value_type& operator[](size_t idx) const;
+    auto const_view() const { return this->view();                                    }
+    auto view()       const { return VectorView<const T>(this->size(), this->data()); }
+    auto view()             { return VectorView<T>(this->size(), this->data());       }
 
-    value_type& front();
-    const value_type& front() const;
-    value_type& back();
-    const value_type& back() const;
+    const T& operator[](std::size_t idx) const { return data_[idx]; }
+          T& operator[](std::size_t idx)       { return data_[idx]; }
+
+    const T& front() const { return data_[0]; }
+          T& front()       { return data_[0]; }
+    const T& back()  const { return data_[size_ - 1]; }
+          T& back()        { return data_[size_ - 1]; }
 
     PinnedVector(const display::GLVector<T>& other) { *this = other; }
     PinnedVector& operator=(const display::GLVector<T>& other) {
@@ -104,66 +101,59 @@ class PinnedVector
         other.copy_to_host(this->data());
         return *this;
     }
-
-    #ifdef RTAC_CUDACC  // the following methods are only usable in CUDA code.
-    //thrust::device_ptr<T>       begin_thrust();
-    //thrust::device_ptr<T>       end_thrust();
-    //thrust::device_ptr<const T> begin_thrust() const;
-    //thrust::device_ptr<const T> end_thrust() const;
-    #endif
 };
 
 // implementation
-template <typename T>
+template <typename T> inline
 PinnedVector<T>::PinnedVector() :
     data_(NULL),
     size_(0),
     capacity_(0)
 {}
 
-template <typename T>
-PinnedVector<T>::PinnedVector(size_t size) :
+template <typename T> inline
+PinnedVector<T>::PinnedVector(std::size_t size) :
     PinnedVector()
 {
     this->resize(size);
 }
 
-template <typename T>
+template <typename T> inline
 PinnedVector<T>::PinnedVector(const PinnedVector<T>& other) :
     PinnedVector(other.size())
 {
     *this = other;
 }
 
-template <typename T>
+template <typename T> inline
 PinnedVector<T>::PinnedVector(const HostVector<T>& other) :
     PinnedVector(other.size())
 {
     *this = other;
 }
 
-template <typename T>
+template <typename T> inline
 PinnedVector<T>::PinnedVector(const DeviceVector<T>& other) :
     PinnedVector(other.size())
 {
     *this = other;
 }
 
-template <typename T>
+template <typename T> inline
 PinnedVector<T>::PinnedVector(const std::vector<T>& other) :
     PinnedVector(other.size())
 {
     *this = other;
 }
 
-template <typename T>
+template <typename T> inline
 PinnedVector<T>::~PinnedVector()
 {
     this->free();
 }
 
-template <typename T>
-void PinnedVector<T>::copy_from_host(size_t size, const T* data)
+template <typename T> inline
+void PinnedVector<T>::copy_from_host(std::size_t size, const T* data)
 {
     this->resize(size);
     CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
@@ -172,8 +162,16 @@ void PinnedVector<T>::copy_from_host(size_t size, const T* data)
                            cudaMemcpyHostToHost) );
 }
 
-template <typename T>
-void PinnedVector<T>::copy_from_device(size_t size, const T* data)
+template <typename T> inline
+void PinnedVector<T>::copy_to_host(T* dst) const {
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
+                           reinterpret_cast<const void*>(data_),
+                           sizeof(T)*this->size(),
+                           cudaMemcpyHostToHost) );
+}
+
+template <typename T> inline
+void PinnedVector<T>::copy_from_cuda(std::size_t size, const T* data)
 {
     this->resize(size);
     CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
@@ -182,59 +180,61 @@ void PinnedVector<T>::copy_from_device(size_t size, const T* data)
                            cudaMemcpyDeviceToHost) );
 }
 
-template <typename T>
+template <typename T> inline
+void PinnedVector<T>::copy_to_cuda(T* dst) const {
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(dst),
+                           reinterpret_cast<const void*>(data_),
+                           sizeof(T)*this->size(),
+                           cudaMemcpyHostToDevice) );
+}
+
+template <typename T> inline
+void PinnedVector<T>::copy_from_device(std::size_t size, const T* data)
+{
+    this->resize(size);
+    CUDA_CHECK( cudaMemcpy(reinterpret_cast<void*>(data_),
+                           reinterpret_cast<const void*>(data),
+                           sizeof(T)*size_,
+                           cudaMemcpyDeviceToHost) );
+}
+
+template <typename T> inline
 PinnedVector<T>& PinnedVector<T>::operator=(const PinnedVector<T>& other)
 {
     this->copy_from_host(other.size(), other.data());
     return *this;
 }
 
-template <typename T>
+template <typename T> inline
 PinnedVector<T>& PinnedVector<T>::operator=(const HostVector<T>& other)
 {
     this->copy_from_host(other.size(), other.data());
     return *this;
 }
 
-template <typename T>
+template <typename T> inline
 PinnedVector<T>& PinnedVector<T>::operator=(const DeviceVector<T>& other)
 {
-    this->copy_from_device(other.size(), other.data());
+    this->copy_from_cuda(other.size(), other.data());
     return *this;
 }
 
-template <typename T>
+template <typename T> inline
 PinnedVector<T>& PinnedVector<T>::operator=(const std::vector<T>& other)
 {
     this->copy_from_host(other.size(), other.data());
     return *this;
 }
 
-#ifndef RTAC_CUDACC
-template <typename T>
-PinnedVector<T>::PinnedVector(const rtac::Vector<T>& other) :
-    PinnedVector(other.size())
-{
-    *this = other;
-}
-
-template <typename T>
-PinnedVector<T>& PinnedVector<T>::operator=(const rtac::Vector<T>& other)
-{
-    this->copy_from_host(other.size(), other.data());
-    return *this;
-}
-#endif
-
-template <typename T>
-void PinnedVector<T>::allocate(size_t size)
+template <typename T> inline
+void PinnedVector<T>::allocate(std::size_t size)
 {
     this->free();
     CUDA_CHECK( cudaMallocHost(&data_, sizeof(T)*size) );
     capacity_ = size;
 }
 
-template <typename T>
+template <typename T> inline
 void PinnedVector<T>::free()
 {
     CUDA_CHECK( cudaFreeHost(data_) );
@@ -242,123 +242,13 @@ void PinnedVector<T>::free()
     size_     = 0;
 }
 
-template <typename T>
-void PinnedVector<T>::resize(size_t size)
+template <typename T> inline
+void PinnedVector<T>::resize(std::size_t size)
 {
     if(capacity_ < size)
         this->allocate(size);
     size_ = size;
 }
-
-template <typename T>
-size_t PinnedVector<T>::size() const
-{
-    return size_;
-}
-
-template <typename T>
-size_t PinnedVector<T>::capacity() const
-{
-    return capacity_;
-}
-
-template <typename T> typename PinnedVector<T>::
-pointer PinnedVector<T>::data()
-{
-    return data_;
-}
-
-template <typename T> typename PinnedVector<T>::
-const_pointer PinnedVector<T>::data() const
-{
-    return data_;
-}
-
-template <typename T> typename PinnedVector<T>::
-iterator PinnedVector<T>::begin()
-{
-    return data_;
-}
-
-template <typename T> typename PinnedVector<T>::
-iterator PinnedVector<T>::end()
-{
-    return data_ + size_;
-}
-
-template <typename T> typename PinnedVector<T>::
-const_iterator PinnedVector<T>::begin() const
-{
-    return data_;
-}
-
-template <typename T> typename PinnedVector<T>::
-const_iterator PinnedVector<T>::end() const
-{
-    return data_ + size_;
-}
-
-#ifdef RTAC_CUDACC
-template <typename T> typename PinnedVector<T>::
-value_type& PinnedVector<T>::operator[](size_t idx)
-{
-    return data_[idx];
-}
-
-template <typename T> const typename PinnedVector<T>::
-value_type& PinnedVector<T>::operator[](size_t idx) const
-{
-    return data_[idx];
-}
-
-template <typename T> typename PinnedVector<T>::
-value_type& PinnedVector<T>::front()
-{
-    return data_[0];
-}
-
-template <typename T> const typename PinnedVector<T>::
-value_type& PinnedVector<T>::front() const
-{
-    return data_[0];
-}
-
-template <typename T> typename PinnedVector<T>::
-value_type& PinnedVector<T>::back()
-{
-    return data_[this->size() - 1];
-}
-
-template <typename T> const typename PinnedVector<T>::
-value_type& PinnedVector<T>::back() const
-{
-    return data_[this->size() - 1];
-}
-
-//template <typename T>
-//thrust::device_ptr<T> PinnedVector<T>::begin_thrust()
-//{
-//    return thrust::device_pointer_cast(data_);
-//}
-//
-//template <typename T>
-//thrust::device_ptr<T> PinnedVector<T>::end_thrust()
-//{
-//    return thrust::device_pointer_cast(data_ + size_);
-//}
-//
-//template <typename T>
-//thrust::device_ptr<const T> PinnedVector<T>::begin_thrust() const
-//{
-//    return thrust::device_pointer_cast(data_);
-//}
-//
-//template <typename T>
-//thrust::device_ptr<const T> PinnedVector<T>::end_thrust() const
-//{
-//    return thrust::device_pointer_cast(data_ + size_);
-//}
-#endif //RTAC_CUDACC
 
 }; //namespace cuda
 }; //namespace rtac
