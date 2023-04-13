@@ -2,6 +2,8 @@
 #include <vector>
 using namespace std;
 
+#include <rtac_base/types/PointFormat.h>
+#include <rtac_base/types/Point.h>
 #include <rtac_base/containers/HostVector.h>
 using namespace rtac;
 
@@ -14,6 +16,23 @@ void print(const HostVector<T>& v)
         cout << " " << value;
     }
     cout << endl;
+}
+
+template <typename P1, typename P2> inline
+HostVector<P1>& copy(HostVector<P1>& dst, const std::vector<P2>& src)
+{
+    RTAC_ASSERT_COMPATIBLE_POINTS(P1,P2);
+    dst.copy_from_host(src.size(), reinterpret_cast<const P1*>(src.data()));
+    return dst;
+}
+struct TestPoint {
+    float x, y;
+};
+namespace rtac {
+template<> struct PointFormat<TestPoint> {
+    using ScalarType = float;
+    static constexpr unsigned int Size = 2;
+};
 }
 
 int main()
@@ -44,6 +63,15 @@ int main()
     }
     cout << endl;
     print(v1);
+
+    std::vector<TestPoint> p2(10);
+    for(unsigned int i = 0; i < p2.size(); i++) {
+        p2[i].x = i; p2[i].y = i + 1;
+    }
+    HostVector<Point2<float>> p1;
+    for(auto p : copy(p1, p2)) {
+        std::cout << p << std::endl;
+    }
 
     return 0;
 }

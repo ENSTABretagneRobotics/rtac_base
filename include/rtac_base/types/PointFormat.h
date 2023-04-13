@@ -111,7 +111,7 @@ template<> struct PointFormat<int64_t>  { using ScalarType = int64_t ; static co
 
 
 template <typename P1, typename P2>
-struct PointTypesCompatible {
+struct PointsCompatible {
     using Scalar1 = typename PointFormat<P1>::ScalarType;
     using Scalar2 = typename PointFormat<P2>::ScalarType;
     static constexpr unsigned int Size1 = PointFormat<P1>::Size;
@@ -119,6 +119,11 @@ struct PointTypesCompatible {
 
     static constexpr bool value = std::is_same<Scalar1,Scalar2>::value && Size1 == Size2;
 };
+#define RTAC_ASSERT_COMPATIBLE_POINTS(P1, P2) static_assert(PointsCompatible<P1,P2>::value, "Imcompatible point types");
+
+template <typename P1, typename P2> RTAC_HOSTDEVICE constexpr
+bool points_compatible(const P1&, const P2&) { return PointsCompatible<P1,P2>::value; }
+
 
 struct PointInfo
 {

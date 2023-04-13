@@ -45,13 +45,21 @@ class HostVector
     public:
 
     HostVector() {}
-    HostVector(size_t size) : data_(size) {}
-    HostVector(size_t size, T value) : data_(size, value) {}
-    HostVector(const HostVector<T>& other) : data_(other.data_) {}
+    HostVector(size_t size)                 : data_(size) {}
+    HostVector(size_t size, T value)        : data_(size, value) {}
+    HostVector(const HostVector<T>& other)  : data_(other.data_) {}
     HostVector(const std::vector<T>& other) : data_(other) {}
 
     HostVector& operator=(const HostVector<T>& other)  { data_ = other.data_; return *this; }
     HostVector& operator=(const std::vector<T>& other) { data_ = other;       return *this; }
+
+    void copy_from_host(size_t size, const T* data) {
+        this->resize(size);
+        std::memcpy(this->data(), data, size*sizeof(T));
+    }
+    void copy_to_host(T* dst) const {
+        std::memcpy(dst, this->data(), this->size()*sizeof(T));
+    }
     
     void copy(size_t size, const T* data) { // change to assign ?
         this->resize(size);
@@ -60,7 +68,6 @@ class HostVector
     void copy_to(T* dst) const {
         std::memcpy(dst, this->data(), this->size()*sizeof(T));
     }
-    void copy_to_host(T* dst) const { this->copy_to(dst); }
 
     void resize(size_t size) { data_.resize(size);  }
     void clear()             { data_.clear();       }
