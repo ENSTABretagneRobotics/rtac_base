@@ -1,10 +1,10 @@
 #pragma once
 
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 using namespace rtac::cuda;
 #include <rtac_base/containers/VectorView.h>
 using namespace rtac;
 
 
 
-void copy(const DeviceVector<float>& input, DeviceVector<float>& output);
+void copy(const CudaVector<float>& input, CudaVector<float>& output);

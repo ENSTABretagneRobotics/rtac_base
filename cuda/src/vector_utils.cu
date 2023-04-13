@@ -15,28 +15,28 @@
 
 namespace rtac { namespace cuda {
 
-float sum(const DeviceVector<float>& data, float initial)
+float sum(const CudaVector<float>& data, float initial)
 {
     return thrust::reduce(thrust::device_pointer_cast(data.data()),
                           thrust::device_pointer_cast(data.data() + data.size()),
                           initial, thrust::plus<float>());
 }
 
-float min(const DeviceVector<float>& data, float initial)
+float min(const CudaVector<float>& data, float initial)
 {
     return thrust::reduce(thrust::device_pointer_cast(data.data()),
                           thrust::device_pointer_cast(data.data() + data.size()),
                           initial, thrust::minimum<float>());
 }
 
-float max(const DeviceVector<float>& data, float initial)
+float max(const CudaVector<float>& data, float initial)
 {
     return thrust::reduce(thrust::device_pointer_cast(data.data()),
                           thrust::device_pointer_cast(data.data() + data.size()),
                           initial, thrust::maximum<float>());
 }
 
-float range(const DeviceVector<float>& data) 
+float range(const CudaVector<float>& data) 
 {
     return max(data) - min(data);
 }
@@ -47,7 +47,7 @@ struct thrust_abs// : std::unary_function<float,void>
 };
 
 
-DeviceVector<float>& abs(DeviceVector<float>& data)
+CudaVector<float>& abs(CudaVector<float>& data)
 {
     using namespace thrust::placeholders;
 
@@ -63,7 +63,7 @@ struct thrust_sqrt
 };
 
 
-DeviceVector<float> sqrt(const DeviceVector<float>& data)
+CudaVector<float> sqrt(const CudaVector<float>& data)
 {
     using namespace thrust::placeholders;
 
@@ -81,7 +81,7 @@ struct thrust_log// : std::unary_function<float,void>
 };
 
 
-DeviceVector<float> log(DeviceVector<float>& data)
+CudaVector<float> log(CudaVector<float>& data)
 {
     using namespace thrust::placeholders;
 
@@ -93,7 +93,7 @@ DeviceVector<float> log(DeviceVector<float>& data)
 }
 
 
-DeviceVector<float>& rescale(DeviceVector<float>& data, float minValue, float maxValue)
+CudaVector<float>& rescale(CudaVector<float>& data, float minValue, float maxValue)
 {
     using namespace thrust::placeholders;
 
@@ -108,7 +108,7 @@ DeviceVector<float>& rescale(DeviceVector<float>& data, float minValue, float ma
     return data;
 }
 
-DeviceVector<float>& operator+=(DeviceVector<float>& lhs, float a)
+CudaVector<float>& operator+=(CudaVector<float>& lhs, float a)
 {
     using namespace thrust::placeholders;
     thrust::for_each(thrust::device,
@@ -118,7 +118,7 @@ DeviceVector<float>& operator+=(DeviceVector<float>& lhs, float a)
     return lhs;
 }
 
-DeviceVector<float>& operator-=(DeviceVector<float>& lhs, float a)
+CudaVector<float>& operator-=(CudaVector<float>& lhs, float a)
 {
     using namespace thrust::placeholders;
     thrust::for_each(thrust::device,
@@ -128,7 +128,7 @@ DeviceVector<float>& operator-=(DeviceVector<float>& lhs, float a)
     return lhs;
 }
 
-DeviceVector<float>& operator*=(DeviceVector<float>& lhs, float a)
+CudaVector<float>& operator*=(CudaVector<float>& lhs, float a)
 {
     using namespace thrust::placeholders;
     thrust::for_each(thrust::device,
@@ -138,7 +138,7 @@ DeviceVector<float>& operator*=(DeviceVector<float>& lhs, float a)
     return lhs;
 }
 
-DeviceVector<float>& operator/=(DeviceVector<float>& lhs, float a)
+CudaVector<float>& operator/=(CudaVector<float>& lhs, float a)
 {
     using namespace thrust::placeholders;
     thrust::for_each(thrust::device,
@@ -148,7 +148,7 @@ DeviceVector<float>& operator/=(DeviceVector<float>& lhs, float a)
     return lhs;
 }
 
-DeviceVector<float>& operator+=(DeviceVector<float>& lhs, const DeviceVector<float>& rhs)
+CudaVector<float>& operator+=(CudaVector<float>& lhs, const CudaVector<float>& rhs)
 {
     if(lhs.size() != rhs.size()) {
         throw std::runtime_error("Inconsistent vector sizes");
@@ -163,7 +163,7 @@ DeviceVector<float>& operator+=(DeviceVector<float>& lhs, const DeviceVector<flo
     return lhs;
 }
 
-DeviceVector<float>& operator-=(DeviceVector<float>& lhs, const DeviceVector<float>& rhs)
+CudaVector<float>& operator-=(CudaVector<float>& lhs, const CudaVector<float>& rhs)
 {
     if(lhs.size() != rhs.size()) {
         throw std::runtime_error("Inconsistent vector sizes");
@@ -178,7 +178,7 @@ DeviceVector<float>& operator-=(DeviceVector<float>& lhs, const DeviceVector<flo
     return lhs;
 }
 
-DeviceVector<float>& operator*=(DeviceVector<float>& lhs, const DeviceVector<float>& rhs)
+CudaVector<float>& operator*=(CudaVector<float>& lhs, const CudaVector<float>& rhs)
 {
     if(lhs.size() != rhs.size()) {
         throw std::runtime_error("Inconsistent vector sizes");
@@ -193,7 +193,7 @@ DeviceVector<float>& operator*=(DeviceVector<float>& lhs, const DeviceVector<flo
     return lhs;
 }
 
-DeviceVector<float>& operator/=(DeviceVector<float>& lhs, const DeviceVector<float>& rhs)
+CudaVector<float>& operator/=(CudaVector<float>& lhs, const CudaVector<float>& rhs)
 {
     if(lhs.size() != rhs.size()) {
         throw std::runtime_error("Inconsistent vector sizes");
@@ -218,9 +218,9 @@ struct thrust_cabs
     }
 };
 
-DeviceVector<float> abs(const DeviceVector<Complex<float>>& data)
+CudaVector<float> abs(const CudaVector<Complex<float>>& data)
 {
-    DeviceVector<float> res(data.size());
+    CudaVector<float> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),
@@ -240,9 +240,9 @@ struct thrust_creal
     }
 };
 
-DeviceVector<float> real(const DeviceVector<Complex<float>>& data)
+CudaVector<float> real(const CudaVector<Complex<float>>& data)
 {
-    DeviceVector<float> res(data.size());
+    CudaVector<float> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),
@@ -262,9 +262,9 @@ struct thrust_cimag
     }
 };
 
-DeviceVector<float> imag(const DeviceVector<Complex<float>>& data)
+CudaVector<float> imag(const CudaVector<Complex<float>>& data)
 {
-    DeviceVector<float> res(data.size());
+    CudaVector<float> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),
@@ -284,9 +284,9 @@ struct thrust_carg
     }
 };
 
-DeviceVector<float> arg(const DeviceVector<Complex<float>>& data)
+CudaVector<float> arg(const CudaVector<Complex<float>>& data)
 {
-    DeviceVector<float> res(data.size());
+    CudaVector<float> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),
@@ -306,9 +306,9 @@ struct thrust_cnorm
     }
 };
 
-DeviceVector<float> norm(const DeviceVector<Complex<float>>& data)
+CudaVector<float> norm(const CudaVector<Complex<float>>& data)
 {
-    DeviceVector<float> res(data.size());
+    CudaVector<float> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),
@@ -328,9 +328,9 @@ struct thrust_conj// : std::unary_function<float,void>
     }
 };
 
-DeviceVector<Complex<float>> conj(const DeviceVector<Complex<float>>& data)
+CudaVector<Complex<float>> conj(const CudaVector<Complex<float>>& data)
 {
-    DeviceVector<Complex<float>> res(data.size());
+    CudaVector<Complex<float>> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),
@@ -347,9 +347,9 @@ struct thrust_to_complex
     }
 };
 
-DeviceVector<Complex<float>> to_complex(const DeviceVector<float>& data)
+CudaVector<Complex<float>> to_complex(const CudaVector<float>& data)
 {
-    DeviceVector<Complex<float>> res(data.size());
+    CudaVector<Complex<float>> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),
@@ -359,7 +359,7 @@ DeviceVector<Complex<float>> to_complex(const DeviceVector<float>& data)
     return res;
 }
 
-DeviceVector<Complex<float>>& operator+=(DeviceVector<Complex<float>>& lhs, float a)
+CudaVector<Complex<float>>& operator+=(CudaVector<Complex<float>>& lhs, float a)
 {
     using namespace thrust::placeholders;
     thrust::for_each(thrust::device,
@@ -369,7 +369,7 @@ DeviceVector<Complex<float>>& operator+=(DeviceVector<Complex<float>>& lhs, floa
     return lhs;
 }
 
-DeviceVector<Complex<float>>& operator-=(DeviceVector<Complex<float>>& lhs, float a)
+CudaVector<Complex<float>>& operator-=(CudaVector<Complex<float>>& lhs, float a)
 {
     using namespace thrust::placeholders;
     thrust::for_each(thrust::device,
@@ -379,7 +379,7 @@ DeviceVector<Complex<float>>& operator-=(DeviceVector<Complex<float>>& lhs, floa
     return lhs;
 }
 
-DeviceVector<Complex<float>>& operator*=(DeviceVector<Complex<float>>& lhs, float a)
+CudaVector<Complex<float>>& operator*=(CudaVector<Complex<float>>& lhs, float a)
 {
     using namespace thrust::placeholders;
     thrust::for_each(thrust::device,
@@ -389,7 +389,7 @@ DeviceVector<Complex<float>>& operator*=(DeviceVector<Complex<float>>& lhs, floa
     return lhs;
 }
 
-DeviceVector<Complex<float>>& operator/=(DeviceVector<Complex<float>>& lhs, float a)
+CudaVector<Complex<float>>& operator/=(CudaVector<Complex<float>>& lhs, float a)
 {
     using namespace thrust::placeholders;
     thrust::for_each(thrust::device,
@@ -399,7 +399,7 @@ DeviceVector<Complex<float>>& operator/=(DeviceVector<Complex<float>>& lhs, floa
     return lhs;
 }
 
-DeviceVector<Complex<float>>& operator+=(DeviceVector<Complex<float>>& lhs, Complex<float> a)
+CudaVector<Complex<float>>& operator+=(CudaVector<Complex<float>>& lhs, Complex<float> a)
 {
     using namespace thrust::placeholders;
     thrust::for_each(thrust::device,
@@ -409,7 +409,7 @@ DeviceVector<Complex<float>>& operator+=(DeviceVector<Complex<float>>& lhs, Comp
     return lhs;
 }
 
-DeviceVector<Complex<float>>& operator-=(DeviceVector<Complex<float>>& lhs, Complex<float> a)
+CudaVector<Complex<float>>& operator-=(CudaVector<Complex<float>>& lhs, Complex<float> a)
 {
     using namespace thrust::placeholders;
     thrust::for_each(thrust::device,
@@ -419,7 +419,7 @@ DeviceVector<Complex<float>>& operator-=(DeviceVector<Complex<float>>& lhs, Comp
     return lhs;
 }
 
-DeviceVector<Complex<float>>& operator*=(DeviceVector<Complex<float>>& lhs, Complex<float> a)
+CudaVector<Complex<float>>& operator*=(CudaVector<Complex<float>>& lhs, Complex<float> a)
 {
     using namespace thrust::placeholders;
     thrust::for_each(thrust::device,
@@ -429,7 +429,7 @@ DeviceVector<Complex<float>>& operator*=(DeviceVector<Complex<float>>& lhs, Comp
     return lhs;
 }
 
-DeviceVector<Complex<float>>& operator/=(DeviceVector<Complex<float>>& lhs, Complex<float> a)
+CudaVector<Complex<float>>& operator/=(CudaVector<Complex<float>>& lhs, Complex<float> a)
 {
     using namespace thrust::placeholders;
     thrust::for_each(thrust::device,
@@ -453,8 +453,8 @@ struct thrust_cplus
     }
 };
 
-DeviceVector<Complex<float>>& operator+=(DeviceVector<Complex<float>>& lhs,
-                                         const DeviceVector<Complex<float>>& rhs)
+CudaVector<Complex<float>>& operator+=(CudaVector<Complex<float>>& lhs,
+                                       const CudaVector<Complex<float>>& rhs)
 {
     if(lhs.size() != rhs.size()) {
         throw std::runtime_error("Inconsistent vector sizes");
@@ -484,8 +484,8 @@ struct thrust_cminus
 };
 
 
-DeviceVector<Complex<float>>& operator-=(DeviceVector<Complex<float>>& lhs,
-                                         const DeviceVector<Complex<float>>& rhs)
+CudaVector<Complex<float>>& operator-=(CudaVector<Complex<float>>& lhs,
+                                       const CudaVector<Complex<float>>& rhs)
 {
     if(lhs.size() != rhs.size()) {
         throw std::runtime_error("Inconsistent vector sizes");
@@ -514,8 +514,8 @@ struct thrust_cmultiplies
     //}
 };
 
-DeviceVector<Complex<float>>& operator*=(DeviceVector<Complex<float>>& lhs,
-                                         const DeviceVector<Complex<float>>& rhs)
+CudaVector<Complex<float>>& operator*=(CudaVector<Complex<float>>& lhs,
+                                       const CudaVector<Complex<float>>& rhs)
 {
     if(lhs.size() != rhs.size()) {
         throw std::runtime_error("Inconsistent vector sizes");
@@ -544,8 +544,8 @@ struct thrust_cdivides
     //}
 };
 
-DeviceVector<Complex<float>>& operator/=(DeviceVector<Complex<float>>& lhs,
-                                         const DeviceVector<Complex<float>>& rhs)
+CudaVector<Complex<float>>& operator/=(CudaVector<Complex<float>>& lhs,
+                                       const CudaVector<Complex<float>>& rhs)
 {
     if(lhs.size() != rhs.size()) {
         throw std::runtime_error("Inconsistent vector sizes");
@@ -560,9 +560,9 @@ DeviceVector<Complex<float>>& operator/=(DeviceVector<Complex<float>>& lhs,
     return lhs;
 }
 
-DeviceVector<float> abs(const DeviceVector<float2>& data)
+CudaVector<float> abs(const CudaVector<float2>& data)
 {
-    DeviceVector<float> res(data.size());
+    CudaVector<float> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),
@@ -572,9 +572,9 @@ DeviceVector<float> abs(const DeviceVector<float2>& data)
     return res;
 }
 
-DeviceVector<float> real(const DeviceVector<float2>& data)
+CudaVector<float> real(const CudaVector<float2>& data)
 {
-    DeviceVector<float> res(data.size());
+    CudaVector<float> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),
@@ -584,9 +584,9 @@ DeviceVector<float> real(const DeviceVector<float2>& data)
     return res;
 }
 
-DeviceVector<float> imag(const DeviceVector<float2>& data)
+CudaVector<float> imag(const CudaVector<float2>& data)
 {
-    DeviceVector<float> res(data.size());
+    CudaVector<float> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),
@@ -596,9 +596,9 @@ DeviceVector<float> imag(const DeviceVector<float2>& data)
     return res;
 }
 
-DeviceVector<float> arg(const DeviceVector<float2>& data)
+CudaVector<float> arg(const CudaVector<float2>& data)
 {
-    DeviceVector<float> res(data.size());
+    CudaVector<float> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),
@@ -608,9 +608,9 @@ DeviceVector<float> arg(const DeviceVector<float2>& data)
     return res;
 }
 
-DeviceVector<float> norm(const DeviceVector<float2>& data)
+CudaVector<float> norm(const CudaVector<float2>& data)
 {
-    DeviceVector<float> res(data.size());
+    CudaVector<float> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),
@@ -620,9 +620,9 @@ DeviceVector<float> norm(const DeviceVector<float2>& data)
     return res;
 }
 
-DeviceVector<float2> conj(const DeviceVector<float2>& data)
+CudaVector<float2> conj(const CudaVector<float2>& data)
 {
-    DeviceVector<float2> res(data.size());
+    CudaVector<float2> res(data.size());
 
     thrust::transform(thrust::device,
                       thrust::device_pointer_cast(data.data()),

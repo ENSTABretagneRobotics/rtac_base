@@ -11,7 +11,7 @@ namespace rtac {
 
 // some forward declarations to avoid hard dependencies
 namespace cuda {
-    template <typename T> class DeviceVector;
+    template <typename T> class CudaVector;
     template <typename T> class PinnedVector;
 } //namespace cuda
 
@@ -21,7 +21,7 @@ namespace display {
 
 /**
  * Wrapper around a std::vector to unify the interface with other rtac vector
- * types such as VectorView or cuda::DeviceVector.
+ * types such as VectorView or cuda::CudaVector.
  */
 template <typename T>
 class HostVector
@@ -96,8 +96,8 @@ class HostVector
     auto view() const { return VectorView<const T>(this->size(), this->data()); }
     auto view()       { return VectorView<T>(this->size(), this->data()); }
 
-    HostVector(const cuda::DeviceVector<T>& other) { *this = other; }
-    HostVector& operator=(const cuda::DeviceVector<T>& other) {
+    HostVector(const cuda::CudaVector<T>& other) { *this = other; }
+    HostVector& operator=(const cuda::CudaVector<T>& other) {
         this->resize(other.size());
         other.copy_to_host(this->data());
         return *this;

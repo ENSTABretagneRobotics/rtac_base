@@ -57,7 +57,7 @@ class Mesh
     MeshType& operator=(MeshType&& other);
     
     // These allows direct copies from RAM to GPU (either to CUDA or OpenGL,
-    // using rtac::cuda::DeviceVector or rtac::display::GLVector respectively)
+    // using rtac::cuda::CudaVector or rtac::display::GLVector respectively)
     template <template<typename>class Vect>
     Mesh(const Mesh<P,F,N,U,Vect>& other) { *this = other; }
     template <template<typename>class OtherVect>

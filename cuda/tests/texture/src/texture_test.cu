@@ -13,10 +13,10 @@ __global__ void do_render(T* output, size_t width, cudaTextureObject_t texObject
 }
 
 template <typename T>
-DeviceVector<T> render(size_t width, size_t height,
+CudaVector<T> render(size_t width, size_t height,
                        const Texture2D<T>& texObject)
 {
-    DeviceVector<T> res(width*height);
+    CudaVector<T> res(width*height);
 
     do_render<T><<<height, 512>>>(res.data(), width, texObject.texture());
     cudaDeviceSynchronize();
@@ -24,14 +24,14 @@ DeviceVector<T> render(size_t width, size_t height,
     return res;
 }
 
-DeviceVector<float> render_texture(size_t width, size_t height,
-                                   const Texture2D<float>& texObject)
+CudaVector<float> render_texture(size_t width, size_t height,
+                                 const Texture2D<float>& texObject)
 {
     return render<float>(width, height, texObject);
 }
 
-DeviceVector<float4> render_texture(size_t width, size_t height,
-                                    const Texture2D<float4>& texObject)
+CudaVector<float4> render_texture(size_t width, size_t height,
+                                  const Texture2D<float4>& texObject)
 {
     return render<float4>(width, height, texObject);
 }

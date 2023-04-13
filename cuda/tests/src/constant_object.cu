@@ -5,7 +5,7 @@ using namespace std;
 #include <rtac_base/types/PODWrapper.h>
 using Pose = rtac::Pose<float>;
 
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/utils.h>
 #include <rtac_base/cuda/DeviceReference.h>
 using namespace rtac::cuda;
 

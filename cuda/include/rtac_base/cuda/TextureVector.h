@@ -6,7 +6,7 @@
 #include <rtac_base/containers/HostVector.h>
 
 #include <rtac_base/cuda/utils.h>
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 
 namespace rtac { namespace cuda {
 
@@ -34,7 +34,7 @@ class TextureVector
 
     protected:
 
-    DeviceVector<T>     data_;
+    CudaVector<T>       data_;
     cudaTextureObject_t textureHandle_;
 
     public:
@@ -43,13 +43,13 @@ class TextureVector
     TextureVector(std::size_t size)                { this->resize(size); }
     TextureVector(std::size_t size, const T* data) { this->set_data(size, data); }
     TextureVector(const TextureVector<T>& other)   { *this = other; }
-    TextureVector(const DeviceVector<T>& other)    { *this = other; }
+    TextureVector(const CudaVector<T>& other)      { *this = other; }
     TextureVector(const HostVector<T>& other)      { *this = other; }
     TextureVector(const std::vector<T>& other)     { *this = other; }
     ~TextureVector() { this->clear(); }
 
     TextureVector<T>& operator=(const TextureVector<T>& other);
-    TextureVector<T>& operator=(const DeviceVector<T>& other);
+    TextureVector<T>& operator=(const CudaVector<T>& other);
     TextureVector<T>& operator=(const HostVector<T>& other);
     TextureVector<T>& operator=(const std::vector<T>& other);
 
@@ -61,7 +61,7 @@ class TextureVector
     std::size_t size() const { return data_.size(); }
     const T*    data() const { return data_.data(); }
           T*    data()       { return data_.data(); }
-    const DeviceVector<T>& container() const { return data_; }
+    const CudaVector<T>& container() const { return data_; }
     TextureVectorView<T> view() const;
 
     void copy_from_host(std::size_t size, const T* data);
@@ -77,7 +77,7 @@ TextureVector<T>& TextureVector<T>::operator=(const TextureVector<T>& other)
 }
 
 template <typename T>
-TextureVector<T>& TextureVector<T>::operator=(const DeviceVector<T>& other)
+TextureVector<T>& TextureVector<T>::operator=(const CudaVector<T>& other)
 {
     data_ = other;
     this->update_texture_handle();

@@ -4,7 +4,7 @@ using namespace std;
 #include <rtac_base/containers/ScaledImage.h>
 using namespace rtac;
 
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 using namespace rtac::cuda;
 
 template <typename D>
@@ -55,15 +55,15 @@ int main()
 
     auto img1 = make_scaled_image(img0.width_dim(),
                                   img0.height_dim(),
-                                  DeviceVector<float>(img0.container()));
+                                  CudaVector<float>(img0.container()));
     global_process<<<1,1>>>(img1.view());
     cudaDeviceSynchronize();
     img0.container() = img1.container();
     print(img0);
 
     auto img2 = make_scaled_image(
-        make_array_dim(DeviceVector<float>::linspace(0.0f, 2.0f, W), {0.0f,2.0f}),
-        img0.height_dim(), DeviceVector<float>(img0.container()));
+        make_array_dim(CudaVector<float>::linspace(0.0f, 2.0f, W), {0.0f,2.0f}),
+        img0.height_dim(), CudaVector<float>(img0.container()));
     global_process<<<1,1>>>(img2.view());
     cudaDeviceSynchronize();
     img0.container() = img2.container();

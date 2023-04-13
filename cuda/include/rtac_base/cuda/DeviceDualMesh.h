@@ -2,7 +2,7 @@
 #define _DEF_RTAC_BASE_TYPES_DEVICE_DUAL_MESH_H_
 
 #include <rtac_base/types/DualMesh.h>
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 #include <rtac_base/cuda/DeviceMesh.h>
 
 namespace rtac {
@@ -25,9 +25,9 @@ class DualMesh<cuda::DeviceMesh<>>
 
     protected:
 
-    cuda::DeviceVector<Point> points_;
-    cuda::DeviceVector<Edge>  edges_;
-    cuda::DeviceVector<Face>  faces_; // these are
+    cuda::CudaVector<Point> points_;
+    cuda::CudaVector<Edge>  edges_;
+    cuda::CudaVector<Face>  faces_; // these are
 
     void reserve(unsigned int pointCount, 
                  unsigned int faceCount,
@@ -43,9 +43,9 @@ class DualMesh<cuda::DeviceMesh<>>
 
     cuda::DeviceMesh<>::Ptr create_mesh();
 
-    const cuda::DeviceVector<Point>& points() const { return points_; }
-    const cuda::DeviceVector<Edge>&  edges()  const { return edges_;  }
-    const cuda::DeviceVector<Face>&  faces()  const { return faces_;  }
+    const cuda::CudaVector<Point>& points() const { return points_; }
+    const cuda::CudaVector<Edge>&  edges()  const { return edges_;  }
+    const cuda::CudaVector<Face>&  faces()  const { return faces_;  }
 };
 
 namespace cuda {

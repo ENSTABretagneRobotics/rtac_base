@@ -5,7 +5,7 @@ using namespace std;
 #include <rtac_base/containers/Image.h>
 using namespace rtac;
 
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 #include <rtac_base/cuda/Texture2D.h>
 #include <rtac_base/cuda/texture_utils.h>
 using namespace rtac::cuda;
@@ -34,7 +34,7 @@ void write_image(const Image<float2>& img)
 int main()
 {
     auto tex = Texture2D<float2>::checkerboard(512,512,{1,0},{0,1});
-    Image<float2,DeviceVector> img(tex.width(), tex.height());
+    Image<float2,CudaVector> img(tex.width(), tex.height());
     render_texture(tex, img.view());
 
     //Image<float2,HostVector> himg(img);

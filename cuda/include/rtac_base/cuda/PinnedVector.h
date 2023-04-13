@@ -15,7 +15,7 @@ namespace rtac { namespace display {
 namespace rtac { namespace cuda {
 
 template <typename T>
-class DeviceVector;
+class CudaVector;
 
 template <typename T>
 class PinnedVector
@@ -50,7 +50,7 @@ class PinnedVector
     PinnedVector(std::size_t size);
     PinnedVector(const PinnedVector<T>& other);
     PinnedVector(const HostVector<T>& other);
-    PinnedVector(const DeviceVector<T>& other);
+    PinnedVector(const CudaVector<T>& other);
     PinnedVector(const std::vector<T>& other);
     ~PinnedVector();
 
@@ -64,7 +64,7 @@ class PinnedVector
     
     PinnedVector& operator=(const PinnedVector<T>& other);
     PinnedVector& operator=(const HostVector<T>& other);
-    PinnedVector& operator=(const DeviceVector<T>& other);
+    PinnedVector& operator=(const CudaVector<T>& other);
     PinnedVector& operator=(const std::vector<T>& other);
 
     void resize(std::size_t size);
@@ -133,7 +133,7 @@ PinnedVector<T>::PinnedVector(const HostVector<T>& other) :
 }
 
 template <typename T> inline
-PinnedVector<T>::PinnedVector(const DeviceVector<T>& other) :
+PinnedVector<T>::PinnedVector(const CudaVector<T>& other) :
     PinnedVector(other.size())
 {
     *this = other;
@@ -213,7 +213,7 @@ PinnedVector<T>& PinnedVector<T>::operator=(const HostVector<T>& other)
 }
 
 template <typename T> inline
-PinnedVector<T>& PinnedVector<T>::operator=(const DeviceVector<T>& other)
+PinnedVector<T>& PinnedVector<T>::operator=(const CudaVector<T>& other)
 {
     this->copy_from_cuda(other.size(), other.data());
     return *this;

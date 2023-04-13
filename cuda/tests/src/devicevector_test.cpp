@@ -3,8 +3,8 @@ using namespace std;
 
 #include <rtac_base/containers/HostVector.h>
 using HostVector = rtac::HostVector<float>;
-#include <rtac_base/cuda/DeviceVector.h>
-using DeviceVector = rtac::cuda::DeviceVector<float>;
+#include <rtac_base/cuda/CudaVector.h>
+using CudaVector = rtac::cuda::CudaVector<float>;
 
 std::vector<float> new_vector(size_t size)
 {
@@ -21,10 +21,10 @@ int main()
     int N = 10;
     auto v0 = new_vector(N);
 
-    HostVector   vh0(v0);
-    DeviceVector vd0(v0);
-    HostVector   vh1(vd0);
-    DeviceVector vd1(vh0);
+    HostVector vh0(v0);
+    CudaVector vd0(v0);
+    HostVector vh1(vd0);
+    CudaVector vd1(vh0);
 
     cout << "vh0 : " << vh0 << endl;
     cout << "vd0 : " << vd0 << endl;

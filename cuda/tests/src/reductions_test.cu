@@ -6,10 +6,10 @@ using namespace std;
 using namespace rtac::time;
 
 #include <rtac_base/cuda/reductions.hcu>
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 using namespace rtac::cuda;
 
-DeviceVector<unsigned int> image_data(unsigned int W, unsigned int H)
+CudaVector<unsigned int> image_data(unsigned int W, unsigned int H)
 {
     std::vector<unsigned int> data(W*H);
     for(int h = 0; h < H; h++) {
@@ -27,7 +27,7 @@ int main()
 
     Clock clock;
 
-    DeviceVector<float> inF(std::vector<float>(N, 1));
+    CudaVector<float> inF(std::vector<float>(N, 1));
     
     clock.reset();
     for(int l = 0; l < L; l++) {
@@ -37,13 +37,13 @@ int main()
     std::cout << "Ellapsed : " << 1000.0*t0 / L << "ms" << std::endl;
     cout << inF << endl;
 
-    DeviceVector<unsigned int> inU(std::vector<unsigned int>(N, 1));
+    CudaVector<unsigned int> inU(std::vector<unsigned int>(N, 1));
     device::reduce(inU.data(), inU.data(), N);
     cout << inU << endl;
     
     unsigned int W = 111111, H = 9;
     auto img = image_data(W,H);
-    DeviceVector<unsigned int> output(H);
+    CudaVector<unsigned int> output(H);
     device::reduce_lines(img.data(), output.data(), W, H);
     cout << output << endl;
 

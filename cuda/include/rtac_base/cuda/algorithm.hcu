@@ -9,7 +9,7 @@
 
 #include <rtac_base/cuda_defines.h>
 #include <rtac_base/containers/VectorView.h>
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 #include <rtac_base/cuda/PinnedVector.h>
 
 namespace rtac { namespace cuda {
@@ -64,20 +64,20 @@ class Binning
 
     template <typename T, class Criterion,
               unsigned int BlockSize = 1024>
-    void compute_keys(const DeviceVector<T>& data, PinnedVector<int>& keys, 
+    void compute_keys(const CudaVector<T>& data, PinnedVector<int>& keys, 
                       const Criterion& criterion) const;
     
     template <typename T, class Criterion,
               unsigned int BlockSize = 1024>
-    void operator()(DeviceVector<T>& data,
+    void operator()(CudaVector<T>& data,
                     std::size_t binCount,
                     const Criterion& criterion,
-                    DeviceVector<rtac::VectorView<T>>& bins,
+                    CudaVector<rtac::VectorView<T>>& bins,
                     int binOverlap = 0) const;
 
     template <typename T, class Criterion,
               unsigned int BlockSize = 1024>
-    void operator()(DeviceVector<T>& data,
+    void operator()(CudaVector<T>& data,
                     std::size_t binCount,
                     const Criterion& criterion,
                     PinnedVector<rtac::VectorView<T>>& bins,
@@ -91,12 +91,12 @@ class Binning
  * object and reuse it instead.
  */ 
 template <typename T, class Criterion, unsigned int BlockSize = 1024>
-inline DeviceVector<rtac::VectorView<T>> binning(DeviceVector<T>& data,
+inline CudaVector<rtac::VectorView<T>> binning(CudaVector<T>& data,
                                                   std::size_t binCount,
                                                   Criterion criterion,
                                                   int binOverlap = 0)
 {
-    DeviceVector<rtac::VectorView<T>> bins;
+    CudaVector<rtac::VectorView<T>> bins;
     Binning().operator()(data, binCount, criterion, bins, binOverlap);
     return bins;
 }
@@ -117,7 +117,7 @@ __global__ void compute_keys(rtac::VectorView<const T> data,
 };
 
 template <typename T, class Criterion, unsigned int BlockSize>
-void Binning::compute_keys(const DeviceVector<T>& data, 
+void Binning::compute_keys(const CudaVector<T>& data, 
                            PinnedVector<int>& keys,
                            const Criterion& criterion) const
 {
@@ -128,10 +128,10 @@ void Binning::compute_keys(const DeviceVector<T>& data,
 }
 
 template <typename T, class Criterion, unsigned int BlockSize>
-void Binning::operator()(DeviceVector<T>& data,
+void Binning::operator()(CudaVector<T>& data,
                          std::size_t binCount,
                          const Criterion& criterion,
-                         DeviceVector<rtac::VectorView<T>>& bins,
+                         CudaVector<rtac::VectorView<T>>& bins,
                          int binOverlap) const
 {
     // Generating key for each data element and sorting data according to this
@@ -183,7 +183,7 @@ void Binning::operator()(DeviceVector<T>& data,
 }
 
 template <typename T, class Criterion, unsigned int BlockSize>
-void Binning::operator()(DeviceVector<T>& data,
+void Binning::operator()(CudaVector<T>& data,
                          std::size_t binCount,
                          const Criterion& criterion,
                          PinnedVector<rtac::VectorView<T>>& bins,

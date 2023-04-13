@@ -10,7 +10,7 @@
 #include <rtac_base/containers/HostVector.h>
 
 #include <rtac_base/cuda/utils.h>
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 #include <rtac_base/cuda/TextureView2D.h>
 
 #include <rtac_base/external/ImageCodec.h>
@@ -74,7 +74,7 @@ class Texture2D
     void allocate_data(uint32_t width, uint32_t height);
     void resize(uint32_t width, uint32_t height) { this->allocate_data(width, height); }
     void set_image(uint32_t width, uint32_t height, const T* data);
-    void set_image(uint32_t width, uint32_t height, const DeviceVector<T>& data);
+    void set_image(uint32_t width, uint32_t height, const CudaVector<T>& data);
     void set_subimage(uint32_t width,   uint32_t height, 
                       uint32_t wOffset, uint32_t hOffset, 
                       const T* data);
@@ -321,7 +321,7 @@ void Texture2D<T>::set_image(uint32_t width, uint32_t height, const T* data)
 
 template <typename T>
 void Texture2D<T>::set_image(uint32_t width, uint32_t height,
-                             const DeviceVector<T>& data)
+                             const CudaVector<T>& data)
 {
     if(data.size() < width*height) {
         std::ostringstream oss;

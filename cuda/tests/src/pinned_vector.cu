@@ -2,7 +2,7 @@
 using namespace std;
 
 #include <rtac_base/cuda/PinnedVector.h>
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 using namespace rtac::cuda;
 using namespace rtac;
 
@@ -20,7 +20,7 @@ int main()
     fill_vector<<<1,512>>>(p0.view());
     cout << p0 << endl;
 
-    DeviceVector<int> d0(10);
+    CudaVector<int> d0(10);
     fill_vector<<<1,512>>>(d0.view(),10);
     p0 = d0;
     cout << p0 << endl;

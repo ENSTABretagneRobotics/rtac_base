@@ -5,7 +5,7 @@ using namespace std;
 #include <rtac_base/containers/Image.h>
 using namespace rtac;
 
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 using namespace rtac::cuda;
 
 template <typename T, template<typename>class C>
@@ -33,7 +33,7 @@ int main()
         }
     }
 
-    Image<unsigned int, DeviceVector> dimg;
+    Image<unsigned int, CudaVector> dimg;
     dimg = img;
 
     // Does not work (as expected)

@@ -8,7 +8,7 @@ endif()
 list(APPEND rtac_cuda_headers
     include/rtac_base/cuda/utils.h
     include/rtac_base/cuda/geometry.h
-    include/rtac_base/cuda/DeviceVector.h
+    include/rtac_base/cuda/CudaVector.h
     include/rtac_base/cuda/TextureVector.h
     include/rtac_base/cuda/TextureDim.h
     include/rtac_base/cuda/PinnedVector.h

@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 #include <rtac_base/cuda/Texture2D.h>
 #include <rtac_base/cuda/TextureView2D.h>
 using namespace rtac::cuda;
@@ -26,7 +26,7 @@ int main()
     Texture2D<float> texData;
     texData.set_image(data.size(), 1, data.data());
 
-    DeviceVector<float> output(16);
+    CudaVector<float> output(16);
     render_texture<<<1,16>>>(output.data(), texData.view1d());
     cudaDeviceSynchronize();
     cout << endl;

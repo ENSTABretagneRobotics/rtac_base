@@ -6,7 +6,7 @@ using namespace std;
 #include <rtac_base/files.h>
 using namespace rtac::files;
 
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 #include <rtac_base/cuda/Texture2D.h>
 using namespace rtac;
 using namespace rtac::cuda;

@@ -158,7 +158,7 @@ __global__ void make_faces(VectorView<uint3> faces,
 cuda::DeviceMesh<>::Ptr DualMesh<cuda::DeviceMesh<>>::create_mesh()
 {
     auto mesh = cuda::DeviceMesh<>::Create();
-    cuda::DeviceVector<uint3> faces(faces_.size());
+    cuda::CudaVector<uint3> faces(faces_.size());
 
     make_faces<<<faces.size() / 256 + 1, 256>>>(faces.view(),
                                                 faces_.view(),

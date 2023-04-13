@@ -2,7 +2,6 @@
 using namespace std;
 
 #include <rtac_base/containers/HostVector.h>
-#include <rtac_base/cuda/DeviceVector.h>
 #include <rtac_base/cuda/TextureVector.h>
 using namespace rtac;
 using namespace rtac::cuda;

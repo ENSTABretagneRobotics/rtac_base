@@ -4,67 +4,67 @@
 #include <limits>
 
 #include <rtac_base/types/Complex.h>
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 
 namespace rtac { namespace cuda {
 
-float sum(const DeviceVector<float>& data, float initial = 0.0f);
-float min(const DeviceVector<float>& data,
+float sum(const CudaVector<float>& data, float initial = 0.0f);
+float min(const CudaVector<float>& data,
           float initial = std::numeric_limits<float>::max());
-float max(const DeviceVector<float>& data,
+float max(const CudaVector<float>& data,
           float initial = std::numeric_limits<float>::min());
-float range(const DeviceVector<float>& data);
+float range(const CudaVector<float>& data);
 
-DeviceVector<float>& abs(DeviceVector<float>& data);
-DeviceVector<float> sqrt(const DeviceVector<float>& data);
-DeviceVector<float> log(DeviceVector<float>& data);
+CudaVector<float>& abs(CudaVector<float>& data);
+CudaVector<float> sqrt(const CudaVector<float>& data);
+CudaVector<float> log(CudaVector<float>& data);
 
-DeviceVector<float>&  rescale(DeviceVector<float>& data,
+CudaVector<float>&  rescale(CudaVector<float>& data,
                               float minValue = 0.0f, float maxValue = 1.0f);
 
-DeviceVector<float>& operator+=(DeviceVector<float>& lhs, float a);
-DeviceVector<float>& operator-=(DeviceVector<float>& lhs, float a);
-DeviceVector<float>& operator*=(DeviceVector<float>& lhs, float a);
-DeviceVector<float>& operator/=(DeviceVector<float>& lhs, float a);
+CudaVector<float>& operator+=(CudaVector<float>& lhs, float a);
+CudaVector<float>& operator-=(CudaVector<float>& lhs, float a);
+CudaVector<float>& operator*=(CudaVector<float>& lhs, float a);
+CudaVector<float>& operator/=(CudaVector<float>& lhs, float a);
 
-DeviceVector<float>& operator+=(DeviceVector<float>& lhs, const DeviceVector<float>& rhs);
-DeviceVector<float>& operator-=(DeviceVector<float>& lhs, const DeviceVector<float>& rhs);
-DeviceVector<float>& operator*=(DeviceVector<float>& lhs, const DeviceVector<float>& rhs);
-DeviceVector<float>& operator/=(DeviceVector<float>& lhs, const DeviceVector<float>& rhs);
+CudaVector<float>& operator+=(CudaVector<float>& lhs, const CudaVector<float>& rhs);
+CudaVector<float>& operator-=(CudaVector<float>& lhs, const CudaVector<float>& rhs);
+CudaVector<float>& operator*=(CudaVector<float>& lhs, const CudaVector<float>& rhs);
+CudaVector<float>& operator/=(CudaVector<float>& lhs, const CudaVector<float>& rhs);
 
-DeviceVector<float>          abs (const DeviceVector<Complex<float>>& data);
-DeviceVector<float>          real(const DeviceVector<Complex<float>>& data);
-DeviceVector<float>          imag(const DeviceVector<Complex<float>>& data);
-DeviceVector<float>          arg (const DeviceVector<Complex<float>>& data);
-DeviceVector<float>          norm(const DeviceVector<Complex<float>>& data);
-DeviceVector<Complex<float>> conj(const DeviceVector<Complex<float>>& data);
-DeviceVector<Complex<float>> to_complex(const DeviceVector<float>& data);
+CudaVector<float>          abs (const CudaVector<Complex<float>>& data);
+CudaVector<float>          real(const CudaVector<Complex<float>>& data);
+CudaVector<float>          imag(const CudaVector<Complex<float>>& data);
+CudaVector<float>          arg (const CudaVector<Complex<float>>& data);
+CudaVector<float>          norm(const CudaVector<Complex<float>>& data);
+CudaVector<Complex<float>> conj(const CudaVector<Complex<float>>& data);
+CudaVector<Complex<float>> to_complex(const CudaVector<float>& data);
 
-DeviceVector<Complex<float>>& operator+=(DeviceVector<Complex<float>>& lhs, float a);
-DeviceVector<Complex<float>>& operator-=(DeviceVector<Complex<float>>& lhs, float a);
-DeviceVector<Complex<float>>& operator*=(DeviceVector<Complex<float>>& lhs, float a);
-DeviceVector<Complex<float>>& operator/=(DeviceVector<Complex<float>>& lhs, float a);
+CudaVector<Complex<float>>& operator+=(CudaVector<Complex<float>>& lhs, float a);
+CudaVector<Complex<float>>& operator-=(CudaVector<Complex<float>>& lhs, float a);
+CudaVector<Complex<float>>& operator*=(CudaVector<Complex<float>>& lhs, float a);
+CudaVector<Complex<float>>& operator/=(CudaVector<Complex<float>>& lhs, float a);
 
-DeviceVector<Complex<float>>& operator+=(DeviceVector<Complex<float>>& lhs, Complex<float> a);
-DeviceVector<Complex<float>>& operator-=(DeviceVector<Complex<float>>& lhs, Complex<float> a);
-DeviceVector<Complex<float>>& operator*=(DeviceVector<Complex<float>>& lhs, Complex<float> a);
-DeviceVector<Complex<float>>& operator/=(DeviceVector<Complex<float>>& lhs, Complex<float> a);
+CudaVector<Complex<float>>& operator+=(CudaVector<Complex<float>>& lhs, Complex<float> a);
+CudaVector<Complex<float>>& operator-=(CudaVector<Complex<float>>& lhs, Complex<float> a);
+CudaVector<Complex<float>>& operator*=(CudaVector<Complex<float>>& lhs, Complex<float> a);
+CudaVector<Complex<float>>& operator/=(CudaVector<Complex<float>>& lhs, Complex<float> a);
 
-DeviceVector<Complex<float>>& operator+=(DeviceVector<Complex<float>>& lhs,
-                                         const DeviceVector<Complex<float>>& rhs);
-DeviceVector<Complex<float>>& operator-=(DeviceVector<Complex<float>>& lhs,
-                                         const DeviceVector<Complex<float>>& rhs);
-DeviceVector<Complex<float>>& operator*=(DeviceVector<Complex<float>>& lhs,
-                                         const DeviceVector<Complex<float>>& rhs);
-DeviceVector<Complex<float>>& operator/=(DeviceVector<Complex<float>>& lhs,
-                                         const DeviceVector<Complex<float>>& rhs);
+CudaVector<Complex<float>>& operator+=(CudaVector<Complex<float>>& lhs,
+                                         const CudaVector<Complex<float>>& rhs);
+CudaVector<Complex<float>>& operator-=(CudaVector<Complex<float>>& lhs,
+                                         const CudaVector<Complex<float>>& rhs);
+CudaVector<Complex<float>>& operator*=(CudaVector<Complex<float>>& lhs,
+                                         const CudaVector<Complex<float>>& rhs);
+CudaVector<Complex<float>>& operator/=(CudaVector<Complex<float>>& lhs,
+                                         const CudaVector<Complex<float>>& rhs);
 
-DeviceVector<float>  abs (const DeviceVector<float2>& data);
-DeviceVector<float>  real(const DeviceVector<float2>& data);
-DeviceVector<float>  imag(const DeviceVector<float2>& data);
-DeviceVector<float>  arg (const DeviceVector<float2>& data);
-DeviceVector<float>  norm(const DeviceVector<float2>& data);
-DeviceVector<float2> conj(const DeviceVector<float2>& data);
+CudaVector<float>  abs (const CudaVector<float2>& data);
+CudaVector<float>  real(const CudaVector<float2>& data);
+CudaVector<float>  imag(const CudaVector<float2>& data);
+CudaVector<float>  arg (const CudaVector<float2>& data);
+CudaVector<float>  norm(const CudaVector<float2>& data);
+CudaVector<float2> conj(const CudaVector<float2>& data);
 
 } // namespace cuda
 } // namespace rtac

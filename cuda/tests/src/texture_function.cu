@@ -7,7 +7,7 @@ using namespace std;
 #include <rtac_base/containers/ScaledImage.h>
 using namespace rtac;
 
-#include <rtac_base/cuda/DeviceVector.h>
+#include <rtac_base/cuda/CudaVector.h>
 #include <rtac_base/cuda/TextureFunction2D.h>
 using namespace rtac::cuda;
 
@@ -45,7 +45,7 @@ int main()
     unsigned int W = 32, H = 32;
     auto dst = make_scaled_image(LinearDim(2*W, {-1.0f,1.0f}),
                                  LinearDim(2*H, {-1.0f,1.0f}),
-                                 DeviceVector<float>(4*W*H));
+                                 CudaVector<float>(4*W*H));
     auto srcData = Texture2D<float>::checkerboard(W,H,0.0f,1.0f);
     srcData.set_filter_mode(Texture2D<float>::FilterLinear);
 
