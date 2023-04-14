@@ -6,36 +6,37 @@
 #include <rtac_base/types/Bounds.h>
 #include <rtac_base/types/Linspace.h>
 #include <rtac_base/containers/HostVector.h>
+#include <rtac_base/containers/VectorView.h>
 
 namespace rtac {
 
 template <class Derived>
 struct PingExpression2D
 {
-    const Derived* cast() const { return static_cast<const Derived*>(this); }
-          Derived* cast()       { return static_cast<Derived*>(this);       }
+    RTAC_HD_GENERIC const Derived* cast() const { return static_cast<const Derived*>(this); }
+    RTAC_HD_GENERIC       Derived* cast()       { return static_cast<Derived*>(this);       }
 
-    unsigned int bearing_count()    const { return this->cast()->bearing_count(); }
-    float        bearing_min()      const { return this->cast()->bearing_min();   }
-    float        bearing_max()      const { return this->cast()->bearing_max();   }
-    float bearing(unsigned int idx) const { return this->cast()->bearing(idx);    }
+    RTAC_HD_GENERIC unsigned int bearing_count()    const { return this->cast()->bearing_count(); }
+    RTAC_HD_GENERIC float        bearing_min()      const { return this->cast()->bearing_min();   }
+    RTAC_HD_GENERIC float        bearing_max()      const { return this->cast()->bearing_max();   }
+    RTAC_HD_GENERIC float bearing(unsigned int idx) const { return this->cast()->bearing(idx);    }
 
-    unsigned int range_count()    const { return this->cast()->range_count(); }
-    float        range_min()      const { return this->cast()->range_min();   }
-    float        range_max()      const { return this->cast()->range_max();   }
-    float range(unsigned int idx) const { return this->cast()->range(idx);    }
+    RTAC_HD_GENERIC unsigned int range_count()    const { return this->cast()->range_count(); }
+    RTAC_HD_GENERIC float        range_min()      const { return this->cast()->range_min();   }
+    RTAC_HD_GENERIC float        range_max()      const { return this->cast()->range_max();   }
+    RTAC_HD_GENERIC float range(unsigned int idx) const { return this->cast()->range(idx);    }
 
-    const auto* ping_data() const { return this->cast()->ping_data(); }
-          auto* ping_data()       { return this->cast()->ping_data(); }
+    RTAC_HD_GENERIC const auto* ping_data() const { return this->cast()->ping_data(); }
+    RTAC_HD_GENERIC       auto* ping_data()       { return this->cast()->ping_data(); }
 
-    const auto& operator()(unsigned int r, unsigned int b) const { 
+    RTAC_HD_GENERIC const auto& operator()(unsigned int r, unsigned int b) const { 
         return this->ping_data()[this->bearing_count()*r + b];
     }
-    auto& operator()(unsigned int r, unsigned int b) { 
+    RTAC_HD_GENERIC auto& operator()(unsigned int r, unsigned int b) { 
         return this->ping_data()[this->bearing_count()*r + b];
     }
-    unsigned int width()  const { return this->bearing_count(); }
-    unsigned int height() const { return this->range_count();   }
+    RTAC_HD_GENERIC unsigned int width()  const { return this->bearing_count(); }
+    RTAC_HD_GENERIC unsigned int height() const { return this->range_count();   }
 };
 
 
@@ -77,33 +78,62 @@ class Ping2D : public PingExpression2D<Ping2D<T, VectorT>>
     {}
 
     template <template<typename>class VectorT2>
+    Ping2D(const Linspace<float>& ranges,
+           const VectorT2<float>& bearings,
+           const Bounds<float>& bearingBounds,
+           const VectorT2<float>& pingData) :
+        ranges_(ranges),
+        bearingBounds_(bearingBounds),
+        bearingCount_(bearings.size()),
+        bearings_(bearings),
+        pingData_(pingData)
+    {}
+
+    template <template<typename>class VectorT2>
     Ping2D(const Ping2D<T, VectorT2>& other) :
         ranges_(other.ranges()),
         bearingBounds_(other.bearing_min(), other.bearing_max()),
         bearingCount_(other.bearing_count()),
         bearings_(other.bearings()),
-        pingData_(other.ping_container())
+        pingData_(other.ping_data_container())
     {}
 
-    const VectorT<float>& bearings() const { return bearings_;            }
-    const Bounds<float>& bearing_bounds() const { return bearingBounds_; }
-    unsigned int bearing_count()     const { return bearings_.size();     }
-    float        bearing_min()       const { return bearingBounds_.lower; }
-    float        bearing_max()       const { return bearingBounds_.upper; }
-    float bearing(unsigned int idx)  const { return bearings_[idx];       }
+    RTAC_HD_GENERIC const VectorT<float>& bearings() const { return bearings_;            }
+    RTAC_HD_GENERIC unsigned int bearing_count()     const { return bearings_.size();     }
+    RTAC_HD_GENERIC float        bearing_min()       const { return bearingBounds_.lower; }
+    RTAC_HD_GENERIC float        bearing_max()       const { return bearingBounds_.upper; }
+    RTAC_HD_GENERIC float bearing(unsigned int idx)  const { return bearings_[idx];       }
+    RTAC_HD_GENERIC const Bounds<float>& bearing_bounds() const { return bearingBounds_; }
+ 
+    RTAC_HD_GENERIC const Linspace<float>& ranges() const { return ranges_;         }
+    RTAC_HD_GENERIC unsigned int range_count()      const { return ranges_.size();  }
+    RTAC_HD_GENERIC float        range_min()        const { return ranges_.lower(); }
+    RTAC_HD_GENERIC float        range_max()        const { return ranges_.upper(); }
+    RTAC_HD_GENERIC float range(unsigned int idx)   const { return ranges_[idx];    }
+    RTAC_HD_GENERIC const Bounds<float>& range_bounds() const { return ranges_.bounds(); }
 
-    const Linspace<float>& ranges() const { return ranges_;         }
-    unsigned int range_count()      const { return ranges_.size();  }
-    float        range_min()        const { return ranges_.lower(); }
-    float        range_max()        const { return ranges_.upper(); }
-    float range(unsigned int idx)   const { return ranges_[idx];    }
+    RTAC_HD_GENERIC const T* ping_data() const { return pingData_.data(); }
+    RTAC_HD_GENERIC       T* ping_data()       { return pingData_.data(); }
 
-    const T* ping_data() const { return pingData_.data(); }
-          T* ping_data()       { return pingData_.data(); }
+    RTAC_HD_GENERIC const VectorT<T>& ping_data_container() const { return pingData_; }
+    RTAC_HD_GENERIC       VectorT<T>& ping_data_container()       { return pingData_; }
 
-    const VectorT<T>& ping_container() const { return pingData_; }
-          VectorT<T>& ping_container()       { return pingData_; }
+    RTAC_HD_GENERIC Ping2D<T,ConstVectorView> view() const {
+        return Ping2D<T,ConstVectorView>(ranges_,
+                                         bearings_.view(),
+                                         bearingBounds_,
+                                         pingData_.view());
+    }
+    RTAC_HD_GENERIC Ping2D<T,VectorView> view() {
+        return Ping2D<T,VectorView>(ranges_,
+                                    bearings_.view(),
+                                    bearingBounds_,
+                                    pingData_.view());
+    }
 };
+
+template <typename T> using PingView2D      = Ping2D<T,VectorView>;
+template <typename T> using PingConstView2D = Ping2D<T,ConstVectorView>;
 
 } //namespace rtac
 

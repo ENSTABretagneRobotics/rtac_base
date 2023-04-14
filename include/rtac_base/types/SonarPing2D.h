@@ -1,5 +1,5 @@
-#ifndef _DEF_RTAC_BASE_TYPES_SONAR_PING_H_
-#define _DEF_RTAC_BASE_TYPES_SONAR_PING_H_
+#ifndef _DEF_RTAC_BASE_TYPES_SONAR_PING_2D_H_
+#define _DEF_RTAC_BASE_TYPES_SONAR_PING_2D_H_
 
 #include <rtac_base/types/Shape.h>
 #include <rtac_base/types/Bounds.h>

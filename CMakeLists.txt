@@ -45,6 +45,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/PointCloud.h
     include/rtac_base/types/Mesh.h
     include/rtac_base/types/SonarPing2D.h
+    include/rtac_base/types/SonarPing.h
     include/rtac_base/types/Edge.h
     include/rtac_base/types/DualMesh.h
 
