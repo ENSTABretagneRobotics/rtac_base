@@ -56,6 +56,63 @@ struct Ref
     const T* get() const { return deviceData_; }
 };
 
+/**
+ * This act in host code as a const reference to an element in cuda global
+ * memory.
+ *
+ * This is a very inefficient way of accessing device data. Use with care.
+ */
+template <typename T>
+class ConstGlobalRef
+{
+    protected:
+
+    const T* ptr_; // pointer to element in cuda global memory
+
+    public:
+    
+    ConstGlobalRef() = delete;
+    ConstGlobalRef(const T* ptr) : ptr_(ptr) {}
+
+    operator T() const {
+        T res;
+        cudaMemcpy(&res, ptr_, sizeof(T), cudaMemcpyDeviceToHost);
+        return res;
+    }
+    const T* ptr()       const { return ptr_; }
+    const T* operator&() const { return ptr_; }
+};
+
+
+/**
+ * This act in host code as a mutable reference to an element in cuda global
+ * memory.
+ *
+ * This is a very inefficient way of accessing device data. Use with care.
+ */
+template <typename T>
+class GlobalRef : public ConstGlobalRef<T>
+{
+    public:
+
+    GlobalRef() = delete;
+    GlobalRef(const GlobalRef<T>&) = default;
+
+    GlobalRef(T* ptr) : ConstGlobalRef<T>(ptr) {}
+    GlobalRef(const ConstGlobalRef<T>& other) : ConstGlobalRef<T>(other) {}
+
+    T* ptr()       { return const_cast<T*>(this->ptr_); }
+    T* operator&() { return const_cast<T*>(this->ptr_); }
+
+    GlobalRef& operator=(T other) {
+        cudaMemcpy(this->ptr(), &other, sizeof(T), cudaMemcpyHostToDevice);
+        return *this;
+    }
+    GlobalRef& operator=(const ConstGlobalRef<T>& other) {
+        cudaMemcpy(this->ptr(), other.ptr(), sizeof(T), cudaMemcpyDeviceToDevice);
+        return *this;
+    }
+};
 
 // CUDA 11.2+ only.
 //template <class T>

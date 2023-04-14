@@ -65,5 +65,12 @@ int main()
     cout << "vh1 : " << vh1.data() << endl;
     cout << "vd1 : " << vd1.data() << endl;
 
+    for(unsigned int i = 0; i < vd1.size(); i++) {
+        vd1[i] = 10*vd1[i];
+    }
+    vd1.front() = vd1.front() + 1;
+    vd1.back()  = vd1.back()  + 1;
+    cout << "vd1 : " << vd1 << endl;
+
     return 0;
 }

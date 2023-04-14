@@ -7,6 +7,7 @@
 #include <rtac_base/containers/VectorView.h>
 #include <rtac_base/containers/HostVector.h>
 #include <rtac_base/cuda/utils.h>
+#include <rtac_base/cuda/DeviceReference.h>
 
 namespace rtac { namespace display {
     template <typename T> class GLVector;
@@ -82,6 +83,13 @@ class CudaVector
     const T* cend() const   { return data_ + size_; }
     const T* end()  const   { return data_ + size_; }
           T* end()          { return data_ + size_; }
+
+    GlobalRef<T>      operator[](std::size_t idx);
+    ConstGlobalRef<T> operator[](std::size_t idx) const;
+    GlobalRef<T>      front();
+    GlobalRef<T>      back();
+    ConstGlobalRef<T> front() const;
+    ConstGlobalRef<T> back()  const;
 
     auto const_view() const { return this->view();                                    }
     auto view()       const { return VectorView<const T>(this->size(), this->data()); }
@@ -243,6 +251,43 @@ void CudaVector<T>::resize(std::size_t size)
         this->allocate(size);
     size_ = size;
 }
+
+template <typename T> inline
+GlobalRef<T> CudaVector<T>::operator[](std::size_t idx)
+{
+    return GlobalRef<T>(data_ + idx);
+}
+
+template <typename T> inline
+ConstGlobalRef<T> CudaVector<T>::operator[](std::size_t idx) const
+{
+    return ConstGlobalRef<T>(data_ + idx);
+}
+
+template <typename T> inline
+GlobalRef<T> CudaVector<T>::front()
+{
+    return GlobalRef<T>(data_);
+}
+
+template <typename T> inline
+GlobalRef<T> CudaVector<T>::back()
+{
+    return GlobalRef<T>(data_ + size_ - 1);
+}
+
+template <typename T> inline
+ConstGlobalRef<T> CudaVector<T>::front() const
+{
+    return ConstGlobalRef<T>(data_);
+}
+
+template <typename T> inline
+ConstGlobalRef<T> CudaVector<T>::back() const
+{
+    return ConstGlobalRef<T>(data_ + size_ - 1);
+}
+
 
 }; //namespace cuda
 }; //namespace rtac
