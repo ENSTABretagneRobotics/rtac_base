@@ -93,7 +93,8 @@ class HostVector
     const T& front() const { return data_.front(); }
     const T& back()  const { return data_.back();  }
 
-    auto view() const { return VectorView<const T>(this->size(), this->data()); }
+    //auto view() const { return VectorView<const T>(this->size(), this->data()); }
+    auto view() const { return ConstVectorView<T>(this->size(), this->data()); }
     auto view()       { return VectorView<T>(this->size(), this->data()); }
 
     HostVector(const cuda::CudaVector<T>& other) { *this = other; }

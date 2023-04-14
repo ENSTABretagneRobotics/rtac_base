@@ -92,7 +92,8 @@ class CudaVector
     ConstGlobalRef<T> back()  const;
 
     auto const_view() const { return this->view();                                    }
-    auto view()       const { return VectorView<const T>(this->size(), this->data()); }
+    //auto view()       const { return VectorView<const T>(this->size(), this->data()); }
+    auto view()       const { return ConstVectorView<T>(this->size(), this->data());  }
     auto view()             { return VectorView<T>(this->size(), this->data());       }
 
     CudaVector(const display::GLVector<T>& other) { *this = other; }
