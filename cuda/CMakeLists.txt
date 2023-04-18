@@ -13,6 +13,7 @@ list(APPEND rtac_cuda_headers
     include/rtac_base/cuda/TextureDim.h
     include/rtac_base/cuda/PinnedVector.h
     include/rtac_base/cuda/DeviceMesh.h
+    include/rtac_base/cuda/CudaPing.h
     include/rtac_base/cuda/DeviceReference.h
     include/rtac_base/cuda/DeviceObject.h
     include/rtac_base/cuda/Texture2D.h
