@@ -7,6 +7,7 @@
 #include <rtac_base/types/Linspace.h>
 #include <rtac_base/containers/HostVector.h>
 #include <rtac_base/containers/VectorView.h>
+#include <rtac_base/containers/Image.h>
 
 namespace rtac {
 
@@ -35,8 +36,16 @@ struct PingExpression2D
     RTAC_HD_GENERIC auto& operator()(unsigned int r, unsigned int b) { 
         return this->ping_data()[this->bearing_count()*r + b];
     }
-    RTAC_HD_GENERIC unsigned int width()  const { return this->bearing_count(); }
-    RTAC_HD_GENERIC unsigned int height() const { return this->range_count();   }
+    RTAC_HD_GENERIC unsigned int width()  const { return this->bearing_count();        }
+    RTAC_HD_GENERIC unsigned int height() const { return this->range_count();          }
+    RTAC_HD_GENERIC unsigned int size()   const { return this->width()*this->height(); }
+
+    RTAC_HD_GENERIC auto image_view() { return make_image_view(this->width(),
+                                                               this->height(), 
+                                                               this->ping_data()); }
+    RTAC_HD_GENERIC auto image_view() const { return make_image_view(this->width(),
+                                                                     this->height(), 
+                                                                     this->ping_data()); }
 };
 
 
@@ -69,7 +78,7 @@ class Ping2D : public PingExpression2D<Ping2D<T, VectorT>>
     template <template<typename>class VectorT2>
     Ping2D(const Linspace<float>& ranges,
            const VectorT2<float>& bearings,
-           const VectorT2<float>& pingData) :
+           const VectorT2<T>& pingData) :
         ranges_(ranges),
         bearingBounds_(bearings.front(), bearings.back()),
         bearingCount_(bearings.size()),
@@ -81,7 +90,7 @@ class Ping2D : public PingExpression2D<Ping2D<T, VectorT>>
     Ping2D(const Linspace<float>& ranges,
            const VectorT2<float>& bearings,
            const Bounds<float>& bearingBounds,
-           const VectorT2<float>& pingData) :
+           const VectorT2<T>& pingData) :
         ranges_(ranges),
         bearingBounds_(bearingBounds),
         bearingCount_(bearings.size()),
@@ -103,7 +112,7 @@ class Ping2D : public PingExpression2D<Ping2D<T, VectorT>>
     RTAC_HD_GENERIC float        bearing_min()       const { return bearingBounds_.lower; }
     RTAC_HD_GENERIC float        bearing_max()       const { return bearingBounds_.upper; }
     RTAC_HD_GENERIC float bearing(unsigned int idx)  const { return bearings_[idx];       }
-    RTAC_HD_GENERIC const Bounds<float>& bearing_bounds() const { return bearingBounds_; }
+    RTAC_HD_GENERIC const Bounds<float>& bearing_bounds() const { return bearingBounds_;  }
  
     RTAC_HD_GENERIC const Linspace<float>& ranges() const { return ranges_;         }
     RTAC_HD_GENERIC unsigned int range_count()      const { return ranges_.size();  }
@@ -118,6 +127,7 @@ class Ping2D : public PingExpression2D<Ping2D<T, VectorT>>
     RTAC_HD_GENERIC const VectorT<T>& ping_data_container() const { return pingData_; }
     RTAC_HD_GENERIC       VectorT<T>& ping_data_container()       { return pingData_; }
 
+
     RTAC_HD_GENERIC Ping2D<T,ConstVectorView> view() const {
         return Ping2D<T,ConstVectorView>(ranges_,
                                          bearings_.view(),
@@ -129,6 +139,27 @@ class Ping2D : public PingExpression2D<Ping2D<T, VectorT>>
                                     bearings_.view(),
                                     bearingBounds_,
                                     pingData_.view());
+    }
+
+    RTAC_HD_GENERIC Ping2D<T,VectorT>& set_ranges(const Linspace<float>& ranges,
+                                                  bool resizeData = true)
+    {
+        this->ranges_ = ranges;
+        if(resizeData) {
+            pingData_.resize(this->size());
+        }
+        return *this;
+    }
+
+    RTAC_HD_WARNING template <template<typename>class VectorT2>
+    RTAC_HOSTDEVICE Ping2D<T,VectorT>& set_bearings(const VectorT2<float>& bearings,
+                                                    bool resizeData = true)
+    {
+        this->bearings_ = bearings;
+        if(resizeData) {
+            pingData_.resize(this->size());
+        }
+        return *this;
     }
 };
 
