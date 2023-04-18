@@ -20,6 +20,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/Exception.h
     include/rtac_base/utilities.h
 
+    include/rtac_base/types/TypeInfo.h
     include/rtac_base/types/Shape.h
     include/rtac_base/types/Rectangle.h
     include/rtac_base/types/Bounds.h
