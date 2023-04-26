@@ -20,6 +20,7 @@ list(APPEND test_files
     src/pose_string.cpp
     src/point_format.cpp
     src/ping_type.cpp
+    src/packed_struct.cpp
 )
 
 if(WITH_ASYNC)
