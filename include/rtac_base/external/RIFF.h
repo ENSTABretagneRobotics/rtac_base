@@ -119,6 +119,12 @@ class Chunk
         data_ = std::shared_ptr<uint8_t>(data, data->data());
     }
 
+    Chunk(const std::string& id, uint32_t size, const uint8_t* data) :
+        Chunk(ChunkHeader(id, size))
+    {
+        std::memcpy(this->data(), data, size);
+    }
+
     const ChunkHeader& header() const { return header_; }
     FourCC         id()   const { return header_.id();   }
     uint32_t       size() const { return header_.size(); }

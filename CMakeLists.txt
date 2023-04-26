@@ -72,6 +72,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/external/RIFF.h
 
     include/rtac_base/navigation.h
+    include/rtac_base/files/sonar_ping.h
 )
 
 add_library(rtac_base SHARED
