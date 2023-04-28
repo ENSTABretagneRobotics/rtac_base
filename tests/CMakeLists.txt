@@ -21,6 +21,7 @@ list(APPEND test_files
     src/point_format.cpp
     src/ping_type.cpp
     src/packed_struct.cpp
+    src/string_id.cpp
 )
 
 if(WITH_ASYNC)
