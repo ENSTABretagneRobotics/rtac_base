@@ -10,6 +10,7 @@
 
 namespace rtac {
 
+#pragma pack(push,1)
 /**
  * The StringId type is to be used for identifiers in serialized data.
  * 
@@ -19,8 +20,8 @@ namespace rtac {
  * and only the character before are considered (as with regular C strings).
  */
 template <unsigned int N>
-RTAC_PACKED_STRUCT( StringId,
-
+struct StringId
+{
     static constexpr unsigned int Size = N;
 
     char data[Size];
@@ -65,7 +66,8 @@ RTAC_PACKED_STRUCT( StringId,
     bool operator==(const StringId<N2>& other) const { return *this == other.string(); }
     template <unsigned int N2>
     bool operator!=(const StringId<N2>& other) const { return !(*this == other);       }
-);
+};
+#pragma pack(pop)
 
 // mandatory in C++14, relaxed in C++17
 template <unsigned int N> constexpr unsigned int StringId<N>::Size;

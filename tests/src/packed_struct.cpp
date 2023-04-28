@@ -7,10 +7,11 @@ struct S0 {
     float y;
 };
 
-RTAC_PACKED_STRUCT( S1,
+RTAC_PACKED_STRUCT(
+struct S1 {
     char  x;
     float y;
-);
+};);
 
 int main()
 {

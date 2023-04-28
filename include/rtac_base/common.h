@@ -13,19 +13,10 @@
     #error "Unsupported compiler. Should be GCC, CLANG or MSVC"
 #endif
 
-#if defined(RTAC_GCC) || defined(RTAC_CLANG)
-    #define RTAC_PACKED_STRUCT( name, content ) \
-        struct name {                           \
-            content                             \
-        } __attribute__((__packed__));
-#elif defined(RTAC_MSVC)
-    #define RTAC_PACKED_STRUCT( name, content ) \
-        _Pragma("pack(push,1)")                 \
-        struct name {                           \
-            content                             \
-        };                                      \
-        _Pragma("pack(pop)")
-#endif
+#define RTAC_PACKED_STRUCT(...) \
+    _Pragma("pack(push,1)")     \
+    __VA_ARGS__                 \
+    _Pragma("pack(pop)")
 
 #include <rtac_base/cuda_defines.h>
 

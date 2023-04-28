@@ -11,7 +11,9 @@
 
 namespace rtac {
 
-RTAC_PACKED_STRUCT( RIFFPingInfo2D,
+#pragma pack(push,1)
+struct RIFFPingInfo2D
+{
     uint32_t rangeCount;
     float    rangeMin;
     float    rangeMax;
@@ -23,7 +25,8 @@ RTAC_PACKED_STRUCT( RIFFPingInfo2D,
     Linspace<float> ranges() const {
         return Linspace<float>(rangeMin, rangeMax, rangeCount);
     }
-);
+};
+#pragma pack(pop)
 
 template <typename T> inline
 bool save_as_riff(const std::string& filename, const Ping2D<T, HostVector>& ping)
