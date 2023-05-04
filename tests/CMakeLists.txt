@@ -23,6 +23,7 @@ list(APPEND test_files
     src/packed_struct.cpp
     src/string_id.cpp
     src/serialization.cpp
+    src/ping_serialization.cpp
 )
 
 if(WITH_ASYNC)

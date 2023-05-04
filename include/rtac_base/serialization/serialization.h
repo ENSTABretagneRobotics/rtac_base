@@ -8,6 +8,7 @@
 #include <rtac_base/common.h>
 #include <rtac_base/Exception.h>
 #include <rtac_base/types/StringId.h>
+#include <rtac_base/containers/HostVector.h>
 
 
 namespace rtac {
@@ -125,7 +126,6 @@ class SerializeStub
     public:
 
     std::ostream& operator<<(const char* data) {
-        std::cout << "padding : " << padding_ << std::endl;
         os_.write(data, dataSize_);
         for(unsigned int i = 0; i < padding_; i++) os_.put(0);
         return os_;
@@ -157,8 +157,19 @@ class DeserializeStub32
 
     public:
 
-    template <typename T, template<typename>class VectorT>
-    std::istream& operator>>(VectorT<T>& out) {
+    template <typename T>
+    std::istream& operator>>(T& item) {
+        if(header_.size != sizeof(item)) {
+            throw SerializeError() << " : wrong size for serialized data";
+        }
+        is_.read((char*)&item, sizeof(item));
+        is_.ignore(header_.padding());
+
+        return is_;
+    }
+
+    template <typename T>
+    std::istream& operator>>(HostVector<T>& out) {
         out.resize(header_.size / sizeof(T));
         unsigned int remainer = header_.size - out.size()*sizeof(T);
         if(remainer != 0) {
@@ -196,8 +207,8 @@ class DeserializeStub64
 
     public:
 
-    template <typename T, template<typename>class VectorT>
-    std::istream& operator>>(VectorT<T>& out) {
+    template <typename T>
+    std::istream& operator>>(HostVector<T>& out) {
         out.resize(header_.size / sizeof(T));
         unsigned int remainer = header_.size - out.size()*sizeof(T);
         if(remainer != 0) {
