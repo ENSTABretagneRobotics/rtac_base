@@ -65,6 +65,13 @@ class Ping2D : public PingExpression2D<Ping2D<T, VectorT>>
 
     public:
 
+    Ping2D() : 
+        ranges_(0,1,0),
+        bearingBounds_(-1,1),
+        bearingCount_(0)
+    {}
+        
+
     template <template<typename>class VectorT2>
     Ping2D(const Linspace<float>& ranges,
            const VectorT2<float>& bearings) :
@@ -106,6 +113,20 @@ class Ping2D : public PingExpression2D<Ping2D<T, VectorT>>
         bearings_(other.bearings()),
         pingData_(other.ping_data_container())
     {}
+
+    template <template<typename>class VectorT2>
+    Ping2D(const Linspace<float>& ranges,
+           VectorT2<float>&& bearings,
+           VectorT2<T>&& pingData) :
+        ranges_(ranges),
+        bearingBounds_(bearings.front(), bearings.back()),
+        bearingCount_(bearings.size()),
+        bearings_(std::move(bearings)),
+        pingData_(std::move(pingData))
+    {}
+
+    Ping2D(Ping2D<T, VectorT>&&)                      = default;
+    Ping2D<T,VectorT>& operator=(Ping2D<T,VectorT>&&) = default;
 
     RTAC_HD_GENERIC const VectorT<float>& bearings() const { return bearings_;            }
     RTAC_HD_GENERIC unsigned int bearing_count()     const { return bearings_.size();     }

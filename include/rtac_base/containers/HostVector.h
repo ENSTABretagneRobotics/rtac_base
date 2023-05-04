@@ -53,6 +53,12 @@ class HostVector
     HostVector& operator=(const HostVector<T>& other)  { data_ = other.data_; return *this; }
     HostVector& operator=(const std::vector<T>& other) { data_ = other;       return *this; }
 
+    HostVector(HostVector<T>&& other) : data_(std::move(other.data_)) {}
+    HostVector& operator=(HostVector<T>&& other) {
+        data_ = std::move(other.data_);
+        return *this;
+    }
+
     void copy_from_host(std::size_t size, const T* data) {
         this->resize(size);
         std::memcpy(this->data(), data, size*sizeof(T));
