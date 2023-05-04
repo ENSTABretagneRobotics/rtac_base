@@ -56,13 +56,13 @@ class CudaVector
     CudaVector(const std::vector<T>& other);
     ~CudaVector();
 
-    CudaVector(CudaVector<T>&& other) : CudaVector() { *this = std::move(other); }
-    CudaVector<T>& operator=(CudaVector<T>&& other) {
-        std::exchange(data_,     other.data_);
-        std::exchange(size_,     other.size_);
-        std::exchange(capacity_, other.capacity_);
-        return *this;
-    }
+    //CudaVector(CudaVector<T>&& other) : CudaVector() { *this = std::move(other); }
+    //CudaVector<T>& operator=(CudaVector<T>&& other) {
+    //    std::exchange(data_,     other.data_);
+    //    std::exchange(size_,     other.size_);
+    //    std::exchange(capacity_, other.capacity_);
+    //    return *this;
+    //}
 
 
     void copy_from_host(std::size_t size, const T* data);
