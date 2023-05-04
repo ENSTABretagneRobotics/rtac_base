@@ -57,6 +57,12 @@ std::ostream& serialize(std::ostream& os, const Ping2D<T, HostVector>& ping)
     return os;
 }
 
+template <typename T, template<typename>class VectorT> inline
+std::ostream& serialize(std::ostream& os, const Ping2D<T, VectorT>& ping)
+{
+    return serialize(os, Ping2D<T,HostVector>(ping));
+}
+
 /**
  * This deserialization scheme is following the RIFF specification, except that
  * chunks must always be in the proper order.
@@ -116,6 +122,15 @@ std::istream& deserialize(std::istream& is, Ping2D<T, HostVector>& ping)
                                           std::move(bearingData),
                                           std::move(pingData)));
     
+    return is;
+}
+
+template <typename T, template<typename>class VectorT> inline
+std::istream& deserialize(std::istream& is, Ping2D<T, VectorT>& ping)
+{
+    Ping2D<T,HostVector> tmp;
+    deserialize(is, tmp);
+    ping = tmp;
     return is;
 }
 

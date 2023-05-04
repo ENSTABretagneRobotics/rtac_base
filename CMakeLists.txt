@@ -16,6 +16,7 @@ find_package(PNG)
 find_package(JPEG)
 
 list(APPEND rtac_base_headers
+    include/rtac_base/common.h
     include/rtac_base/cuda_defines.h
     include/rtac_base/Exception.h
     include/rtac_base/utilities.h
@@ -29,6 +30,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/types/PointFormat.h
     include/rtac_base/types/Complex.h
     include/rtac_base/types/PODWrapper.h
+    include/rtac_base/types/StringId.h
 
     include/rtac_base/containers/VectorView.h
     include/rtac_base/containers/HostVector.h
@@ -70,6 +72,9 @@ list(APPEND rtac_base_headers
     include/rtac_base/external/kalibr.h
     include/rtac_base/external/nmea_utils.h
     include/rtac_base/external/RIFF.h
+
+    include/rtac_base/serialization/serialization.h
+    include/rtac_base/serialization/sonar_ping.h
 
     include/rtac_base/navigation.h
     include/rtac_base/files/sonar_ping.h
