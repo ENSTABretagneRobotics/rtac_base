@@ -15,10 +15,14 @@ namespace rtac {
 template <typename T>
 struct Shape
 {
-    public:
-
     T width;
     T height;
+
+    Shape()                           = default;
+    Shape(const Shape<T>&)            = default;
+    Shape& operator=(const Shape<T>&) = default;
+
+    Shape(T w, T h) : width(w), height(h) {}
 
     template <typename RatioType = T>
     RTAC_HOSTDEVICE RatioType ratio() const

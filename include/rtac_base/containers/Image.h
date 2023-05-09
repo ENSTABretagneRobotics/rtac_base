@@ -219,6 +219,10 @@ class Image : public ImageExpression<Image<T,ContainerT>>
     template <template<typename> class C>
     Image(const Image<T,C>& other) : shape_(other.shape()), data_(other.container()) {}
 
+    Image(uint32_t width, uint32_t height, const Container& data) :
+        Image(Shape{width,height}, data)
+    {}
+
     template <template<typename> class C> RTAC_HOSTDEVICE
     Image<T,ContainerT>& operator=(const Image<T,C>& other) {
         shape_ = other.shape();

@@ -99,6 +99,9 @@ class HostVector
     const T& front() const { return data_.front(); }
     const T& back()  const { return data_.back();  }
 
+    void push_back(const T& value) { data_.push_back(value); }
+    void push_back(T&& value)      { data_.push_back(value); }
+
     //auto view() const { return VectorView<const T>(this->size(), this->data()); }
     auto view() const { return ConstVectorView<T>(this->size(), this->data()); }
     auto view()       { return VectorView<T>(this->size(), this->data()); }
