@@ -6,6 +6,11 @@
 
 namespace rtac {
 
+struct TypeError : public Exception
+{
+    TypeError() : Exception("RTAC_TYPE_ERROR") {}
+};
+
 enum ScalarId {
     RTAC_FLOAT,
     RTAC_DOUBLE,
