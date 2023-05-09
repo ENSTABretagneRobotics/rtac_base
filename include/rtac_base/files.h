@@ -68,6 +68,8 @@ void write_ppm(const std::string& path, size_t width, size_t height, const char*
 void read_ppm(const std::string& path, size_t& width, size_t& height,
               std::vector<uint8_t>& data);
 
+bool prepare_path(const std::string& path, bool overwrite = false);
+
 /**
  * Wrapper around std::getline (should have no effect)
  */

@@ -221,6 +221,34 @@ std::string append_extension(const std::string& path, const std::string& ext)
 }
 
 /**
+ * This performs various checks before a path can be opened. It will also
+ * create necessary directories for creating of a file or directory at
+ * specified path (but won't create the path itself).
+ *
+ * Returns false on failure to prepare the path, or path not suited for write
+ * (file or directory at 'path' exists)
+ */
+bool prepare_path(const std::string& path, bool overwrite)
+{
+    auto p = fs::absolute(fs::path(path));
+    if(fs::exists(p) && !overwrite) {
+        return false;
+    }
+
+    auto parentPath = p.parent_path();
+    if(!fs::exists(parentPath)) {
+        if(!create_directories(parentPath)) {
+            return false;
+        }
+    }
+    else if(!fs::is_directory(parentPath)) {
+        return false;
+    }
+
+    return true;
+}
+
+/**
  * Write a binary PGM grayscale image file.
  *
  * The grayscale image data is row major (linear index in image data is equal
