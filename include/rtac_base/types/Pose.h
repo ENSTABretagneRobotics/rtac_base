@@ -141,20 +141,20 @@ struct Pose
     std::string encode_string(const std::string& format, char delimiter = ',');
 };
 
-template<typename T>template <class D0, class D1> RTAC_HOSTDEVICE 
+template<typename T>template <class D0, class D1> RTAC_HOSTDEVICE inline
 Pose<T> Pose<T>::from_rotation_matrix(const Eigen::DenseBase<D0>& r,
                                       const Eigen::DenseBase<D1>& t)
 { 
     return Pose<T>{r,t};
 }
 
-template <typename T> template <class D> RTAC_HOSTDEVICE
+template <typename T> template <class D> RTAC_HOSTDEVICE inline
 Pose<T> Pose<T>::from_translation(const Eigen::DenseBase<D>& t)
 {
     return Pose<T>{Mat3::Identity(), t};
 }
 
-template <typename T> template <class D> RTAC_HOSTDEVICE
+template <typename T> template <class D> RTAC_HOSTDEVICE inline
 Pose<T> Pose<T>::from_homogeneous_matrix(const Eigen::DenseBase<D>& homogeneousMatrix)
 {
     Pose res;
@@ -163,7 +163,7 @@ Pose<T> Pose<T>::from_homogeneous_matrix(const Eigen::DenseBase<D>& homogeneousM
     return res;
 }
 
-template <typename T> template <class D> RTAC_HOSTDEVICE
+template <typename T> template <class D> RTAC_HOSTDEVICE inline
 Pose<T> Pose<T>::from_quaternion(const Quat& q, const Eigen::DenseBase<D>& t)
 {
     return Pose{Mat3(q), t};
@@ -186,7 +186,7 @@ Pose<T> Pose<T>::from_quaternion(const Quat& q, const Eigen::DenseBase<D>& t)
  * @param position The new position of this Pose.
  * @param up       The top direction (top of screen for 3D rendering).
  */
-template <typename T> RTAC_HOSTDEVICE
+template <typename T> RTAC_HOSTDEVICE inline
 Pose<T>& Pose<T>::look_at(const Pose<T>::Vec3& target,
                           const Pose<T>::Vec3& position,
                           const Pose<T>::Vec3& up)
@@ -242,16 +242,18 @@ Pose<T> Pose<T>::decode_string(const std::string& str, char delimiter)
     }
 }
 
-template <typename T>
+template <typename T> inline
 std::string Pose<T>::encode_string(const std::string& format, char d)
 {
     std::ostringstream oss;
     if(format == "quat") {
         auto q = this->quaternion();
+        oss << "quat" << d;
         oss << this->x() << d << this->y() << d << this->z() << d
             << q.w() << d << q.x() << d << q.y() << d << q.z();
     }
     else if(format == "hmat") {
+        oss << "hmat" << d;
         oss << r_(0,0) << d << r_(0,1) << d << r_(0,2) << d << t_(0) << d
             << r_(1,0) << d << r_(1,1) << d << r_(1,2) << d << t_(1) << d
             << r_(2,0) << d << r_(2,1) << d << r_(2,2) << d << t_(2) << d
@@ -265,7 +267,7 @@ std::string Pose<T>::encode_string(const std::string& format, char d)
 
 }; // namespace rtac
 
-template <typename T>
+template <typename T> inline
 std::ostream& operator<<(std::ostream& os, const rtac::Pose<T>& pose) {
     os <<   "t : (" << pose.translation().transpose() << ")"
        << ", r : " << pose.quaternion();
