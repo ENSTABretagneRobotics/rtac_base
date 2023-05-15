@@ -13,6 +13,7 @@ class Interpolator
     
     using value_type = T;
     using Vector     = typename InterpolatorInterface<T>::Vector;
+    using Indexes    = typename InterpolatorInterface<T>::Indexes;
 
     enum Type {
         Nearest,
@@ -34,6 +35,9 @@ class Interpolator
     Interpolator(VectorView<const T> x0,
                  VectorView<const T> y0,
                  Type type = Nearest);
+
+    Interpolator(const Interpolator&)            = default;
+    Interpolator& operator=(const Interpolator&) = default;
 
     const Vector& x0() const { return interpolator_->x0(); }
     const Vector& y0() const { return interpolator_->y0(); }

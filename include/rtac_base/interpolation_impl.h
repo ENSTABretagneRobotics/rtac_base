@@ -238,6 +238,11 @@ class InterpolatorCubicSpline : public InterpolatorInterface<T>
 
     virtual void interpolate(VectorView<const T> x,
                              VectorView<T>       y) const;
+
+    const Vector& a() const { return a_; }
+    const Vector& b() const { return b_; }
+    const Vector& c() const { return c_; }
+    const Vector& d() const { return d_; }
 };
 
 template <typename T>
