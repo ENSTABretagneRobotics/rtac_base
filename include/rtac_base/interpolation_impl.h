@@ -238,6 +238,9 @@ class InterpolatorCubicSpline : public InterpolatorInterface<T>
 
     virtual void interpolate(VectorView<const T> x,
                              VectorView<T>       y) const;
+    void interpolate(VectorView<const T> x,
+                     VectorView<T>       y,
+                     VectorView<T>       yGrad) const;
 
     const Vector& a() const { return a_; }
     const Vector& b() const { return b_; }
@@ -292,6 +295,33 @@ void InterpolatorCubicSpline<T>::interpolate(VectorView<const T> x,
     }
 }
 
+/**
+ * This function performs the interpolation at position x and also computes the
+ * gradients at position x.
+ */
+template <typename T>
+void InterpolatorCubicSpline<T>::interpolate(VectorView<const T> x,
+                                             VectorView<T> y,
+                                             VectorView<T> yGrad) const
+{
+    using namespace indexing;
+    Indexes idx = this->lower_bound_indexes(x);
+    for(int i = 0; i < x.size(); i++) {
+        if(idx[i] == this->x0_.size() - 1) {
+            //y[i] = this->y0_[idx[i]];
+            //continue;
+            idx[i]--;
+        }
+        T v = x[i] - this->x0_[idx[i] + 1];
+        y[i] = a_[idx[i]]*v*v*v 
+             + b_[idx[i]]*v*v
+             + c_[idx[i]]*v 
+             + d_[idx[i]];
+        yGrad[i] = 3.0*a_[idx[i]]*v*v
+                 + 2.0*b_[idx[i]]*v
+                 +     c_[idx[i]];
+    }
+}
 
 } //namespace algorithm
 } //namespace rtac
