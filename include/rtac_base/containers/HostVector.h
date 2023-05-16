@@ -103,8 +103,9 @@ class HostVector
     void push_back(T&& value)      { data_.push_back(value); }
 
     //auto view() const { return VectorView<const T>(this->size(), this->data()); }
-    auto view() const { return ConstVectorView<T>(this->size(), this->data()); }
-    auto view()       { return VectorView<T>(this->size(), this->data()); }
+    auto const_view() const { return ConstVectorView<T>(this->size(), this->data()); }
+    auto view()       const { return ConstVectorView<T>(this->size(), this->data()); }
+    auto view()             { return VectorView<T>(this->size(), this->data()); }
 
     HostVector(const cuda::CudaVector<T>& other) { *this = other; }
     HostVector& operator=(const cuda::CudaVector<T>& other) {
