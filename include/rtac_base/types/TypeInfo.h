@@ -214,6 +214,23 @@ template<> struct UIntInfo<8> { static constexpr ScalarId id = RTAC_UINT64; usin
 //template<> struct GetScalarId<int>            { static constexpr ScalarId value = UIntInfo<sizeof(int)>::value; }
 //template<> struct GetScalarId<long>           { static constexpr ScalarId value = UlongId<sizeof(long)>::value; }
 
+template <typename T> struct GetNumpyCodeError : std::false_type {};
+template <typename T> struct GetNumpyCode {
+    static_assert(GetNumpyCodeError<T>::value, "Numpy code not defined for this scalar type");
+};
+template<> struct GetNumpyCode<float>             { static constexpr char value = 'f'; };
+template<> struct GetNumpyCode<double>            { static constexpr char value = 'd'; };
+template<> struct GetNumpyCode<uint8_t>           { static constexpr char value = 'B'; };
+template<> struct GetNumpyCode<uint16_t>          { static constexpr char value = 'H'; };
+template<> struct GetNumpyCode<uint32_t>          { static constexpr char value = 'I'; };
+template<> struct GetNumpyCode<uint64_t>          { static constexpr char value = 'L'; };
+template<> struct GetNumpyCode<int8_t>            { static constexpr char value = 'b'; };
+template<> struct GetNumpyCode<int16_t>           { static constexpr char value = 'h'; };
+template<> struct GetNumpyCode<int32_t>           { static constexpr char value = 'i'; };
+template<> struct GetNumpyCode<int64_t>           { static constexpr char value = 'l'; };
+template<> struct GetNumpyCode<Complex<float>>    { static constexpr char value = 'F'; };
+template<> struct GetNumpyCode<Complex<double>>   { static constexpr char value = 'D'; };
+
 } //namespace rtac
 
 #endif //_DEF_RTAC_BASE_TYPE_INFO_H_
