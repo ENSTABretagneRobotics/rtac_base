@@ -72,6 +72,7 @@ list(APPEND rtac_base_headers
     include/rtac_base/external/kalibr.h
     include/rtac_base/external/nmea_utils.h
     include/rtac_base/external/RIFF.h
+    include/rtac_base/external/npy.h
 
     include/rtac_base/serialization/serialization.h
     include/rtac_base/serialization/sonar_ping.h

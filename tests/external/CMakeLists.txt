@@ -37,3 +37,9 @@ if(TARGET PROJ::proj)
     )
     target_link_libraries(${target_name} PRIVATE rtac_base)
 endif()
+
+set(target_name npy_${PROJECT_NAME})
+add_executable(${target_name}
+    src/npy_test.cpp
+)
+target_link_libraries(${target_name} PRIVATE rtac_base)
