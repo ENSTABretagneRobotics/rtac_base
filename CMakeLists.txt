@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
-project(rtac_base VERSION 0.2)
+project(rtac_base VERSION 1.0)
 
 option(WITH_CUDA   "Compile and install cuda-dependent code." ON)
 option(WITH_ASYNC  "Compile and install async components (will use GCC '-pthread' compile and link option)" ON)
-option(BUILD_TESTS "Build unit tests" ON)
+option(BUILD_TESTS "Build unit tests" OFF)
 option(BUILD_DOCS  "Build Doxygen documentation" OFF)
 
 # Loading installation script (just loading function, not calling)
