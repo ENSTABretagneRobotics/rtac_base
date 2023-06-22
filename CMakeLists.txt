@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.24)
 project(rtac_base VERSION 1.0)
 
 option(WITH_CUDA   "Compile and install cuda-dependent code." ON)
